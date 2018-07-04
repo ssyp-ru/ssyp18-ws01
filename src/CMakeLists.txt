@@ -1,0 +1,13 @@
+
+set(EXECUTABLE  main.cpp)
+
+add_compile_options(-std=c++17)
+add_compile_options(-g)
+add_compile_options(-Wall)
+add_compile_options(-Wpedantic)
+
+include_directories($ENV{REAL_ENGINE_DIR}/include)
+link_directories($ENV{REAL_ENGINE_DIR}/lib)
+
+add_executable(real_game ${EXECUTABLE})
+target_link_libraries(real_game real_engine)
