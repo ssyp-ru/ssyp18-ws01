@@ -1,39 +1,62 @@
 #include <RealEngine/baseApp.h>
 #include <RealEngine/graphic.h>
+#include <RealEngine/camera.h>
 
 #include <iostream>
 #include <memory>
 
+#include "map.h"
+
 class MainApp : public re::IBaseApp{
 public:
+    re::Game world;
+    re::Camera camera;
+    Map map;
+    re::Point2f cam_pos;
+    float zoom;
 
     void setup() override {
+        map = Map( world, "map.tmx" );
+        camera.view_at( re::Point2f(0,0) );
+        camera.scale( 10 );
     }
 
     void update() override {
-        x = (x + 1) % 100;
     }
 
     void display() override {
-        re::background(re::WHITE);
-        re::draw_rectangle(x, y, 50, 50, re::RED);
-        re::draw_rectangle(200, 200, 50, 50, re::RED);
-        re::draw_line( x, 50, 200, 200, re::BLACK );
-        re::draw_text( 100, 100, "TEST TEXT", re::BLACK );
+        map.draw(camera);
     }
 
     void on_key_pressed(re::Key key){
-        std::cout << "Key pressed\n";
-        if (key == re::Key::Escape){
-            re::exitApp();
-        } else if(key == (re::Key)112) {
-            //re::graphic::goFullScreen();
+        switch( key )
+        {
+        case re::Key::W:
+            cam_pos -= re::Point2f( 0,20 );
+            camera.view_at( cam_pos );
+            break;
+        case re::Key::S:
+            cam_pos -= re::Point2f( 0,-20 );
+            camera.view_at( cam_pos );
+            break;
+        case re::Key::A:
+            cam_pos -= re::Point2f( 20,0 );
+            camera.view_at( cam_pos );
+            break;
+        case re::Key::D:
+            cam_pos -= re::Point2f( -20,0 );
+            camera.view_at( cam_pos );
+            break;
+        case re::Key::Q:
+            zoom += 0.5;
+            camera.scale( zoom );
+            break;
+        case re::Key::E:
+            zoom -= 0.5;
+            camera.scale( zoom );
+            break;
         }
     }
-
-private:
-    int x = 0;
-    int y = 0;
 };
 
 int main(){
