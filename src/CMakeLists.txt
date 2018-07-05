@@ -1,6 +1,7 @@
 
 set(EXECUTABLE  main.cpp
                 map.cpp
+                event.cpp
                 drawable_game_object.cpp
                 )
 
