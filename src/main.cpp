@@ -32,20 +32,16 @@ public:
         switch( key )
         {
         case re::Key::W:
-            cam_pos -= re::Point2f( 0,20 );
-            camera.view_at( cam_pos );
+            camera.translate( re::Point2f( 0,-20 ) );
             break;
         case re::Key::S:
-            cam_pos -= re::Point2f( 0,-20 );
-            camera.view_at( cam_pos );
+            camera.translate( re::Point2f( 0,20 ) );
             break;
         case re::Key::A:
-            cam_pos -= re::Point2f( 20,0 );
-            camera.view_at( cam_pos );
+            camera.translate( re::Point2f( -20,0 ) );
             break;
         case re::Key::D:
-            cam_pos -= re::Point2f( -20,0 );
-            camera.view_at( cam_pos );
+            camera.translate( re::Point2f( 20,0 ) );
             break;
         case re::Key::Q:
             zoom += 0.5;
