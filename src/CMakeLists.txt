@@ -1,5 +1,8 @@
 
-set(EXECUTABLE  main.cpp)
+set(EXECUTABLE  main.cpp
+                map.cpp
+                drawable_game_object.cpp
+                )
 
 add_compile_options(-std=c++17)
 add_compile_options(-g)
