@@ -10,12 +10,19 @@
 #include "map.h"
 #include "event.h"
 
+#include "events/event_input.h"
+#include "events/event_enum.h"
+
+#include "gamelogic/gamelogic.h"
+
+class MainApp *main_app;
+
 class MainApp : public re::IBaseApp{
 public:
-    re::Game world;
+    GameLogic game_logic;
     re::Camera camera;
-    Map map;
     re::Point2f cam_pos;
+    re::Point2f cursor_pos;
     float zoom;
 
     re::TCPClientPtr tcp_client;
@@ -25,21 +32,43 @@ public:
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
     void setup() override {
-        map = Map( world, "map.tmx" );
+        main_app = this;
+        game_logic.map = Map( game_logic.world, "map.tmx" );
         camera.view_at( re::Point2f(0,0) );
         camera.scale( 10 );
-    }
+        re::subscribe_to_all( (&game_logic) );
+    } 
 
     void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
     {
-        event_serealizer_server->deserealize_server( id, msg );
+        if( event == re::TCPServer::Callback_event::msg_recive )
+        {
+            event_serealizer_server->deserealize_server( id, msg );
+        }
     }
 
     void update() override {
     }
 
     void display() override {
-        map.draw(camera);
+        game_logic.map.draw(camera);
+    }
+
+    void on_mouse_move( int x, int y )
+    {
+        cursor_pos.x = x;
+        cursor_pos.y = y;
+    }
+
+    void on_button_pressed( int button )
+    {
+        std::shared_ptr<InputEventMouse> event = std::make_shared<InputEventMouse>( 
+                                        event_category::input ,
+                                        event_input::mouse );
+        event->button = 1;
+        event->pos = camera.screen_to_world( this->cursor_pos );
+        event->set_shared( true );
+        re::publish_event( event );
     }
 
     void on_key_pressed(re::Key key){
@@ -71,6 +100,19 @@ public:
 
             event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
             re::subscribe_to_all( event_serealizer_client.get() );
+            break;
+        case re::Key::P:
+            tcp_server = re::TCPServer::create();
+            tcp_server->setup(11999);
+
+            tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
+                                                this,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3) );
+
+            event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
+            re::subscribe_to_all( event_serealizer_server.get() );
             break;
         }
     }

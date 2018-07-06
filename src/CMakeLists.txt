@@ -2,6 +2,8 @@
 set(EXECUTABLE  main.cpp
                 map.cpp
                 event.cpp
+                events/event_input.cpp
+                gamelogic/gamelogic.cpp
                 drawable_game_object.cpp
                 )
 
