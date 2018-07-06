@@ -13,4 +13,5 @@ public:
     void draw( re::Camera camera );
 private:
     re::Map map;
+    re::ImagePtr backgroung;
 };

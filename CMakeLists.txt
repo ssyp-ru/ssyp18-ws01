@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 
 set(FILE_TO_COPY
     map.tmx
+    map.png
 )
 
 foreach( file ${FILE_TO_COPY} )
