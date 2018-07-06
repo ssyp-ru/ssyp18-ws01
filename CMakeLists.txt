@@ -10,36 +10,37 @@ include_directories(ext)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 
-set(FILE_DATA_TO_COPY
-    map.tmx
-    map.png
-    mage_front_1.png
-    mage_front_2.png
-    mage_front_3.png
-    mage_front_4.png
-    change.png
-    connect.png
-    create.png
-    empty.png
-    exit.png
-    join.png
-    menu.png
-    players.png
-    dark.png
-    bright.png
-    go.png
+set(FILE_TO_COPY
+    config/resource.xml
+    data/map.tmx
+    data/map.png
+    data/mage_front_1.png
+    data/mage_front_2.png
+    data/mage_front_3.png
+    data/mage_front_4.png
+    data/change.png
+    data/connect.png
+    data/create.png
+    data/empty.png
+    data/exit.png
+    data/join.png
+    data/menu.png
+    data/players.png
+    data/dark.png
+    data/bright.png
+    data/go.png
 )
 
-set(FILE_CONFIG_TO_COPY
-    resource.xml
-) 
 
-foreach( file ${FILE_DATA_TO_COPY} )
-    configure_file(data/${file} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${file} COPYONLY)
-endforeach(file)
+foreach( file ${FILE_TO_COPY} )
+get_filename_component(filename ${file} NAME)
+    set(source_file ${PROJECT_SOURCE_DIR}/${file})
+    set(dest_file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${filename})
 
-foreach( file ${FILE_CONFIG_TO_COPY} )
-    configure_file(config/${file} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${file} COPYONLY)
+    if(${source_file} IS_NEWER_THAN ${dest_file})
+        configure_file(${source_file} ${dest_file} COPYONLY)
+        message(" '${dest_file}' ... copied.")
+    endif()
 endforeach(file)
 
 add_subdirectory(src)
