@@ -7,13 +7,14 @@
 #include <iostream>
 #include <memory>
 
+#include "event.h"
 #include "map.h"
 #include "player.h"
 #include "events/move_event.h"
 
 class MainApp : public re::IBaseApp{
 public:
-    re::Game world;
+    re::Physic world;
     re::Camera camera;
     Map map;
     re::Point2f cam_pos;
@@ -31,7 +32,7 @@ public:
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
     void setup() override {
-        map = Map( world, "map.tmx" );
+        map = Map(world, "map.tmx" );
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
 
@@ -46,7 +47,7 @@ public:
     }
 
     void update() override {
-        // world.updateTick();
+        //world.updateTick();
         player->update();
     }
 

@@ -1,7 +1,7 @@
 #include "drawable_game_object.h"
 
 DrawableGameObject::DrawableGameObject( re::Point2f pos ) 
-    : re::GameObject::GameObject( re::Vector2f(pos.x,pos.y))
+    : re::PhysicObject::PhysicObject( re::Vector2f(pos.x,pos.y))
 {
 
 }
