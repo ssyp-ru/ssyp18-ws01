@@ -18,6 +18,7 @@
 
 class MainApp : public re::IBaseApp{
 public:
+    re::PhysicWorld world;
     GameLogic game_logic;
     re::Camera camera;
     re::Point2f cam_pos;
