@@ -10,7 +10,7 @@ public:
     virtual void on_event(std::shared_ptr<re::Event> event);
     void update();
     void draw( re::Camera );
-    re::Game world;
+    re::PhysicWorld world;
 
     Map map;
 
