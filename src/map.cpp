@@ -5,7 +5,7 @@
 Map::Map()
 {
 
-}
+} 
 
 Map::Map( re::Game &world, std::string path )
 {
@@ -23,14 +23,20 @@ Map::Map( re::Game &world, std::string path )
             re::GameObjectPtr obj = dobj;
             world.addObject(obj);
         }
-        objects.push_back( dobj );
     }
 }
 
 void Map::draw( re::Camera camera )
 {
-    for( auto object : objects )
+    re::Point2f size_background( map.imagelayer[0].width, map.imagelayer[0].height );
+    if( !this->backgroung )
     {
-        object->display( camera );
+        this->backgroung = std::make_shared<re::Image>( map.imagelayer[0].img_path );
     }
+    re::draw_image_part( re::Point2f(0,0), 
+                         camera.world_to_screen(size_background), 
+                         re::Point2f(0,0),
+                         re::Point2f(1,1),
+                         this->backgroung );
+    //this->backgroung->getTex();
 }
