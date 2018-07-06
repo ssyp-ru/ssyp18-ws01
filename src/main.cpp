@@ -9,9 +9,9 @@
 
 #include "map.h"
 #include "player.h"
-#include "events/move_event.h"
 
-#include "events/event_input.h"
+#include "event.h"
+#include "events/move_event.h"
 #include "events/event_enum.h"
 
 #include "gamelogic/gamelogic.h"
@@ -68,17 +68,6 @@ public:
         cursor_pos.y = y;
     }
 
-    void on_button_pressed( int button )
-    {
-        std::shared_ptr<InputEventMouse> event = std::make_shared<InputEventMouse>( 
-                                        event_category::input ,
-                                        event_input::mouse );
-        event->button = 1;
-        event->pos = camera.screen_to_world( this->cursor_pos );
-        event->set_shared( true );
-        re::publish_event( event );
-    }
-
     void on_key_pressed(re::Key key){
         switch( key )
         {
@@ -127,15 +116,10 @@ public:
     }
 
     void on_button_pressed(int button){
-        re::Point2f finish_point = camera.screen_to_world(re::Point2f(mouseX, mouseY));
+        re::Point2f finish_point = camera.screen_to_world(cursor_pos);
         auto move_event = std::make_shared<MoveEvent>(0, finish_point);
+        move_event->set_shared(true);
         re::publish_event(move_event);
-
-    }
-
-    void on_mouse_move(int x, int y){
-        mouseX = x;
-        mouseY = y;
     }
 };
 

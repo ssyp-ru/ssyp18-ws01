@@ -1,21 +1,21 @@
 #include "event.h"
 #include "events/event_enum.h"
-#include "events/event_input.h"
+#include "events/move_event.h"
 
 void deserealize( std::vector<char> msg )
 {
     switch( msg[0] )
     {
-    case event_category::input:
+    case MOVE_EVENT_CATEGORY:
         switch( msg[1] )
         { 
-        case event_input::mouse:
-            std::shared_ptr<InputEventMouse> mouse_input = std::make_shared<InputEventMouse>( uint(msg[0]), uint(msg[1]) );
-            mouse_input->deserialize(msg);
-            mouse_input->set_shared(false);
-            re::publish_event(mouse_input);
+        case int(MoveEventType::PLAYER_MOVE) :
+            std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
+            move_input->deserialize(msg);
+            re::publish_event( move_input );
             break;
         }
+        break;
     }
 }
 
