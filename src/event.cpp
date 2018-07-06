@@ -1,13 +1,16 @@
 #include "event.h"
 #include "events/event_enum.h"
 #include "events/move_event.h"
+#include <json.hpp>
 
 void deserealize( std::vector<char> msg )
 {
-    switch( msg[0] )
+    std::string raw_json( msg.data(), msg.size() );
+    nlohmann::json j = nlohmann::json::parse(raw_json);
+    switch( int(j["category"]) )
     {
     case MOVE_EVENT_CATEGORY:
-        switch( msg[1] )
+        switch( int(j["type"]) )
         { 
         case int(MoveEventType::PLAYER_MOVE) :
             std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
@@ -26,8 +29,6 @@ void EventSerealizerServer::on_event(std::shared_ptr<re::Event> event)
         return;
     }
     std::vector<char> msg = event->serialize();
-    msg[0] = event->get_category();
-    msg[1] = event->get_type();
     for( int i = 0; i < tcp_server->get_client_count(); i++ )
     {
         tcp_server->send( i, msg );
@@ -69,8 +70,6 @@ void EventSerealizerClient::on_event(std::shared_ptr<re::Event> event)
 
     std::vector<char> msg;
     msg = event->serialize();
-    msg[0] = event->get_category();
-    msg[1] = event->get_type();
     tcp_client->send( msg );
 }
 

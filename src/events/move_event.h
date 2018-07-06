@@ -21,32 +21,21 @@ public:
 
     std::vector<char> serialize()
     {
-        std::vector<char> msg;
-        msg.push_back(0);
-        msg.push_back(0);
         nlohmann::json j;
+        j["category"] = this->get_category();
+        j["type"] = this->get_type();
         j["x"] = this->finish_point.x;
         j["y"] = this->finish_point.y;
         j["id"] = this->player_id;
 
         std::string raw_json = j.dump();
-
-        for( size_t i = 0; i < raw_json.size(); i++ )
-        {
-            msg.push_back( raw_json[i] );
-        }
-
+        std::vector<char> msg(raw_json.c_str(),raw_json.c_str()+raw_json.size());
         return msg;
     }
 
     void deserialize( std::vector<char> msg )
     {
-        std::string raw_json;
-
-        for( size_t i = 2; i < msg.size(); i++ )
-        {
-            raw_json += msg[i];
-        }
+        std::string raw_json( msg.data(), msg.size() );
 
         nlohmann::json j = nlohmann::json::parse(raw_json);
         finish_point.x = j["x"];
