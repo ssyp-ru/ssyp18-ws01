@@ -9,7 +9,7 @@
 
 class MainApp : public re::IBaseApp{
 public:
-    re::Game world;
+    re::PhysicWorld world;
     re::Camera camera;
     Map map;
     re::Point2f cam_pos;
