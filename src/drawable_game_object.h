@@ -8,5 +8,7 @@ class DrawableGameObject : public re::PhysicObject
 {
 public:
     DrawableGameObject(re::Point2f pos);
+    virtual ~DrawableGameObject(){}
+    
     virtual void display(re::Camera camera);
 };

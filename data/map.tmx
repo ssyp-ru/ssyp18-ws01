@@ -255,7 +255,7 @@
 </data>
  </layer>
  <imagelayer name="map">
-  <image source="../ssyp18/map.png" width="5000" height="5000"/>
+  <image source="map.png" width="5000" height="5000"/>
  </imagelayer>
  <objectgroup name="collapse" visible="0">
   <object id="2" x="4462" y="0">
