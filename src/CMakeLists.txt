@@ -5,6 +5,7 @@ set(EXECUTABLE  main.cpp
                 gamelogic/gamelogic.cpp
                 drawable_game_object.cpp
                 player.cpp
+                main_menu.cpp
                 )
 
 add_compile_options(-std=c++17)

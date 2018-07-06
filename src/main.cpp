@@ -10,6 +10,7 @@
 #include "event.h"
 #include "map.h"
 #include "player.h"
+#include "main_menu.h"
 
 #include "event.h"
 #include "events/move_event.h"
@@ -25,11 +26,17 @@ enum class GameState {
 
 class MainApp : public re::IBaseApp{
 public:
+    MainApp()
+        : main_menu(gui_manager)
+    {}
+
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
 
-        re::subscribe_to_all( (&game_logic) );
+        main_menu.setup();
+
+        re::subscribe_to_all(&game_logic);
 
         player = std::make_shared<Player>(re::Point2f(100, 2200));
         game_logic.world.addObject(player);
@@ -45,22 +52,44 @@ public:
     }
 
     void update() override {
-        game_logic.update();
-        player->update();
+        switch (game_state) {
+            case GameState::MAIN_MENU: {
+                return;
+            }
+            case GameState::LOBBY: {
+                return;
+            }
+            case GameState::GAME: {
+                game_logic.update();
+                player->update();
+                return;
+            }
+        }
     }
 
     void display() override {
-        game_logic.draw(camera);
-        player->display(camera);
+        switch (game_state) {
+            case GameState::MAIN_MENU: {
+                main_menu.display();
+                return;
+            }
+            case GameState::LOBBY: {
+                return;
+            }
+            case GameState::GAME: {
+                game_logic.draw(camera);
+                player->display(camera);
+                return;
+            }
+        }
     }
 
-    void on_mouse_move( int x, int y )
-    {
+    void on_mouse_move( int x, int y ) override {
         cursor_pos.x = x;
         cursor_pos.y = y;
     }
 
-    void on_key_pressed(re::Key key){
+    void on_key_pressed(re::Key key) override {
         switch( key )
         {
         case re::Key::Escape: re::exitApp();
@@ -107,20 +136,27 @@ public:
         }
     }
 
-    void on_button_pressed(int button){
-        re::Point2f finish_point = camera.screen_to_world(cursor_pos);
-        auto move_event = std::make_shared<MoveEvent>(0, finish_point);
-        move_event->set_shared(true);
-        re::publish_event(move_event);
+    void on_button_pressed(int button) override {
+        gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
+
+        if (game_state == GameState::GAME){
+            re::Point2f finish_point = camera.screen_to_world(cursor_pos);
+            auto move_event = std::make_shared<MoveEvent>(0, finish_point);
+            move_event->set_shared(true);
+            re::publish_event(move_event);
+        }
     }
 
 private:
-
+    GameState game_state = GameState::MAIN_MENU;
     GameLogic game_logic;
     re::Camera camera;
+    MainMenu main_menu;
+    re::GuiManager gui_manager;
 
     re::Point2f cursor_pos;
     float zoom = 10;
+    int mouseX, mouseY;
     std::shared_ptr<Player> player;
 
     re::TCPClientPtr tcp_client;
@@ -132,6 +168,6 @@ private:
 
 int main(){
     re::setWindowName( "RealEngine" );
-    re::runApp( 640, 480, std::make_shared<MainApp>() );
+    re::runApp( 1280, 800, std::make_shared<MainApp>() );
     return 0;
 }

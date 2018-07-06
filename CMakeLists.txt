@@ -17,6 +17,17 @@ set(FILE_DATA_TO_COPY
     mage_front_2.png
     mage_front_3.png
     mage_front_4.png
+    change.png
+    connect.png
+    create.png
+    empty.png
+    exit.png
+    join.png
+    menu.png
+    players.png
+    dark.png
+    bright.png
+    go.png
 )
 
 set(FILE_CONFIG_TO_COPY

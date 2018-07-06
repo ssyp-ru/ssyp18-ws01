@@ -6,7 +6,7 @@
 GameLogic::GameLogic()
 {
     this->map = Map( world, "map.tmx" );
-    obstacles = Generate_obstacles(50, 100, 100, world);
+    // obstacles = Generate_obstacles(50, 100, 100, world);
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event)
