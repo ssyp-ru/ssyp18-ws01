@@ -23,14 +23,9 @@ Map::Map( re::Game &world, std::string path )
             re::GameObjectPtr obj = dobj;
             world.addObject(obj);
         }
-        objects.push_back( dobj );
     }
 }
 
 void Map::draw( re::Camera camera )
 {
-    for( auto object : objects )
-    {
-        object->display( camera );
-    }
 }

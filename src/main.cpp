@@ -30,7 +30,6 @@ public:
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
     void setup() override {
-        game_logic.map = Map( game_logic.world, "map.tmx" );
         camera.view_at( re::Point2f(0,0) );
         camera.scale( 10 );
         re::subscribe_to_all( (&game_logic) );
@@ -45,10 +44,11 @@ public:
     }
 
     void update() override {
+        game_logic.update();
     }
 
     void display() override {
-        game_logic.map.draw(camera);
+        game_logic.draw(camera);
     }
 
     void on_mouse_move( int x, int y )
@@ -71,26 +71,6 @@ public:
     void on_key_pressed(re::Key key){
         switch( key )
         {
-        case re::Key::W:
-            //camera.translate( re::Point2f( 0,-20 ) );
-            break;
-        case re::Key::S:
-            //camera.translate( re::Point2f( 0,20 ) );
-            break;
-        case re::Key::A:
-            //camera.translate( re::Point2f( -20,0 ) );
-            break;
-        case re::Key::D:
-            //camera.translate( re::Point2f( 20,0 ) );
-            break;
-        case re::Key::Q:
-            zoom += 0.5;
-            camera.scale( zoom );
-            break;
-        case re::Key::E:
-            zoom -= 0.5;
-            camera.scale( zoom );
-            break;
         case re::Key::O:
             tcp_client = re::TCPClient::create();
             tcp_client->connect( "127.0.0.1", 11999 );

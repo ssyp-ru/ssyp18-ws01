@@ -5,6 +5,11 @@
 
 #include "../drawable_game_object.h"
 
+GameLogic::GameLogic()
+{
+    this->map = Map( world, "map.tmx" );
+}
+
 void GameLogic::on_event(std::shared_ptr<re::Event> event)
 {
     if( event->get_category() == event_category::input )
@@ -23,7 +28,6 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event)
             dobj->addEdge(0,3);
             re::GameObjectPtr obj = dobj;
             this->world.addObject(obj);
-            this->map.objects.push_back(dobj);
             /*if (!objectData.poly.points.empty()){
                 for (auto vertex : objectData.poly.points)
                     dobj->addPoint(re::Vector2f(vertex.x, vertex.y));
@@ -41,4 +45,14 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event)
 void GameLogic::update()
 {
     
+}
+
+void GameLogic::draw( re::Camera camera )
+{
+    map.draw(camera);
+    for( auto object : this->world.getWorld() )
+    {
+        auto drawable_object = std::static_pointer_cast<DrawableGameObject,re::GameObject>( object );
+        drawable_object->display( camera );
+    }
 }
