@@ -5,6 +5,7 @@
 ```
 sudo apt install g++ cmake mesa-common-dev freeglut3-dev libasio-dev
 ```
+Важно. Для сборки нужен g++ >= 7.0
 
 Для работы также нужен собранный движок Real Engine. Путь к нему должен быть записан в переменную окружения REAL_ENGINE_DIR. 
 ```
