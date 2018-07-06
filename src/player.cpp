@@ -52,11 +52,11 @@ void Player::addExp(int amount){
 }
 
 void Player::update(){
-    re::Point2f pos(position.X, position.Y);
+    re::Point2f pos(position.x, position.y);
     if (pos.distance_to(goto_point) < 50)
         velosity = re::Point2f(0,0);
-    position.X += velosity.x;
-    position.Y += velosity.y;
+    position.x += velosity.x;
+    position.y += velosity.y;
 }
 
 void Player::reduceCooldowns(){
@@ -65,7 +65,7 @@ void Player::reduceCooldowns(){
 }
 
 void Player::display(re::Camera camera){
-    re::Point2f geo_pos(position.X, position.Y);
+    re::Point2f geo_pos(position.x, position.y);
     re::Point2f screen_pos = camera.world_to_screen(geo_pos); 
 
     float size = camera.meter_to_screen(50);
@@ -76,13 +76,13 @@ void Player::display(re::Camera camera){
                         movingAnim_Forward->getNextFrame());
 }
 
-void Player::onCollisionStay(re::GameObjectPtr to, re::Vector2f vec) {
+void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {
 
 }
 
 void Player::go_to(re::Point2f finish_point){
-    re::Point2f geo_pos(position.X, position.Y);
-    re::Vector2f vel((finish_point - geo_pos).x, (finish_point - geo_pos).y);
+    re::Point2f geo_pos(position.x, position.y);
+    re::Point2f vel((finish_point - geo_pos).x, (finish_point - geo_pos).y);
 
     // setVelocity(vel);
     velosity = finish_point - geo_pos;

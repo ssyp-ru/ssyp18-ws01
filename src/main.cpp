@@ -10,20 +10,24 @@
 #include "event.h"
 #include "map.h"
 #include "player.h"
+
+#include "event.h"
 #include "events/move_event.h"
+#include "events/event_enum.h"
+
+#include "gamelogic/gamelogic.h"
 
 class MainApp : public re::IBaseApp{
 public:
-    re::Physic world;
+    re::PhysicWorld world;
+    GameLogic game_logic;
     re::Camera camera;
-    Map map;
     re::Point2f cam_pos;
+
+    re::Point2f cursor_pos;
     float zoom = 10;
     std::shared_ptr<Player> player;
     re::ImagePtr img;
-    int mouseX, mouseY;
-
-    // MainApp() : player(re::Point2f(20, 20)) {}
 
     re::TCPClientPtr tcp_client;
     re::TCPServerPtr tcp_server;
@@ -32,29 +36,38 @@ public:
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
     void setup() override {
-        map = Map(world, "map.tmx" );
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
 
+        re::subscribe_to_all( (&game_logic) );
+
         player = std::make_shared<Player>(re::Point2f(100, 2200));
-        world.addObject(player);
+        game_logic.world.addObject(player);
 
     }
 
     void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
     {
-        event_serealizer_server->deserealize_server( id, msg );
+        if( event == re::TCPServer::Callback_event::msg_recive )
+        {
+            event_serealizer_server->deserealize_server( id, msg );
+        }
     }
 
     void update() override {
-        //world.updateTick();
+        game_logic.update();
         player->update();
     }
 
     void display() override {
-        map.draw(camera);
+        game_logic.draw(camera);
         player->display(camera);
+    }
 
+    void on_mouse_move( int x, int y )
+    {
+        cursor_pos.x = x;
+        cursor_pos.y = y;
     }
 
     void on_key_pressed(re::Key key){
@@ -88,19 +101,27 @@ public:
             event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
             re::subscribe_to_all( event_serealizer_client.get() );
             break;
+        case re::Key::P:
+            tcp_server = re::TCPServer::create();
+            tcp_server->setup(11999);
+
+            tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
+                                                this,
+                                                std::placeholders::_1,
+                                                std::placeholders::_2,
+                                                std::placeholders::_3) );
+
+            event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
+            re::subscribe_to_all( event_serealizer_server.get() );
+            break;
         }
     }
 
     void on_button_pressed(int button){
-        re::Point2f finish_point = camera.screen_to_world(re::Point2f(mouseX, mouseY));
+        re::Point2f finish_point = camera.screen_to_world(cursor_pos);
         auto move_event = std::make_shared<MoveEvent>(0, finish_point);
+        move_event->set_shared(true);
         re::publish_event(move_event);
-
-    }
-
-    void on_mouse_move(int x, int y){
-        mouseX = x;
-        mouseY = y;
     }
 };
 

@@ -6,11 +6,13 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-switch") 
 endif ( CMAKE_COMPILER_IS_GNUCC )
 
+include_directories(ext)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 
 set(FILE_DATA_TO_COPY
     map.tmx
+    map.png
     mage_front_1.png
     mage_front_2.png
     mage_front_3.png

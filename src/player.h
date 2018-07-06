@@ -28,7 +28,7 @@ public:
     void on_event(std::shared_ptr<re::Event> event);
     int getLevel();
     void reduceCooldowns();
-    virtual void onCollisionStay(re::PhysicObjectPtr to, re::Vector2f vec) override;
+    virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
     void attack();
     void update();
     virtual void display(re::Camera camera);

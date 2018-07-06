@@ -1,14 +1,16 @@
+#pragma once
 #include <RealEngine/event.h>
 #include <RealEngine/network.h>
 
 
 void deserealize( std::vector<char> msg );
 
-class EventSerealizerServer
+class EventSerealizerServer : public re::EventSubscriber
 {
 public:
     EventSerealizerServer( re::TCPServerPtr server );
 
+    virtual void on_event(std::shared_ptr<re::Event> event);
     void deserealize_server( int id, std::vector<char> msg );
 private:
     re::TCPServerPtr tcp_server;
