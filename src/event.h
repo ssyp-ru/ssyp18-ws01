@@ -1,3 +1,4 @@
+#pragma once
 #include <RealEngine/event.h>
 #include <RealEngine/network.h>
 

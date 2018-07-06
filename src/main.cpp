@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 
+#include "event.h"
 #include "map.h"
 #include "player.h"
 
