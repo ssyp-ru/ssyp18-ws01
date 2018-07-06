@@ -8,7 +8,8 @@
 #include <memory>
 
 #include "map.h"
-#include "event.h"
+#include "player.h"
+#include "events/move_event.h"
 
 #include "events/event_input.h"
 #include "events/event_enum.h"
@@ -20,8 +21,11 @@ public:
     GameLogic game_logic;
     re::Camera camera;
     re::Point2f cam_pos;
+
     re::Point2f cursor_pos;
-    float zoom;
+    float zoom = 10;
+    std::shared_ptr<Player> player;
+    re::ImagePtr img;
 
     re::TCPClientPtr tcp_client;
     re::TCPServerPtr tcp_server;
@@ -31,9 +35,14 @@ public:
 
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
-        camera.scale( 10 );
+        camera.scale( zoom );
+
         re::subscribe_to_all( (&game_logic) );
-    } 
+
+        player = std::make_shared<Player>(re::Point2f(100, 2200));
+        game_logic.world.addObject(player);
+
+    }
 
     void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
     {
@@ -45,10 +54,12 @@ public:
 
     void update() override {
         game_logic.update();
+        player->update();
     }
 
     void display() override {
         game_logic.draw(camera);
+        player->display(camera);
     }
 
     void on_mouse_move( int x, int y )
@@ -71,6 +82,27 @@ public:
     void on_key_pressed(re::Key key){
         switch( key )
         {
+        case re::Key::Escape: re::exitApp();
+        case re::Key::W:
+            //camera.translate( re::Point2f( 0,-20 ) );
+            break;
+        case re::Key::S:
+            //camera.translate( re::Point2f( 0,20 ) );
+            break;
+        case re::Key::A:
+            //camera.translate( re::Point2f( -20,0 ) );
+            break;
+        case re::Key::D:
+            //camera.translate( re::Point2f( 20,0 ) );
+            break;
+        case re::Key::Q:
+            zoom += 0.5;
+            camera.scale( zoom );
+            break;
+        case re::Key::E:
+            zoom -= 0.5;
+            camera.scale( zoom );
+            break;
         case re::Key::O:
             tcp_client = re::TCPClient::create();
             tcp_client->connect( "127.0.0.1", 11999 );
@@ -92,6 +124,18 @@ public:
             re::subscribe_to_all( event_serealizer_server.get() );
             break;
         }
+    }
+
+    void on_button_pressed(int button){
+        re::Point2f finish_point = camera.screen_to_world(re::Point2f(mouseX, mouseY));
+        auto move_event = std::make_shared<MoveEvent>(0, finish_point);
+        re::publish_event(move_event);
+
+    }
+
+    void on_mouse_move(int x, int y){
+        mouseX = x;
+        mouseY = y;
     }
 };
 

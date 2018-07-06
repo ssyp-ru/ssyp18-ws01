@@ -5,6 +5,7 @@ set(EXECUTABLE  main.cpp
                 events/event_input.cpp
                 gamelogic/gamelogic.cpp
                 drawable_game_object.cpp
+                player.cpp
                 )
 
 add_compile_options(-std=c++17)
@@ -13,6 +14,7 @@ add_compile_options(-Wall)
 add_compile_options(-Wpedantic)
 
 include_directories($ENV{REAL_ENGINE_DIR}/include)
+include_directories($ENV{REAL_ENGINE_DIR}/ext)
 link_directories($ENV{REAL_ENGINE_DIR}/lib)
 
 add_executable(real_game ${EXECUTABLE})
