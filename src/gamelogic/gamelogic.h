@@ -7,11 +7,13 @@
 class GameLogic : public re::EventSubscriber
 {
 public:
-    std::vector<std::vector<int>> obstacles;
     GameLogic();
-    virtual void on_event(std::shared_ptr<re::Event> event);
+    virtual void on_event(re::EventPtr event);
     void update();
     void draw( re::Camera );
+
+public:    
+    std::vector<std::vector<int>> obstacles;
     re::PhysicWorld world;
 
     Map map;

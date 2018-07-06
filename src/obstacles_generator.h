@@ -41,6 +41,6 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
             }
         } 
         std::cout << std::endl;
-   }
-return std::vector<std::vector<int>> (map_vector);
+    }
+    return std::vector<std::vector<int>> (map_vector);
 }

@@ -17,23 +17,14 @@
 
 #include "gamelogic/gamelogic.h"
 
+enum class GameState {
+    MAIN_MENU,
+    LOBBY,
+    GAME
+};
+
 class MainApp : public re::IBaseApp{
 public:
-    GameLogic game_logic;
-    re::Camera camera;
-    re::Point2f cam_pos;
-
-    re::Point2f cursor_pos;
-    float zoom = 10;
-    std::shared_ptr<Player> player;
-    re::ImagePtr img;
-
-    re::TCPClientPtr tcp_client;
-    re::TCPServerPtr tcp_server;
-
-    std::shared_ptr<EventSerealizerClient> event_serealizer_client;
-    std::shared_ptr<EventSerealizerServer> event_serealizer_server;
-
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
@@ -122,6 +113,21 @@ public:
         move_event->set_shared(true);
         re::publish_event(move_event);
     }
+
+private:
+
+    GameLogic game_logic;
+    re::Camera camera;
+
+    re::Point2f cursor_pos;
+    float zoom = 10;
+    std::shared_ptr<Player> player;
+
+    re::TCPClientPtr tcp_client;
+    re::TCPServerPtr tcp_server;
+
+    std::shared_ptr<EventSerealizerClient> event_serealizer_client;
+    std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 };
 
 int main(){
