@@ -15,8 +15,6 @@
 
 #include "gamelogic/gamelogic.h"
 
-class MainApp *main_app;
-
 class MainApp : public re::IBaseApp{
 public:
     GameLogic game_logic;
@@ -32,7 +30,6 @@ public:
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
     void setup() override {
-        main_app = this;
         game_logic.map = Map( game_logic.world, "map.tmx" );
         camera.view_at( re::Point2f(0,0) );
         camera.scale( 10 );
