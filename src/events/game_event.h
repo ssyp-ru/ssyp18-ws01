@@ -10,7 +10,8 @@
 const int GAME_EVENT_CATEGORY = 4;
 
 enum class GameEventType {
-    GAME_START
+    GAME_START,
+    PLAYERS_JOIN
 };
 
 class GameStartEvent : public re::Event {
@@ -34,4 +35,17 @@ public:
 
         nlohmann::json j = nlohmann::json::parse(raw_json);
     }
+};
+
+class GamePlayersJoinEvent : public re::Event {
+public:
+    GamePlayersJoinEvent( LobbyMember player_ )
+        : Event(GAME_EVENT_CATEGORY, (int)GameEventType::PLAYERS_JOIN)
+        //, player(player)
+    {
+        this->player.name = player_.name;
+        this->player.team = player_.team;
+    }
+
+    LobbyMember player;
 };

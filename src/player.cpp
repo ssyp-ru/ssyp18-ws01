@@ -27,7 +27,8 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
 
-    re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+    //re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+    re::subscribe_to_all( this );
     physic_type = PLAYER_PHYSIC_TYPE;
 
     addPoint(re::Point2f(-5, -5));
@@ -117,7 +118,8 @@ void Player::go_to(re::Point2f finish_point){
 
 
 void Player::on_event(std::shared_ptr<re::Event> event) {
-    std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
-    // std::cout << "Player::on_event, points: " << move_event->finish_point_.x << "\n";
-    go_to(move_event->finish_point);
+    if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
+        std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
+        go_to(move_event->finish_point);
+    }
 }

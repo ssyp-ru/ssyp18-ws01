@@ -115,16 +115,16 @@ public:
         switch( key ) {
             case re::Key::Escape: re::exitApp();
             case re::Key::W:
-                //camera.translate( re::Point2f( 0,-20 ) );
+                camera.translate( re::Point2f( 0,-20 ) );
                 break;
             case re::Key::S:
-                //camera.translate( re::Point2f( 0,20 ) );
+                camera.translate( re::Point2f( 0,20 ) );
                 break;
             case re::Key::A:
-                //camera.translate( re::Point2f( -20,0 ) );
+                camera.translate( re::Point2f( -20,0 ) );
                 break;
             case re::Key::D:
-                //camera.translate( re::Point2f( 20,0 ) );
+                camera.translate( re::Point2f( 20,0 ) );
                 break;
             case re::Key::Q:
                 zoom += 0.5;
@@ -152,7 +152,7 @@ public:
     }
 
 private:
-    GameState game_state = GameState::GAME;
+    GameState game_state = GameState::MAIN_MENU;
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;

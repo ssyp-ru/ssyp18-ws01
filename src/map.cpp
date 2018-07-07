@@ -35,10 +35,9 @@ void Map::draw( re::Camera camera ) {
     if( !this->backgroung ) {
         this->backgroung = std::make_shared<re::Image>( map.imagelayer[0].img_path );
     }
-//    re::draw_image_part( re::Point2f(0,0), 
-//                         camera.world_to_screen(size_background), 
-//                         re::Point2f(0,0),
-//                         re::Point2f(1,1),
-//                         this->backgroung );
-    //this->backgroung->getTex();
+    re::draw_image_part( camera.world_to_screen( re::Point2f(0,0) ), 
+                         camera.world_to_screen(size_background), 
+                         re::Point2f(0,0),
+                         re::Point2f(1,1),
+                         this->backgroung );
 }

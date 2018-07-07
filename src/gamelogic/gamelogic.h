@@ -6,6 +6,8 @@
 #include "../map.h"
 #include "../obstacles_generator.h"
 
+#include "../player.h"
+
 class GameLogic : public re::EventSubscriber
 {
 public:
@@ -21,4 +23,5 @@ public:
 
     Map map;
 
+    std::vector<Player> players;
 };
