@@ -50,7 +50,7 @@ public:
                     auto disconnect_event = std::dynamic_pointer_cast<
                                                     NetworkDisconnectionEvent,
                                                     re::Event>(event);
-                    size_t sock_id = disconnect_event->sock_id_;
+                    size_t sock_id = disconnect_event->sock_id;
                     for( size_t i = 0; i < members.size(); i++ )
                     {
                         if( members[i].sock_id == sock_id )
@@ -69,7 +69,7 @@ public:
                     auto connect_event = std::dynamic_pointer_cast<
                                                 NetworkConnectionEvent,
                                                 re::Event>(event);
-                    new_member.sock_id = connect_event->sock_id_;
+                    new_member.sock_id = connect_event->sock_id;
                     new_member.player_id = members.size();
                     members.push_back( new_member );
                     break;

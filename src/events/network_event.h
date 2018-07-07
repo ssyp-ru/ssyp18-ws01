@@ -16,16 +16,16 @@ class NetworkConnectionEvent : public re::Event {
 public:
     NetworkConnectionEvent(int sock_id)
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CONNECT)
-        , sock_id_(sock_id)
+        , sock_id(sock_id)
     {}
-    int sock_id_;
+    int sock_id;
 };
 
 class NetworkDisconnectionEvent : public re::Event {
 public:
     NetworkDisconnectionEvent(int sock_id)
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::DISCONNECT)
-        , sock_id_(sock_id)
+        , sock_id(sock_id)
     {}
-    int sock_id_;
+    int sock_id;
 };
