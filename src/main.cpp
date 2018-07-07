@@ -102,7 +102,7 @@ public:
 
         for( size_t i = 0; i < members_count; i++ ) {
             re::draw_text(
-                re::Point2f(400,20+(i*20)),
+                re::Point2f( 400, 20 + ( i * 20 ) ),
                 lobby.get_player(i).name,
                 re::BLACK
             );
