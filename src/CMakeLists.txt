@@ -4,6 +4,7 @@ set(EXECUTABLE  main.cpp
                 event.cpp
                 gamelogic/gamelogic.cpp
                 drawable_game_object.cpp
+                networkmanager.cpp
                 player.cpp
                 main_menu.cpp
                 )

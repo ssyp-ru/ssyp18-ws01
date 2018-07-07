@@ -39,7 +39,7 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
                     }
                 }
             }
-            if (free){
+            if (free) {
                 std::cout << '0' << std::flush;
                 map_vector[i].push_back(0);
             }
