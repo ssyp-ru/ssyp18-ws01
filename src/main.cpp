@@ -17,15 +17,13 @@
 #include "gamelogic/gamelogic.h"
 #include "gamelogic/lobby.h"
 
-enum class Network_state
-{
+enum class Network_state {
     menu,
     server,
     client
 };
 
-enum class Game_state
-{
+enum class Game_state {
     menu,
     lobby,
     game
@@ -102,8 +100,7 @@ public:
         player->display(camera);
         size_t members_count = lobby.get_players_count();
 
-        for( size_t i = 0; i < members_count; i++ )
-        {
+        for( size_t i = 0; i < members_count; i++ ) {
             re::draw_text(
                 re::Point2f(400,20+(i*20)),
                 lobby.get_player(i).name,
@@ -112,78 +109,76 @@ public:
         }
     }
 
-    void on_mouse_move( int x, int y )
-    {
+    void on_mouse_move( int x, int y ) {
         cursor_pos.x = x;
         cursor_pos.y = y;
     }
 
     void on_key_pressed(re::Key key){
-        switch( key )
-        {
-        case re::Key::Escape: re::exitApp();
-        case re::Key::W:
-            //camera.translate( re::Point2f( 0,-20 ) );
-            break;
-        case re::Key::S:
-            //camera.translate( re::Point2f( 0,20 ) );
-            break;
-        case re::Key::A:
-            //camera.translate( re::Point2f( -20,0 ) );
-            break;
-        case re::Key::D:
-            //camera.translate( re::Point2f( 20,0 ) );
-            break;
-        case re::Key::Q:
-            zoom += 0.5;
-            camera.scale( zoom );
-            break;
-        case re::Key::E:
-            zoom -= 0.5;
-            camera.scale( zoom );
-            break;
-        case re::Key::O:
-        {
-            tcp_client = re::TCPClient::create();
-            tcp_client->connect( "127.0.0.1", 11999 );
+        switch( key ) {
+            case re::Key::Escape: re::exitApp();
+            case re::Key::W:
+                //camera.translate( re::Point2f( 0,-20 ) );
+                break;
+            case re::Key::S:
+                //camera.translate( re::Point2f( 0,20 ) );
+                break;
+            case re::Key::A:
+                //camera.translate( re::Point2f( -20,0 ) );
+                break;
+            case re::Key::D:
+                //camera.translate( re::Point2f( 20,0 ) );
+                break;
+            case re::Key::Q:
+                zoom += 0.5;
+                camera.scale( zoom );
+                break;
+            case re::Key::E:
+                zoom -= 0.5;
+                camera.scale( zoom );
+                break;
+            case re::Key::O:
+            {
+                tcp_client = re::TCPClient::create();
+                tcp_client->connect( "127.0.0.1", 11999 );
 
-            event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
-            re::subscribe_to_all( event_serealizer_client.get() );
+                event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
+                re::subscribe_to_all( event_serealizer_client.get() );
 
-            this->game_state = Game_state::lobby;
-            this->network_state = Network_state::client;
+                this->game_state = Game_state::lobby;
+                this->network_state = Network_state::client;
 
-            re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
+                re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
 
-            auto join_event = std::make_shared<LobbyJoinEvent>( std::string( "name" ) + std::to_string(20) );
-            join_event->set_shared(true);
-            lobby.is_server = false;
-            re::publish_event(join_event);
-            break;
-        }
-        case re::Key::P:
-        {
-            tcp_server = re::TCPServer::create();
-            tcp_server->setup(11999);
+                auto join_event = std::make_shared<LobbyJoinEvent>( std::string( "name" ) + std::to_string(20) );
+                join_event->set_shared(true);
+                lobby.is_server = false;
+                re::publish_event(join_event);
+                break;
+            }
+            case re::Key::P:
+            {
+                tcp_server = re::TCPServer::create();
+                tcp_server->setup(11999);
 
-            tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
-                                                this,
-                                                std::placeholders::_1,
-                                                std::placeholders::_2,
-                                                std::placeholders::_3) );
+                tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
+                                                    this,
+                                                    std::placeholders::_1,
+                                                    std::placeholders::_2,
+                                                    std::placeholders::_3) );
 
-            event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
-            re::subscribe_to_all( event_serealizer_server.get() );
+                event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
+                re::subscribe_to_all( event_serealizer_server.get() );
 
-            this->game_state = Game_state::lobby;
-            this->network_state = Network_state::server;
+                this->game_state = Game_state::lobby;
+                this->network_state = Network_state::server;
 
-            lobby.is_server = true;
+                lobby.is_server = true;
 
-            re::subscribe_to_event_category( &lobby, NETWORK_EVENT_CATEGORY );
-            re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
-            break;
-        }
+                re::subscribe_to_event_category( &lobby, NETWORK_EVENT_CATEGORY );
+                re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
+                break;
+            }
         }
     }
 
