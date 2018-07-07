@@ -78,8 +78,8 @@ void Player::display(re::Camera camera){
 
     float size = camera.meter_to_screen(50);
 
-    re::draw_image_part(screen_pos.x, screen_pos.y,
-                        400, 600,
+    re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
+                        screen_pos.x + size, screen_pos.y + size,
                         0, 0, 1, 1,
                         movingAnim_Forward->getNextFrame());
 }
