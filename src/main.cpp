@@ -131,7 +131,7 @@ public:
     }
 
 private:
-    GameState game_state = GameState::MAIN_MENU;
+    GameState game_state = GameState::GAME;
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;

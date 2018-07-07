@@ -3,9 +3,11 @@
 #include "map.h"
 #include <RealEngine/physic_core.h>
 #include <vector>
+#include <fstream>
 
-static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int counter_X, int counter_Y, re::PhysicWorld &world){
+static std::vector<std::vector<int>> generate_obstacles (float cell_size, int counter_X, int counter_Y, re::PhysicWorld &world){
     bool free;
+//    ofstream cout("map.txt");
     std::vector<std::vector<int>> map_vector;
     std::vector<re::PhysicObjectPtr> obj = world.getWorld();
     for (int i = 0; i < counter_X; i++){
@@ -17,7 +19,7 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
             ptrobj->addPoint(re::Point2f(cell_size, 0)); // 0
             ptrobj->addPoint(re::Point2f(cell_size, cell_size)); // 1
             ptrobj->addPoint(re::Point2f(0, cell_size)); // 2
-            ptrobj->addPoint(re::Point2f(0, 0)); // 2
+            ptrobj->addPoint(re::Point2f(0, 0)); // 3
             ptrobj->addEdge(0, 1);
             ptrobj->addEdge(1, 2);
             ptrobj->addEdge(2, 3);
@@ -39,6 +41,6 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
             }
         } 
         std::cout << std::endl;
-    }
-    return std::vector<std::vector<int>> (map_vector);
+   }
+return std::vector<std::vector<int>> (map_vector);
 }
