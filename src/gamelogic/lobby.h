@@ -21,11 +21,9 @@ public:
 
     virtual void on_event(std::shared_ptr<re::Event> event) {
         bool need_sync = false;
-        switch( event->get_category() )
-        {
+        switch( event->get_category() ) {
         case LOBBY_EVENT_CATEGORY:
-            switch( event->get_type() )
-            {
+            switch( event->get_type() ) {
                 case int(LobbyEventType::LOBBY_SYNC) :
                     members = std::dynamic_pointer_cast<LobbySyncEvent,re::Event>(event)->members_;
                     break;
@@ -35,8 +33,10 @@ public:
                     {
                         return;
                     }
-                    std::string name = std::dynamic_pointer_cast<LobbyJoinEvent,re::Event>(event)->name_;
-                    members[members.size()-1].name = name;
+                    auto join_event = std::dynamic_pointer_cast<
+                                                LobbyJoinEvent,
+                                                re::Event>(event);
+                    members[members.size()-1].name = join_event->name_;
                     need_sync = true;
                     break;
                 }
@@ -47,7 +47,10 @@ public:
             {
                 case int(NetworkEventType::DISCONNECT):
                 {
-                    size_t sock_id = std::dynamic_pointer_cast<NetworkDisconnectionEvent,re::Event>(event)->sock_id_;
+                    auto disconnect_event = std::dynamic_pointer_cast<
+                                                    NetworkDisconnectionEvent,
+                                                    re::Event>(event);
+                    size_t sock_id = disconnect_event->sock_id_;
                     for( size_t i = 0; i < members.size(); i++ )
                     {
                         if( members[i].sock_id == sock_id )
@@ -63,7 +66,10 @@ public:
                 {
                     LobbyMember new_member;
                     new_member.name = "asd";
-                    new_member.sock_id = std::dynamic_pointer_cast<NetworkConnectionEvent,re::Event>(event)->sock_id_;
+                    auto connect_event = std::dynamic_pointer_cast<
+                                                NetworkConnectionEvent,
+                                                re::Event>(event);
+                    new_member.sock_id = connect_event->sock_id_;
                     new_member.player_id = members.size();
                     members.push_back( new_member );
                     break;
