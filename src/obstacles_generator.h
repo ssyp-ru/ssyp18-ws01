@@ -23,9 +23,14 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
             ptrobj->addEdge(2, 3);
             ptrobj->addEdge(0, 3);
 
+//            if (ptrobj->removeCollisionWith(*(obj[k])).length() > 1e-6){
+//                map_vector[i].push_back(1);
+//                std::cout << '1' << std::flush;
+//                free = false;  // 1 is blocked
+//                break;
+
             for (size_t k = 0; k < obj.size(); k++){
-                if (ptrobj->needTestWith(*(obj[k])))
-                {
+                if (ptrobj->needTestWith(*(obj[k]))){
                     if (ptrobj->removeCollisionWith(*(obj[k])).length() > 1e-6){
                         map_vector[i].push_back(1);
                         std::cout << '1' << std::flush;
@@ -34,13 +39,12 @@ static std::vector<std::vector<int>> Generate_obstacles (float cell_size, int co
                     }
                 }
             }
-            if (free) 
-            {
+            if (free){
                 std::cout << '0' << std::flush;
                 map_vector[i].push_back(0);
             }
         } 
         std::cout << std::endl;
-    }
-    return std::vector<std::vector<int>> (map_vector);
+   }
+return std::vector<std::vector<int>> (map_vector);
 }
