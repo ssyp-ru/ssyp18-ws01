@@ -22,9 +22,16 @@ void deserealize( std::vector<char> msg ) {
         switch( int(j["type"]) ) {
             case int(LobbyEventType::LOBBY_JOIN):
             {
-                auto move_input = std::make_shared<LobbyJoinEvent>("");
+                auto move_input = std::make_shared<LobbyJoinEvent>("",-1,0);
                 move_input->deserialize(msg);
                 re::publish_event( move_input );
+                break;
+            }
+            case int(LobbyEventType::LOBBY_SYNC):
+            {
+                auto sync_event = std::make_shared<LobbySyncEvent>( std::vector<LobbyMember>() );
+                sync_event->deserialize(msg);
+                re::publish_event( sync_event );
                 break;
             }
         }

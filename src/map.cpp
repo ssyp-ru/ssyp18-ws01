@@ -16,7 +16,7 @@ Map::Map( re::PhysicWorld &world, std::string path )
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
                 dobj->addPoint(re::Point2f(vertex.x, vertex.y));
-            for (int i = 0; i < objectData.poly.points.size() - 1; i++)
+            for (size_t i = 0; i < objectData.poly.points.size() - 1; i++)
                 dobj->addEdge(i, i + 1);
             dobj->addEdge(objectData.poly.points.size() - 1, 0);
             re::PhysicObjectPtr obj = dobj;

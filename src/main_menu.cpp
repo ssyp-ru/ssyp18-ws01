@@ -78,5 +78,21 @@ void MainMenu::display() {
     if(dark->is_active()){
         re::draw_image(20, 20, players);
         re::draw_image(20, 420, players);
+
+        int team_a_count = 0;
+        int team_b_count = 0;
+
+        for( int i = 0; i < lobby.get_players_count(); i++ ) {
+            switch( int(lobby.get_player(i).team) ) {
+                case 0:
+                    re::draw_text( 40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::WHITE );
+                    team_a_count++;
+                    break;
+                case 1:
+                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK );
+                    team_b_count++;
+                    break;
+            }
+        }
     }
 }

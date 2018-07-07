@@ -9,7 +9,18 @@
 class Lobby : public re::EventSubscriber {
 public:
 
+    Lobby()
+    {
+        re::subscribe_to_event_category( this, LOBBY_EVENT_CATEGORY );
+        re::subscribe_to_event_category( this, NETWORK_EVENT_CATEGORY );
+    }
+
     bool is_server = false;
+
+    int get_self_id()
+    {
+        return self_id;
+    }
 
     int get_players_count() const {
         return members.size();
@@ -19,24 +30,36 @@ public:
         return members[id];
     }
 
+    void join( LobbyMember member ) {
+        member.player_id = members.size();
+        this->members.push_back( member );
+    }
+
     virtual void on_event(std::shared_ptr<re::Event> event) {
         bool need_sync = false;
         switch( event->get_category() ) {
         case LOBBY_EVENT_CATEGORY:
             switch( event->get_type() ) {
                 case int(LobbyEventType::LOBBY_SYNC) :
+                    if( is_server ) {
+                        return;
+                    }
                     members = std::dynamic_pointer_cast<LobbySyncEvent,re::Event>(event)->members;
+                    if( self_id == 0 ) {
+                        self_id = members.size() - 1;
+                    }
                     break;
                 case int(LobbyEventType::LOBBY_JOIN) :
                 {
-                    if(!is_server)
-                    {
-                        return;
-                    }
+                    need_sync = true;
+                    //if(!is_server) {
+                    //    return;
+                    //}
                     auto join_event = std::dynamic_pointer_cast<
                                                 LobbyJoinEvent,
                                                 re::Event>(event);
-                    members[members.size()-1].name = join_event->name;
+                    members[join_event->id].name = join_event->name;
+                    members[join_event->id].team = join_event->team;
                     need_sync = true;
                     break;
                 }
@@ -45,8 +68,10 @@ public:
         case NETWORK_EVENT_CATEGORY:
             switch( event->get_type() )
             {
-                case int(NetworkEventType::DISCONNECT):
+                case int(NetworkEventType::CLIENT_DISCONNECTED):
                 {
+                    is_server = true;
+                    need_sync = true;
                     auto disconnect_event = std::dynamic_pointer_cast<
                                                     NetworkDisconnectionEvent,
                                                     re::Event>(event);
@@ -62,10 +87,12 @@ public:
                     }
                     break;
                 }
-                case int(NetworkEventType::CONNECT):
+                case int(NetworkEventType::CLIENT_CONNECTED):
                 {
+                    is_server = true;
+                    need_sync = true;
                     LobbyMember new_member;
-                    new_member.name = "asd";
+                    new_member.name = "unnamed";
                     auto connect_event = std::dynamic_pointer_cast<
                                                 NetworkConnectionEvent,
                                                 re::Event>(event);
@@ -77,7 +104,7 @@ public:
             }
         }
 
-        if( need_sync ) {
+        if( need_sync && is_server ) {
             auto sync_event = std::make_shared<LobbySyncEvent>( this->members );
             sync_event->set_shared( true );
             re::publish_event( sync_event );
@@ -85,4 +112,6 @@ public:
     }
 
     std::vector<LobbyMember> members;
+private:
+    int self_id = 0;
 };

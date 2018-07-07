@@ -6,6 +6,9 @@
 
 #include <iostream>
 
+#include "events/network_event.h"
+#include "gamelogic/lobby.h"
+
 class MainMenu {
 public:
     MainMenu(re::GuiManager& guiManager);
@@ -22,6 +25,16 @@ public:
 
     void Create(){
         std::cout << "Create Game" << std::endl;
+
+        auto server_up_event = std::make_shared<NetworkServerUpEvent>( 11999 );
+        re::publish_event( server_up_event );
+
+        LobbyMember owner;
+        owner.name = "owner";
+        owner.team = 0;
+        
+        lobby.join( owner );
+
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
     }
@@ -51,6 +64,9 @@ public:
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
         goButton->set_active(false);
+
+        auto connect_event = std::make_shared<NetworkConnectEvent>( "127.0.0.1", 11999 );
+        re::publish_event( connect_event );
     }
 
     void Go(){
@@ -59,10 +75,18 @@ public:
 
 
     void Dark(){
+        auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some evil player", 1 , lobby.get_self_id() );
+        lobby_switch_event->set_shared(true);
+        re::publish_event( lobby_switch_event );
+
         std::cout << "dark side" << std::endl;
     }
 
     void Bright(){
+        auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some good player", 0, lobby.get_self_id()  );
+        lobby_switch_event->set_shared(true);
+        re::publish_event( lobby_switch_event );
+
         std::cout << "bright side" << std::endl;
     }
 
@@ -82,4 +106,6 @@ private:
     int mouseX, mouseY;
     re::ImagePtr menuBackground;
     re::ImagePtr players;
+
+    Lobby lobby;
 };

@@ -19,7 +19,9 @@
 #include "gamelogic/gamelogic.h"
 #include "gamelogic/lobby.h"
 
-enum class Network_state {
+#include "networkmanager.h"
+
+enum class NetworkState {
     menu,
     server,
     client
@@ -37,9 +39,7 @@ public:
         : main_menu(gui_manager)
     {}
 
-    Network_state network_state;
-
-    Lobby lobby;
+    NetworkState network_state;
 
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
@@ -52,33 +52,7 @@ public:
         player = std::make_shared<Player>(re::Point2f(100, 2200));
         game_logic.world.addObject(player);
 
-        this->network_state = Network_state::menu;
-    }
-
-    void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
-    {
-        switch( event )
-        {
-            case re::TCPServer::Callback_event::connect:
-            {
-                auto conn_event = std::make_shared<NetworkConnectionEvent>( id );
-                conn_event->set_shared(false);
-                re::publish_event( conn_event );
-                return;
-            }
-            case re::TCPServer::Callback_event::disconnect:
-            {
-                auto disconnect_event = std::make_shared<NetworkDisconnectionEvent>( id );
-                disconnect_event->set_shared(false);
-                re::publish_event( disconnect_event );
-                return;
-            }
-            case re::TCPServer::Callback_event::msg_recive:
-            {
-                event_serealizer_server->deserealize_server( id, msg );
-                return;
-            }       
-        }
+        this->network_state = NetworkState::menu;
     }
 
     void update() override {
@@ -142,48 +116,6 @@ public:
                 zoom -= 0.5;
                 camera.scale( zoom );
                 break;
-            case re::Key::O:
-            {
-                tcp_client = re::TCPClient::create();
-                tcp_client->connect( "127.0.0.1", 11999 );
-
-                event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
-                re::subscribe_to_all( event_serealizer_client.get() );
-
-                this->game_state = GameState::LOBBY;
-                this->network_state = Network_state::client;
-
-                re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
-
-                auto join_event = std::make_shared<LobbyJoinEvent>( std::string( "name" ) + std::to_string(20) );
-                join_event->set_shared(true);
-                lobby.is_server = false;
-                re::publish_event(join_event);
-                break;
-            }
-            case re::Key::P:
-            {
-                tcp_server = re::TCPServer::create();
-                tcp_server->setup(11999);
-
-                tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
-                                                    this,
-                                                    std::placeholders::_1,
-                                                    std::placeholders::_2,
-                                                    std::placeholders::_3) );
-
-                event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
-                re::subscribe_to_all( event_serealizer_server.get() );
-
-                this->game_state = GameState::LOBBY;
-                this->network_state = Network_state::server;
-
-                lobby.is_server = true;
-
-                re::subscribe_to_event_category( &lobby, NETWORK_EVENT_CATEGORY );
-                re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
-                break;
-            }
         }
     }
 
@@ -210,11 +142,7 @@ private:
     int mouseX, mouseY;
     std::shared_ptr<Player> player;
 
-    re::TCPClientPtr tcp_client;
-    re::TCPServerPtr tcp_server;
-
-    std::shared_ptr<EventSerealizerClient> event_serealizer_client;
-    std::shared_ptr<EventSerealizerServer> event_serealizer_server;
+    NetworkManager network_manager;
 };
 
 int main(){
