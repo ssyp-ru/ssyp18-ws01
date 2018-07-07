@@ -13,72 +13,72 @@ public:
     void setup();
     void display();
 
-    void Join(){
+    void join_name(){
         std::cout << "Join Game" << std::endl;
-        connectButton->set_active(true);
-        joinGame->set_active(false);
-        ipButton->set_active(true);
+        connect_button_->set_active(true);
+        join_game_button_->set_active(false);
+        empty_ip_button_->set_active(true);
     }
 
-    void Create(){
+    void create_game(){
         std::cout << "Create Game" << std::endl;
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
     }
 
-    void Exit(){
+    void exit_game(){
         std::cout << "Exit Game" << std::endl;
         re::exitApp();
     }
 
-    void Empty(){
+    void set_nick(){
         std::cout << "empty button" << std::endl;
-        changeNick->set_active(true);
+        change_nick_button_->set_active(true);
     }
-    void Empty2(){
+    void set_ip(){
         std::cout << "empty button" << std::endl;
     }
 
-     void Change(){
+     void change_nick(){
         std::cout << "change nick" << std::endl;
-        changeNick->set_active(false);
+        change_nick_button_->set_active(false);
     }
-     void Connect(){
+     void connect(){
         std::cout << "connect to server" << std::endl;
-        connectButton->set_active(false);
-        ipButton->set_active(false);
-        joinGame->set_active(true);
+        connect_button_->set_active(false);
+        empty_ip_button_->set_active(false);
+        join_game_button_->set_active(true);
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
-        goButton->set_active(false);
+        go_button_->set_active(false);
     }
 
-    void Go(){
+    void go(){
         std::cout << "GO! GO! GO!" << std::endl;
     }
 
 
-    void Dark(){
-        std::cout << "dark side" << std::endl;
+    void choose_dark(){
+        std::cout << "choose_dark_button_ side" << std::endl;
     }
 
-    void Bright(){
-        std::cout << "bright side" << std::endl;
+    void choose_bright(){
+        std::cout << "choose_bright_button_ side" << std::endl;
     }
 
 
 private:
     re::GuiManager& guiManager_;
-    re::BaseButtonPtr joinGame;
-    re::BaseButtonPtr createGame;
-    re::BaseButtonPtr exitGame;
-    re::BaseButtonPtr emptyGame;
-    re::BaseButtonPtr changeNick;
-    re::BaseButtonPtr connectButton;
-    re::BaseButtonPtr ipButton;
-    re::BaseButtonPtr dark;
-    re::BaseButtonPtr bright;
-    re::BaseButtonPtr goButton;
+    re::BaseButtonPtr join_game_button_;
+    re::BaseButtonPtr create_game_button_;
+    re::BaseButtonPtr exit_game_button_;
+    re::BaseButtonPtr empty_nick_button_;
+    re::BaseButtonPtr change_nick_button_;
+    re::BaseButtonPtr connect_button_;
+    re::BaseButtonPtr empty_ip_button_;
+    re::BaseButtonPtr choose_dark_button_;
+    re::BaseButtonPtr choose_bright_button_;
+    re::BaseButtonPtr go_button_;
     int mouseX, mouseY;
     re::ImagePtr menuBackground;
     re::ImagePtr players;
