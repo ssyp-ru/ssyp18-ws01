@@ -33,11 +33,15 @@ enum class GameState {
     GAME
 };
 
-class MainApp : public re::IBaseApp{
+class MainApp : public re::IBaseApp
+              , public re::EventSubscriber
+{
 public:
     MainApp()
         : main_menu(gui_manager)
-    {}
+    {
+        re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
+    }
 
     NetworkState network_state;
 
@@ -49,8 +53,8 @@ public:
 
         re::subscribe_to_all(&game_logic);
 
-        player = std::make_shared<Player>(re::Point2f(100, 2200));
-        game_logic.world.addObject(player);
+        //player = std::make_shared<Player>(re::Point2f(100, 2200));
+        //game_logic.world.addObject(player);
 
         this->network_state = NetworkState::menu;
     }
@@ -65,9 +69,23 @@ public:
             }
             case GameState::GAME: {
                 game_logic.update();
-                player->update();
+                //player->update();
                 return;
             }
+        }
+    }
+
+    void on_event( std::shared_ptr<re::Event> event ) {
+        switch( event->get_category() ) {
+        case GAME_EVENT_CATEGORY:
+            switch( event->get_type() ) {
+                case int(GameEventType::GAME_START):
+                {
+                    game_state = GameState::GAME;
+                    break;
+                }
+            }
+            break;
         }
     }
 
@@ -82,7 +100,7 @@ public:
             }
             case GameState::GAME: {
                 game_logic.draw(camera);
-                player->display(camera);
+                //player->display(camera);
                 return;
             }
         }
@@ -122,12 +140,15 @@ public:
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
 
-        if (game_state == GameState::GAME){
+        if( game_state == GameState::GAME ) {
+            game_logic.click( camera.screen_to_world( cursor_pos ) );
+        }
+        /*if (game_state == GameState::GAME){
             re::Point2f finish_point = camera.screen_to_world(cursor_pos);
             auto move_event = std::make_shared<MoveEvent>(0, finish_point);
             move_event->set_shared(true);
             re::publish_event(move_event);
-        }
+        }*/
     }
 
 private:
@@ -140,7 +161,6 @@ private:
     re::Point2f cursor_pos;
     float zoom = 10;
     int mouseX, mouseY;
-    std::shared_ptr<Player> player;
 
     NetworkManager network_manager;
 };

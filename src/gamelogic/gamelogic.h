@@ -14,6 +14,7 @@ public:
     void update();
     void draw( re::Camera );
 
+    void click( re::Point2f pos );
 public:    
     std::vector<std::vector<int>> obstacles;
     re::PhysicWorld world;

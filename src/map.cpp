@@ -2,6 +2,8 @@
 
 #include "RealEngine/math.h"
 
+#include "physgameobject.h"
+
 Map::Map() {
 
 } 
@@ -12,7 +14,7 @@ Map::Map( re::PhysicWorld &world, std::string path )
 
     for (const auto& objectData : map.objectgroup[0].group)
     {
-        auto dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
+        auto dobj = std::make_shared<PhysGameObject>(re::Point2f(objectData.x, objectData.y));
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
                 dobj->addPoint(re::Point2f(vertex.x, vertex.y));

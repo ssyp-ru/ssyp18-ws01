@@ -3,7 +3,7 @@
 #include <iostream>
 
 Player::Player(re::Point2f pos) 
-    : DrawableGameObject(pos) 
+    : PhysGameObject(pos) 
 {
     level = 1;
     exp = 0;
