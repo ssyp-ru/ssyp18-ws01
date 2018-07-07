@@ -21,14 +21,15 @@ Player::Player(re::Point2f pos)
 
     re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
 
-    addPoint(re::Point2f(-10, -10));
-    addPoint(re::Point2f(-10, 10));
-    addPoint(re::Point2f(10, 10));
-    addPoint(re::Point2f(10, -10));
+    addPoint(re::Point2f(-5, -5));
+    addPoint(re::Point2f(-5, 5));
+    addPoint(re::Point2f(5, 5));
+    addPoint(re::Point2f(5, -5));
     addEdge(0, 1);
     addEdge(1, 2);
     addEdge(2, 3);
     addEdge(3, 0);
+    setRigidbodySimulated(true);
 }
 
 // void Player::tryCast(int abilityIndex){
@@ -61,11 +62,11 @@ void Player::addExp(int amount){
 }
 
 void Player::update(){
-    re::Point2f pos(position.x, position.y);
-    if (pos.distance_to(goto_point) < 50)
-        velosity = re::Point2f(0,0);
-    position.x += velosity.x;
-    position.y += velosity.y;
+    //re::Point2f pos(position.x, position.y);
+    if (getPosition().distance_to(goto_point) < 50)
+        setVelocity(re::Point2f(0,0));
+    //position.x += velosity.x;
+    //position.y += velosity.y;
 }
 
 void Player::reduceCooldowns(){
@@ -90,13 +91,17 @@ void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {
 }
 
 void Player::go_to(re::Point2f finish_point){
-    re::Point2f geo_pos(position.x, position.y);
-    re::Point2f vel((finish_point - geo_pos).x, (finish_point - geo_pos).y);
+    //re::Point2f geo_pos(position.x, position.y);
+    //re::Point2f vel((finish_point - geo_pos).x, (finish_point - geo_pos).y);
 
     // setVelocity(vel);
-    velosity = finish_point - geo_pos;
-    velosity.normalize();
-    velosity *= 50;
+    //velosity = finish_point - geo_pos;
+    //velosity.normalize();
+    //velosity *= 50;
+
+    setVelocity((finish_point - getPosition()).Normalized() * 50);
+
+    //setVelocity(velosity);
 
     goto_point = finish_point;
 }

@@ -20,6 +20,7 @@ Map::Map( re::PhysicWorld &world, std::string path )
             for (int i = 0; i < objectData.poly.points.size() - 1; i++)
                 dobj->addEdge(i, i + 1);
             dobj->addEdge(objectData.poly.points.size() - 1, 0);
+            dobj->setRigidbodySimulated(false);
             re::PhysicObjectPtr obj = dobj;
             world.addObject(obj);
         }
