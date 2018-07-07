@@ -18,6 +18,9 @@ set(FILE_TO_COPY
     data/mage_front_2.png
     data/mage_front_3.png
     data/mage_front_4.png
+    data/mage_front_9.png
+    data/mage_front_10.png
+    data/mage_front_11.png
     data/change.png
     data/connect.png
     data/create.png

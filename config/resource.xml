@@ -4,6 +4,14 @@
         <im id="player_move2" file="mage_front_2.png" />
         <im id="player_move3" file="mage_front_3.png" />
         <im id="player_move4" file="mage_front_4.png" />
+        <im id="player_move5" file="mage_front_3.png" />
+        <im id="player_move6" file="mage_front_2.png" />
+        <im id="player_move7" file="mage_front_1.png" />
+        <im id="player_move8" file="mage_front_9.png" />
+        <im id="player_move9" file="mage_front_10.png" />
+        <im id="player_move10" file="mage_front_11.png" />
+        <im id="player_move11" file="mage_front_10.png" />
+        <im id="player_move12" file="mage_front_9.png" />
     </images>
 
     <sprites>
