@@ -18,6 +18,14 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move2"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move3"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move5"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move6"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move7"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move8"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move9"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move10"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
 
     re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
     physic_type = PLAYER_PHYSIC_TYPE;
