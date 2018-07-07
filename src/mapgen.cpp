@@ -19,14 +19,9 @@ int main(){
 
     ofstream fout;
     fout.open("map.txt");
-    for (int i = 0; i < 250; i++){
-        for (int j = 0; j < 250; j++){
-            if (obstacles[i][j] == 1){
-                fout << obstacles[i][j];
-            }
-            else{
-                fout << obstacles[i][j];
-            }
+    for (size_t i = 0; i < obstacles.size(); i++){
+        for (size_t j = 0; j < obstacles.size(); j++){
+            fout << obstacles[i][j];
         }
         fout << std::endl;
     }
