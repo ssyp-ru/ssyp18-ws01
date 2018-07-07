@@ -25,7 +25,7 @@ public:
         case LOBBY_EVENT_CATEGORY:
             switch( event->get_type() ) {
                 case int(LobbyEventType::LOBBY_SYNC) :
-                    members = std::dynamic_pointer_cast<LobbySyncEvent,re::Event>(event)->members_;
+                    members = std::dynamic_pointer_cast<LobbySyncEvent,re::Event>(event)->members;
                     break;
                 case int(LobbyEventType::LOBBY_JOIN) :
                 {
@@ -36,7 +36,7 @@ public:
                     auto join_event = std::dynamic_pointer_cast<
                                                 LobbyJoinEvent,
                                                 re::Event>(event);
-                    members[members.size()-1].name = join_event->name_;
+                    members[members.size()-1].name = join_event->name;
                     need_sync = true;
                     break;
                 }
