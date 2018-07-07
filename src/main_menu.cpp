@@ -11,62 +11,62 @@ void MainMenu::setup() {
 
 
 
-    re::ImagePtr joinIcon = std::make_shared<re::Image>("join.png");
-    joinGame = std::make_shared<re::BaseButton>(20, 220, "join", joinIcon, joinIcon);
-    joinGame->register_action(std::bind(&MainMenu::Join, this));
-    guiManager_.register_button(joinGame, "main_menu");
+    re::ImagePtr join_icon = std::make_shared<re::Image>("join.png");
+    join_game_button_ = std::make_shared<re::BaseButton>(20, 220, "join", join_icon, join_icon);
+    join_game_button_->register_action(std::bind(&MainMenu::join_name, this));
+    guiManager_.register_button(join_game_button_, "main_menu");
 
-    re::ImagePtr createIcon = std::make_shared<re::Image>("create.png");
-    createGame = std::make_shared<re::BaseButton>(20, 520, "create", createIcon, createIcon);
-    createGame->register_action(std::bind(&MainMenu::Create, this));
-    guiManager_.register_button(createGame, "main_menu");
+    re::ImagePtr create_icon = std::make_shared<re::Image>("create.png");
+    create_game_button_ = std::make_shared<re::BaseButton>(20, 520, "create", create_icon, create_icon);
+    create_game_button_->register_action(std::bind(&MainMenu::create_game, this));
+    guiManager_.register_button(create_game_button_, "main_menu");
 
-    re::ImagePtr exitIcon = std::make_shared<re::Image>("exit.png");
-    exitGame = std::make_shared<re::BaseButton>(20, 720, "exit", exitIcon, exitIcon);
-    exitGame->register_action(std::bind(&MainMenu::Exit, this));
-    guiManager_.register_button(exitGame, "main_menu");
+    re::ImagePtr exit_icon = std::make_shared<re::Image>("exit.png");
+    exit_game_button_ = std::make_shared<re::BaseButton>(20, 720, "exit", exit_icon, exit_icon);
+    exit_game_button_->register_action(std::bind(&MainMenu::exit_game, this));
+    guiManager_.register_button(exit_game_button_, "main_menu");
 
-    re::ImagePtr emptyIcon = std::make_shared<re::Image>("empty.png");
-    emptyGame = std::make_shared<re::BaseButton>(20, 20, "empty", emptyIcon, emptyIcon);
-    emptyGame->register_action(std::bind(&MainMenu::Empty, this));
-    guiManager_.register_button(emptyGame, "main_menu");
+    re::ImagePtr empty_nick_icon = std::make_shared<re::Image>("empty.png");
+    empty_nick_button_ = std::make_shared<re::BaseButton>(20, 20, "empty", empty_nick_icon, empty_nick_icon);
+    empty_nick_button_->register_action(std::bind(&MainMenu::set_nick, this));
+    guiManager_.register_button(empty_nick_button_, "main_menu");
 
-    re::ImagePtr changeIcon = std::make_shared<re::Image>("change.png");
-    changeNick = std::make_shared<re::BaseButton>(20, 120, "change", changeIcon, changeIcon);
-    changeNick->register_action(std::bind(&MainMenu::Change, this));
-    guiManager_.register_button(changeNick, "main_menu");
-    changeNick->set_active(false);
+    re::ImagePtr change_icon = std::make_shared<re::Image>("change.png");
+    change_nick_button_ = std::make_shared<re::BaseButton>(20, 120, "change", change_icon, change_icon);
+    change_nick_button_->register_action(std::bind(&MainMenu::change_nick, this));
+    guiManager_.register_button(change_nick_button_, "main_menu");
+    change_nick_button_->set_active(false);
     
 
-    re::ImagePtr connectIcon = std::make_shared<re::Image>("connect.png");
-    connectButton = std::make_shared<re::BaseButton>(20, 320, "connect", connectIcon, connectIcon);
-    connectButton->register_action(std::bind(&MainMenu::Connect, this));
-    guiManager_.register_button(connectButton, "main_menu");
-    connectButton->set_active(false);
+    re::ImagePtr connect_icon = std::make_shared<re::Image>("connect.png");
+    connect_button_ = std::make_shared<re::BaseButton>(20, 320, "connect", connect_icon, connect_icon);
+    connect_button_->register_action(std::bind(&MainMenu::connect, this));
+    guiManager_.register_button(connect_button_, "main_menu");
+    connect_button_->set_active(false);
 
-    re::ImagePtr ipIcon = std::make_shared<re::Image>("empty.png");
-    ipButton = std::make_shared<re::BaseButton>(20, 220, "ip", ipIcon, ipIcon);
-    ipButton->register_action(std::bind(&MainMenu::Empty2, this));
-    guiManager_.register_button(ipButton, "main_menu");
-    ipButton->set_active(false);
-
-
-    re::ImagePtr darkIcon = std::make_shared<re::Image>("dark.png");
-    dark = std::make_shared<re::BaseButton>(20, 760, "dark", darkIcon, darkIcon);
-    dark->register_action(std::bind(&MainMenu::Dark, this));
-    guiManager_.register_button(dark, "select_side");
+    re::ImagePtr ip_icon = std::make_shared<re::Image>("empty.png");
+    empty_ip_button_ = std::make_shared<re::BaseButton>(20, 220, "ip", ip_icon, ip_icon);
+    empty_ip_button_->register_action(std::bind(&MainMenu::set_ip, this));
+    guiManager_.register_button(empty_ip_button_, "main_menu");
+    empty_ip_button_->set_active(false);
 
 
-    re::ImagePtr brightIcon = std::make_shared<re::Image>("bright.png");
-    bright = std::make_shared<re::BaseButton>(20, 360, "bright", brightIcon, brightIcon);
-    bright->register_action(std::bind(&MainMenu::Bright, this));
-    guiManager_.register_button(bright, "select_side");
+    re::ImagePtr choose_dark_button__icon = std::make_shared<re::Image>("dark.png");
+    choose_dark_button_ = std::make_shared<re::BaseButton>(20, 760, "dark", choose_dark_button__icon, choose_dark_button__icon);
+    choose_dark_button_->register_action(std::bind(&MainMenu::choose_dark_button_, this));
+    guiManager_.register_button(choose_dark_button_, "select_side");
 
 
-    re::ImagePtr goIcon = std::make_shared<re::Image>("go.png");
-    goButton = std::make_shared<re::BaseButton>(420, 360, "go", goIcon, goIcon);
-    goButton->register_action(std::bind(&MainMenu::Go, this));
-    guiManager_.register_button(goButton, "select_side");
+    re::ImagePtr bright_icon = std::make_shared<re::Image>("bright.png");
+    choose_bright_button_ = std::make_shared<re::BaseButton>(20, 360, "bright", bright_icon, bright_icon);
+    choose_bright_button_->register_action(std::bind(&MainMenu::choose_bright, this));
+    guiManager_.register_button(choose_bright_button_, "select_side");
+
+
+    re::ImagePtr go_icon = std::make_shared<re::Image>("go.png");
+    go_button_ = std::make_shared<re::BaseButton>(420, 360, "go", go_icon, go_icon);
+    go_button_->register_action(std::bind(&MainMenu::go, this));
+    guiManager_.register_button(go_button_, "select_side");
 
     guiManager_.layer_set_active("select_side", false);
 
@@ -75,7 +75,7 @@ void MainMenu::setup() {
 void MainMenu::display() {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY);  
-    if(dark->is_active()){
+    if(choose_dark_button_->is_active()){
         re::draw_image(20, 20, players);
         re::draw_image(20, 420, players);
 
