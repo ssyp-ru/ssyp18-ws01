@@ -20,6 +20,7 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
 
     re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+    physic_type = PLAYER_PHYSIC_TYPE;
 
     addPoint(re::Point2f(-5, -5));
     addPoint(re::Point2f(-5, 5));
