@@ -121,17 +121,3 @@ void Player::on_event(std::shared_ptr<re::Event> event) {
     // std::cout << "Player::on_event, points: " << move_event->finish_point_.x << "\n";
     go_to(move_event->finish_point);
 }
-
-int Player::get_way_size(){
-    return way.size();
-}
-
-re::Point2f Player::get_next_step(){
-    re::Point2f B = way[0];
-    way.erase(way.begin());
-    return B;
-}
-
-void Player::set_way(std::vector <re::Point2f> w){
-    way = w;
-}

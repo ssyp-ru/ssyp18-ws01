@@ -1,3 +1,0 @@
-> 1: [07/07/18 21:36:13 : 0] Log opened successfully.
-> 2: [07/07/18 21:36:13 : 219] Could not open the file "map.tmx"!
-> 3: [07/07/18 21:36:13 : 219] .getChildren on "map.tmx" took 5590 ns.
