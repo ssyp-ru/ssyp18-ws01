@@ -1,36 +1,49 @@
 #include "event.h"
-#include "events/event_enum.h"
 #include "events/move_event.h"
+#include "events/lobby_event.h"
 #include <json.hpp>
 
-void deserealize( std::vector<char> msg )
-{
+void deserealize( std::vector<char> msg ) {
     std::string raw_json( msg.data(), msg.size() );
     nlohmann::json j = nlohmann::json::parse(raw_json);
-    switch( int(j["category"]) )
-    {
+    switch( int(j["category"]) ) {
     case MOVE_EVENT_CATEGORY:
-        switch( int(j["type"]) )
-        { 
-        case int(MoveEventType::PLAYER_MOVE) :
-            std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
-            move_input->deserialize(msg);
-            re::publish_event( move_input );
-            break;
+        switch( int(j["type"]) ) { 
+            case int(MoveEventType::PLAYER_MOVE) :
+            {
+                std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
+                move_input->deserialize(msg);
+                re::publish_event( move_input );
+                break;
+            }
         }
         break;
+    case LOBBY_EVENT_CATEGORY:
+        switch( int(j["type"]) ) {
+            case int(LobbyEventType::LOBBY_JOIN):
+            {
+                auto move_input = std::make_shared<LobbyJoinEvent>("",-1,0);
+                move_input->deserialize(msg);
+                re::publish_event( move_input );
+                break;
+            }
+            case int(LobbyEventType::LOBBY_SYNC):
+            {
+                auto sync_event = std::make_shared<LobbySyncEvent>( std::vector<LobbyMember>() );
+                sync_event->deserialize(msg);
+                re::publish_event( sync_event );
+                break;
+            }
+        }
     }
 }
 
-void EventSerealizerServer::on_event(std::shared_ptr<re::Event> event)
-{
-    if( !event->is_shared() )
-    {
+void EventSerealizerServer::on_event(std::shared_ptr<re::Event> event) {
+    if( !event->is_shared() ) {
         return;
     }
     std::vector<char> msg = event->serialize();
-    for( int i = 0; i < tcp_server->get_client_count(); i++ )
-    {
+    for( int i = 0; i < tcp_server->get_client_count(); i++ ) {
         tcp_server->send( i, msg );
     }
 }
@@ -42,10 +55,8 @@ EventSerealizerServer::EventSerealizerServer( re::TCPServerPtr server )
 
 void EventSerealizerServer::deserealize_server( int id, std::vector<char> msg )
 {
-    for( int i = 0; i < tcp_server->get_client_count(); i++ )
-    {
-        if( i != id )
-        {
+    for( int i = 0; i < tcp_server->get_client_count(); i++ ) {
+        if( i != id ) {
             tcp_server->send( i, msg );
         }
     }
@@ -61,10 +72,8 @@ EventSerealizerClient::EventSerealizerClient( re::TCPClientPtr client )
                                             std::placeholders::_1 ) );
 }
 
-void EventSerealizerClient::on_event(std::shared_ptr<re::Event> event)
-{
-    if( !event->is_shared() )
-    {
+void EventSerealizerClient::on_event(std::shared_ptr<re::Event> event) {
+    if( !event->is_shared() ) {
         return;
     }
 
@@ -73,7 +82,6 @@ void EventSerealizerClient::on_event(std::shared_ptr<re::Event> event)
     tcp_client->send( msg );
 }
 
-void EventSerealizerClient::deserealize_client( std::vector<char> msg )
-{
+void EventSerealizerClient::deserealize_client( std::vector<char> msg ) {
     deserealize( msg );
 }
