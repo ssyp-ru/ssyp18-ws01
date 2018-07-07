@@ -6,18 +6,20 @@ Map::Map() {
 
 } 
 
-Map::Map( re::Game &world, std::string path ) {
+Map::Map( re::PhysicWorld &world, std::string path )
+{
     map = (re::parse_tiled( re::parse_xml( path ) ))[0];
 
-    for (auto objectData : map.objectgroup[0].group) {
+    for (const auto& objectData : map.objectgroup[0].group)
+    {
         auto dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
-                dobj->addPoint(re::Vector2f(vertex.x, vertex.y));
-            for (size_t i = 0; i < objectData.poly.points.size() - 1; i++)
+                dobj->addPoint(re::Point2f(vertex.x, vertex.y));
+            for (int i = 0; i < objectData.poly.points.size() - 1; i++)
                 dobj->addEdge(i, i + 1);
             dobj->addEdge(objectData.poly.points.size() - 1, 0);
-            re::GameObjectPtr obj = dobj;
+            re::PhysicObjectPtr obj = dobj;
             world.addObject(obj);
         }
     }

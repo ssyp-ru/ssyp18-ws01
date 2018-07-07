@@ -4,15 +4,19 @@
 #include <RealEngine/physic_core.h>
 #include <RealEngine/camera.h>
 #include "../map.h"
+#include "../obstacles_generator.h"
 
 class GameLogic : public re::EventSubscriber
 {
 public:
     GameLogic();
-    virtual void on_event(std::shared_ptr<re::Event> event);
+    virtual void on_event(re::EventPtr event);
     void update();
     void draw( re::Camera );
-    re::Game world;
+
+public:    
+    std::vector<std::vector<int>> obstacles;
+    re::PhysicWorld world;
 
     Map map;
 
