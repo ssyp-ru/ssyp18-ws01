@@ -12,7 +12,6 @@
 
 #include "event.h"
 #include "events/move_event.h"
-#include "events/event_enum.h"
 #include "events/network_event.h"
 
 #include "gamelogic/gamelogic.h"

@@ -1,4 +1,5 @@
-//#include <RealEngine/baseApp.h>
+#pragma once
+
 #include <RealEngine/graphic/animation.h>
 #include <cmath>
 #include <iostream>

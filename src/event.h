@@ -1,6 +1,7 @@
+#pragma once
+
 #include <RealEngine/event.h>
 #include <RealEngine/network.h>
-
 
 void deserealize( std::vector<char> msg );
 

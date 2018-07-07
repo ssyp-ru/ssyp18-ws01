@@ -1,3 +1,5 @@
+#pragma once
+
 #include <RealEngine/event.h>
 #include <RealEngine/physic_core.h>
 #include <RealEngine/camera.h>

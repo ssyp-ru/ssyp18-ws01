@@ -1,5 +1,4 @@
 #include "event.h"
-#include "events/event_enum.h"
 #include "events/move_event.h"
 #include "events/lobby_event.h"
 #include <json.hpp>
