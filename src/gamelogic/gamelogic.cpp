@@ -11,7 +11,6 @@ using namespace std;
 
 GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
-    obstacles = generate_obstacles(20, 250, 250, world);
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
