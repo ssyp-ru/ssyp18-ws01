@@ -15,11 +15,6 @@ class Player
     : public DrawableGameObject
     , public re::EventSubscriber
 {
-private:
-    // std::vector<Ability*> abilities;
-    int expToNextLevel[18] = { 100, 100, 150, 200, 300, 450, 500, 600, 1000, 1200, 1300, 1500, 1550, 1600, 1700, 1800, 1900, 2000 };
-    int exp, level, hp, maxhp;
-    re::Point2f velosity, goto_point;
 public:
     Player(re::Point2f pos);
     // void tryCast(int abilityIndex);
@@ -37,5 +32,12 @@ public:
 
     re::AnimationPtr movingAnim_Forward; // moving animation
     re::ResourceManager resource_manager;
+
+    static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
+private:
+    // std::vector<Ability*> abilities;
+    int expToNextLevel[18] = { 100 };
+    int exp, level, hp, maxhp;
+    re::Point2f velosity, goto_point;
 };
 
