@@ -2,18 +2,15 @@
 
 #include "RealEngine/math.h"
 
-Map::Map()
-{
+Map::Map() {
 
 } 
 
-Map::Map( re::Game &world, std::string path )
-{
+Map::Map( re::Game &world, std::string path ) {
     map = (re::parse_tiled( re::parse_xml( path ) ))[0];
 
-    for (auto objectData : map.objectgroup[0].group)
-    {
-        std::shared_ptr<DrawableGameObject> dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
+    for (auto objectData : map.objectgroup[0].group) {
+        auto dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
                 dobj->addPoint(re::Vector2f(vertex.x, vertex.y));
@@ -26,11 +23,9 @@ Map::Map( re::Game &world, std::string path )
     }
 }
 
-void Map::draw( re::Camera camera )
-{
+void Map::draw( re::Camera camera ) {
     re::Point2f size_background( map.imagelayer[0].width, map.imagelayer[0].height );
-    if( !this->backgroung )
-    {
+    if( !this->backgroung ) {
         this->backgroung = std::make_shared<re::Image>( map.imagelayer[0].img_path );
     }
     re::draw_image_part( re::Point2f(0,0), 
