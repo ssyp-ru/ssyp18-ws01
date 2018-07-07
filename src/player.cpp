@@ -20,6 +20,15 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
 
     re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+
+    addPoint(re::Point2f(-10, -10));
+    addPoint(re::Point2f(-10, 10));
+    addPoint(re::Point2f(10, 10));
+    addPoint(re::Point2f(10, -10));
+    addEdge(0, 1);
+    addEdge(1, 2);
+    addEdge(2, 3);
+    addEdge(3, 0);
 }
 
 // void Player::tryCast(int abilityIndex){
