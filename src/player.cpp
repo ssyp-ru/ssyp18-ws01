@@ -18,6 +18,14 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move2"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move3"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move5"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move6"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move7"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move8"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move9"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move10"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
+    movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
 
     re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
 }
@@ -70,8 +78,8 @@ void Player::display(re::Camera camera){
 
     float size = camera.meter_to_screen(50);
 
-    re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
-                        screen_pos.x + size, screen_pos.y + size,
+    re::draw_image_part(screen_pos.x, screen_pos.y,
+                        400, 600,
                         0, 0, 1, 1,
                         movingAnim_Forward->getNextFrame());
 }
