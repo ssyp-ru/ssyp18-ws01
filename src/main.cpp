@@ -13,8 +13,24 @@
 #include "event.h"
 #include "events/move_event.h"
 #include "events/event_enum.h"
+#include "events/network_event.h"
 
 #include "gamelogic/gamelogic.h"
+#include "gamelogic/lobby.h"
+
+enum class Network_state
+{
+    menu,
+    server,
+    client
+};
+
+enum class Game_state
+{
+    menu,
+    lobby,
+    game
+};
 
 class MainApp : public re::IBaseApp{
 public:
@@ -33,6 +49,11 @@ public:
     std::shared_ptr<EventSerealizerClient> event_serealizer_client;
     std::shared_ptr<EventSerealizerServer> event_serealizer_server;
 
+    Network_state network_state;
+    Game_state game_state;
+
+    Lobby lobby;
+
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
@@ -42,13 +63,33 @@ public:
         player = std::make_shared<Player>(re::Point2f(100, 2200));
         game_logic.world.addObject(player);
 
+        this->game_state = Game_state::menu;
+        this->network_state = Network_state::menu;
     }
 
     void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
     {
-        if( event == re::TCPServer::Callback_event::msg_recive )
+        switch( event )
         {
-            event_serealizer_server->deserealize_server( id, msg );
+            case re::TCPServer::Callback_event::connect:
+            {
+                auto conn_event = std::make_shared<NetworkConnectionEvent>( id );
+                conn_event->set_shared(false);
+                re::publish_event( conn_event );
+                return;
+            }
+            case re::TCPServer::Callback_event::disconnect:
+            {
+                auto disconnect_event = std::make_shared<NetworkDisconnectionEvent>( id );
+                disconnect_event->set_shared(false);
+                re::publish_event( disconnect_event );
+                return;
+            }
+            case re::TCPServer::Callback_event::msg_recive:
+            {
+                event_serealizer_server->deserealize_server( id, msg );
+                return;
+            }       
         }
     }
 
@@ -60,6 +101,16 @@ public:
     void display() override {
         game_logic.draw(camera);
         player->display(camera);
+        size_t members_count = lobby.get_players_count();
+
+        for( size_t i = 0; i < members_count; i++ )
+        {
+            re::draw_text(
+                re::Point2f(400,20+(i*20)),
+                lobby.get_player(i).name,
+                re::BLACK
+            );
+        }
     }
 
     void on_mouse_move( int x, int y )
@@ -93,13 +144,26 @@ public:
             camera.scale( zoom );
             break;
         case re::Key::O:
+        {
             tcp_client = re::TCPClient::create();
             tcp_client->connect( "127.0.0.1", 11999 );
 
             event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
             re::subscribe_to_all( event_serealizer_client.get() );
+
+            this->game_state = Game_state::lobby;
+            this->network_state = Network_state::client;
+
+            re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
+
+            auto join_event = std::make_shared<LobbyJoinEvent>( std::string( "name" ) + std::to_string(20) );
+            join_event->set_shared(true);
+            lobby.is_server = false;
+            re::publish_event(join_event);
             break;
+        }
         case re::Key::P:
+        {
             tcp_server = re::TCPServer::create();
             tcp_server->setup(11999);
 
@@ -111,7 +175,16 @@ public:
 
             event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
             re::subscribe_to_all( event_serealizer_server.get() );
+
+            this->game_state = Game_state::lobby;
+            this->network_state = Network_state::server;
+
+            lobby.is_server = true;
+
+            re::subscribe_to_event_category( &lobby, NETWORK_EVENT_CATEGORY );
+            re::subscribe_to_event_category( &lobby, LOBBY_EVENT_CATEGORY );
             break;
+        }
         }
     }
 

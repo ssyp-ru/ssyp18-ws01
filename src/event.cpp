@@ -1,6 +1,7 @@
 #include "event.h"
 #include "events/event_enum.h"
 #include "events/move_event.h"
+#include "events/lobby_event.h"
 #include <json.hpp>
 
 void deserealize( std::vector<char> msg )
@@ -12,13 +13,26 @@ void deserealize( std::vector<char> msg )
     case MOVE_EVENT_CATEGORY:
         switch( int(j["type"]) )
         { 
-        case int(MoveEventType::PLAYER_MOVE) :
-            std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
-            move_input->deserialize(msg);
-            re::publish_event( move_input );
-            break;
+            case int(MoveEventType::PLAYER_MOVE) :
+            {
+                std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
+                move_input->deserialize(msg);
+                re::publish_event( move_input );
+                break;
+            }
         }
         break;
+    case LOBBY_EVENT_CATEGORY:
+        switch( int(j["type"]) )
+        {
+            case int(LobbyEventType::LOBBY_JOIN):
+            {
+                auto move_input = std::make_shared<LobbyJoinEvent>("");
+                move_input->deserialize(msg);
+                re::publish_event( move_input );
+                break;
+            }
+        }
     }
 }
 
