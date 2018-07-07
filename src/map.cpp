@@ -11,9 +11,9 @@ Map::Map( re::PhysicWorld &world, std::string path )
 {
     map = (re::parse_tiled( re::parse_xml( path ) ))[0];
 
-    for (auto objectData : map.objectgroup[0].group)
+    for (const auto& objectData : map.objectgroup[0].group)
     {
-        std::shared_ptr<DrawableGameObject> dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
+        auto dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
                 dobj->addPoint(re::Point2f(vertex.x, vertex.y));
