@@ -53,7 +53,7 @@ void MainMenu::setup() {
 
     re::ImagePtr choose_dark_button__icon = std::make_shared<re::Image>("dark.png");
     choose_dark_button_ = std::make_shared<re::BaseButton>(20, 760, "dark", choose_dark_button__icon, choose_dark_button__icon);
-    choose_dark_button_->register_action(std::bind(&MainMenu::choose_dark_button_, this));
+    choose_dark_button_->register_action(std::bind(&MainMenu::choose_dark, this));
     guiManager_.register_button(choose_dark_button_, "select_side");
 
 
