@@ -17,6 +17,7 @@ class Player
 {
 public:
     Player(re::Point2f pos);
+    std::vector<re::Point2f> way;
     // void tryCast(int abilityIndex);
     // void addAbility(Ability *ab);
     // std::vector<Ability*>* getAbilities();
@@ -29,7 +30,9 @@ public:
     void update();
     virtual void display(re::Camera camera);
     void go_to(re::Point2f finish_point);
-
+   void set_way(std::vector <re::Point2f> w);
+    int get_way_size();
+    re::Point2f get_next_step();
     re::AnimationPtr movingAnim_Forward; // moving animation
     re::ResourceManager resource_manager;
 
