@@ -114,6 +114,7 @@ public:
                         join_event->set_shared(false);
                         re::publish_event( join_event );
                     }
+                    members.clear();
                     break;
                 }
             }
