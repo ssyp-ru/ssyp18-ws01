@@ -6,24 +6,20 @@
 #include "../events/lobby_event.h"
 #include "../events/network_event.h"
 
-class Lobby : public re::EventSubscriber
-{
+class Lobby : public re::EventSubscriber {
 public:
 
     bool is_server = false;
 
-    int get_players_count()
-    {
+    int get_players_count() const {
         return members.size();
     }
 
-    LobbyMember get_player( size_t id )
-    {
+    LobbyMember get_player( size_t id ) const {
         return members[id];
     }
 
-    virtual void on_event(std::shared_ptr<re::Event> event)
-    {
+    virtual void on_event(std::shared_ptr<re::Event> event) {
         bool need_sync = false;
         switch( event->get_category() )
         {
@@ -73,6 +69,12 @@ public:
                     break;
                 }
             }
+        }
+
+        if( need_sync ) {
+            auto sync_event = std::make_shared<LobbySyncEvent>( this->members );
+            sync_event->set_shared( true );
+            re::publish_event( sync_event );
         }
     }
 
