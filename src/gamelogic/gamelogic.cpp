@@ -1,6 +1,5 @@
 #include <iostream>
 #include "gamelogic.h"
-#include "../events/event_enum.h"
 #include <RealEngine/physic_core.h>
 #include <fstream>
 
@@ -12,14 +11,13 @@ GameLogic::GameLogic()
     obstacles = generate_obstacles(20, 250, 250, world);
 }
 
-void GameLogic::on_event(std::shared_ptr<re::Event> event)
-{
+void GameLogic::on_event(std::shared_ptr<re::Event> event) {
     
 }
 
 void GameLogic::update()
 {
-    
+    world.updateTick();
 }
 
 void GameLogic::draw( re::Camera camera )

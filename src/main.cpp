@@ -14,9 +14,18 @@
 
 #include "event.h"
 #include "events/move_event.h"
-#include "events/event_enum.h"
+#include "events/network_event.h"
 
 #include "gamelogic/gamelogic.h"
+#include "gamelogic/lobby.h"
+
+#include "networkmanager.h"
+
+enum class NetworkState {
+    menu,
+    server,
+    client
+};
 
 enum class GameState {
     MAIN_MENU,
@@ -30,6 +39,8 @@ public:
         : main_menu(gui_manager)
     {}
 
+    NetworkState network_state;
+
     void setup() override {
         camera.view_at( re::Point2f(0,0) );
         camera.scale( zoom );
@@ -41,14 +52,7 @@ public:
         player = std::make_shared<Player>(re::Point2f(100, 2200));
         game_logic.world.addObject(player);
 
-    }
-
-    void server_event_recive(re::TCPServer::Callback_event event, int id, std::vector<char> msg)
-    {
-        if( event == re::TCPServer::Callback_event::msg_recive )
-        {
-            event_serealizer_server->deserealize_server( id, msg );
-        }
+        this->network_state = NetworkState::menu;
     }
 
     void update() override {
@@ -89,50 +93,29 @@ public:
         cursor_pos.y = y;
     }
 
-    void on_key_pressed(re::Key key) override {
-        switch( key )
-        {
-        case re::Key::Escape: re::exitApp();
-        case re::Key::W:
-            //camera.translate( re::Point2f( 0,-20 ) );
-            break;
-        case re::Key::S:
-            //camera.translate( re::Point2f( 0,20 ) );
-            break;
-        case re::Key::A:
-            //camera.translate( re::Point2f( -20,0 ) );
-            break;
-        case re::Key::D:
-            //camera.translate( re::Point2f( 20,0 ) );
-            break;
-        case re::Key::Q:
-            zoom += 0.5;
-            camera.scale( zoom );
-            break;
-        case re::Key::E:
-            zoom -= 0.5;
-            camera.scale( zoom );
-            break;
-        case re::Key::O:
-            tcp_client = re::TCPClient::create();
-            tcp_client->connect( "127.0.0.1", 11999 );
-
-            event_serealizer_client = std::make_shared<EventSerealizerClient>( tcp_client );
-            re::subscribe_to_all( event_serealizer_client.get() );
-            break;
-        case re::Key::P:
-            tcp_server = re::TCPServer::create();
-            tcp_server->setup(11999);
-
-            tcp_server->set_callback( std::bind( &MainApp::server_event_recive,
-                                                this,
-                                                std::placeholders::_1,
-                                                std::placeholders::_2,
-                                                std::placeholders::_3) );
-
-            event_serealizer_server = std::make_shared<EventSerealizerServer>(tcp_server);
-            re::subscribe_to_all( event_serealizer_server.get() );
-            break;
+    void on_key_pressed(re::Key key){
+        switch( key ) {
+            case re::Key::Escape: re::exitApp();
+            case re::Key::W:
+                //camera.translate( re::Point2f( 0,-20 ) );
+                break;
+            case re::Key::S:
+                //camera.translate( re::Point2f( 0,20 ) );
+                break;
+            case re::Key::A:
+                //camera.translate( re::Point2f( -20,0 ) );
+                break;
+            case re::Key::D:
+                //camera.translate( re::Point2f( 20,0 ) );
+                break;
+            case re::Key::Q:
+                zoom += 0.5;
+                camera.scale( zoom );
+                break;
+            case re::Key::E:
+                zoom -= 0.5;
+                camera.scale( zoom );
+                break;
         }
     }
 
@@ -159,11 +142,7 @@ private:
     int mouseX, mouseY;
     std::shared_ptr<Player> player;
 
-    re::TCPClientPtr tcp_client;
-    re::TCPServerPtr tcp_server;
-
-    std::shared_ptr<EventSerealizerClient> event_serealizer_client;
-    std::shared_ptr<EventSerealizerServer> event_serealizer_server;
+    NetworkManager network_manager;
 };
 
 int main(){
