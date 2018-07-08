@@ -109,7 +109,7 @@ void Player::go_to(re::Point2f finish_point){
     //velosity.normalize();
     //velosity *= 50;
 
-    setVelocity((finish_point - getPosition()).Normalized() * 50);
+    setVelocity((finish_point - getPosition()).Normalized() * 130);
 
     //setVelocity(velosity);
 

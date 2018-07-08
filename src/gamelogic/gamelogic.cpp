@@ -23,7 +23,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
             {
                 auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                 
-                auto player = std::make_shared<Player>( re::Point2f(400,2200));
+                auto player = std::make_shared<Player>( re::Point2f(330, 4690));
                 this->players.push_back(player);
                 world.addObject(player);
                 break;

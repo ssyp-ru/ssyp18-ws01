@@ -48,7 +48,8 @@ public:
     void setup() override {
         if (fullscreen)
             re::go_full_screen();
-        camera.view_at( re::Point2f(0,0) );
+
+        camera.view_at(re::Point2f(200, 4000));
 
         camera.scale( zoom );
         
@@ -168,7 +169,7 @@ private:
     re::GuiManager gui_manager;
 
     re::Point2f cursor_pos;
-    float zoom = 10;
+    float zoom = 1;
     int mouseX, mouseY;
     bool fullscreen = true;
 
