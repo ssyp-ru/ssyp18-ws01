@@ -24,4 +24,6 @@ public:
     Map map;
 
     std::vector<std::shared_ptr<Player>> players;
+
+    int self_player_id;
 };

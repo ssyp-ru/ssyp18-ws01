@@ -39,13 +39,15 @@ public:
 
 class GamePlayersJoinEvent : public re::Event {
 public:
-    GamePlayersJoinEvent( LobbyMember player_ )
+    GamePlayersJoinEvent( LobbyMember player_, bool is_local )
         : Event(GAME_EVENT_CATEGORY, (int)GameEventType::PLAYERS_JOIN)
         //, player(player)
     {
         this->player.name = player_.name;
         this->player.team = player_.team;
+        this->is_local = is_local;
     }
 
     LobbyMember player;
+    bool is_local;
 };

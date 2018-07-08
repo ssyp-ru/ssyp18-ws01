@@ -26,6 +26,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 auto player = std::make_shared<Player>( re::Point2f(330, 4690));
                 this->players.push_back(player);
                 world.addObject(player);
+                if( join_event->is_local ) {
+                    self_player_id = player->get_id();
+                }
                 break;
             }
         }
@@ -63,7 +66,7 @@ void GameLogic::click( re::Point2f pos ) {
         }
     }
 
-    auto move_event = std::make_shared<MoveEvent>(0, pos);
+    auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
     move_event->set_shared(true);
     re::publish_event(move_event);
 }

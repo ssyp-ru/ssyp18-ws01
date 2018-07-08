@@ -62,7 +62,6 @@ public:
                                                 re::Event>(event);
                     members[join_event->id].name = join_event->name;
                     members[join_event->id].team = join_event->team;
-                    need_sync = true;
                     break;
                 }
             }
@@ -104,13 +103,17 @@ public:
                     break;
                 }
             }
+            break;
         case GAME_EVENT_CATEGORY:
             switch( event->get_type() )
             {
                 case int(GameEventType::GAME_START):
                 {
-                    for( auto member : members ) {
-                        auto join_event = std::make_shared<GamePlayersJoinEvent>(member);
+                    for( size_t i = 0; i < members.size(); i++ ) {
+                        auto join_event = std::make_shared<GamePlayersJoinEvent>(members[i],false);
+                        if( int(i) == this->self_id ) {
+                            join_event->is_local = true;
+                        }
                         join_event->set_shared(false);
                         re::publish_event( join_event );
                     }
@@ -118,6 +121,7 @@ public:
                     break;
                 }
             }
+            break;
         }
 
         if( need_sync && is_server ) {
