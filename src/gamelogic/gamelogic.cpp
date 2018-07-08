@@ -22,7 +22,8 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
             case int(GameEventType::PLAYERS_JOIN):
             {
                 auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
-                this->players.push_back( Player( re::Point2f(400,2200) ) );
+                
+                this->players.push_back( std::make_shared<Player>( re::Point2f(400,2200) ) );
                 break;
             }
         }
@@ -45,7 +46,7 @@ void GameLogic::draw( re::Camera camera )
 
     for( auto player : players )
     {
-        player.display( camera );
+        player->display( camera );
     }
 }
 

@@ -23,5 +23,5 @@ public:
 
     Map map;
 
-    std::vector<Player> players;
+    std::vector<std::shared_ptr<Player>> players;
 };
