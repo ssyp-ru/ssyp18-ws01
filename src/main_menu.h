@@ -69,14 +69,12 @@ public:
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
 
-        auto connect_event = std::make_shared<NetworkConnectEvent>( "127.0.0.1", 11999 );
+        auto connect_event = std::make_shared<NetworkConnectEvent>( ip, 11999 );
         re::publish_event( connect_event );
         go_button_->set_active(false);
     }
 
     void go(){
-        std::cout << "GO! GO! GO!" << std::endl;
-        
         auto start_event = std::make_shared<GameStartEvent>();
         start_event->set_shared(true);
         re::publish_event( start_event );
