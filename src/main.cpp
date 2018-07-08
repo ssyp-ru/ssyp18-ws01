@@ -46,6 +46,8 @@ public:
     NetworkState network_state;
 
     void setup() override {
+        if (fullscreen)
+            re::go_full_screen();
         camera.view_at( re::Point2f(0,0) );
 
         camera.scale( zoom );
@@ -168,12 +170,13 @@ private:
     re::Point2f cursor_pos;
     float zoom = 10;
     int mouseX, mouseY;
+    bool fullscreen = true;
 
     NetworkManager network_manager;
 };
 
 int main(){
     re::setWindowName( "RealEngine" );
-    re::runApp( 1280, 800, std::make_shared<MainApp>() );
+    re::runApp( 1600, 900, std::make_shared<MainApp>() );
     return 0;
 }
