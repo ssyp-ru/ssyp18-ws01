@@ -33,6 +33,9 @@ enum class GameState {
     GAME
 };
 
+const int camera_move_detect_szie = 50;
+const int camera_move_speed = 20;
+
 class MainApp : public re::IBaseApp
               , public re::EventSubscriber
 {
@@ -81,6 +84,20 @@ public:
             }
             case GameState::GAME: {
                 game_logic.update();
+
+                if( game_state == GameState::GAME ) {
+                    if( cursor_pos.y < camera_move_detect_szie ) {
+                        camera.translate( re::Point2f( 0, -camera_move_speed ) );
+                    } else if( re::get_height() - cursor_pos.y < camera_move_detect_szie ) {
+                        camera.translate( re::Point2f( 0, camera_move_speed ) );
+                    }
+                    if( cursor_pos.x < camera_move_detect_szie ) {
+                        camera.translate( re::Point2f( -camera_move_speed, 0 ) );
+                    } else if( re::get_width() - cursor_pos.x < camera_move_detect_szie ) {
+                        camera.translate( re::Point2f( camera_move_speed, 0 ) );
+                    }
+
+                }
                 return;
             }
         }
