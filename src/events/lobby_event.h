@@ -61,6 +61,7 @@ public:
     }
 
     std::string get_describe_string() { return "LobbySyncEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 
     std::vector<LobbyMember> members;
 };
@@ -98,6 +99,7 @@ public:
     }
 
     std::string get_describe_string() { return "LobbyJoinEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 
     std::string name;
     int team;

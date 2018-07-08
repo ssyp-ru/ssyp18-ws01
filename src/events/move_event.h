@@ -50,6 +50,7 @@ public:
             + std::to_string((int)finish_point.x) + ", " + std::to_string((int)finish_point.y) + "]";
         return s; 
     }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 
     re::Point2f finish_point;
     int player_id;
@@ -103,7 +104,8 @@ public:
         }
     }
 
-    std::string get_describe_string() { return ""; }
+    std::string get_describe_string() { return "MoveSyncEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::TRACE; };
 
     std::vector<MoveSyncData> objects;
 };

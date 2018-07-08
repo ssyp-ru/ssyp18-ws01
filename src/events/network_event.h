@@ -23,6 +23,7 @@ public:
     {}
 
     std::string get_describe_string() { return "NetworkConnectionEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int sock_id;
 };
 
@@ -34,6 +35,7 @@ public:
     {}
 
     std::string get_describe_string() { return "NetworkDisconnectionEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int sock_id;
 };
 
@@ -46,6 +48,7 @@ public:
     {}
 
     std::string get_describe_string() { return "NetworkConnectEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     std::string address;
     int port;
 };
@@ -57,6 +60,7 @@ public:
     {}
 
     std::string get_describe_string() { return "NetworkConnectCompleteEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 };
 
 class NetworkServerUpEvent : public re::Event {
@@ -67,5 +71,6 @@ public:
     {}
 
     std::string get_describe_string() { return "NetworkServerUpEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int port;
 };
