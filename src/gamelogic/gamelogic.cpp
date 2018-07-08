@@ -36,6 +36,7 @@ void GameLogic::update() {
 void GameLogic::draw( re::Camera camera )
 {
     map.draw(camera);
+
     for( auto object : this->world.getWorld() )
     {
         auto drawable_object = std::static_pointer_cast<PhysGameObject,re::PhysicObject>( object );
