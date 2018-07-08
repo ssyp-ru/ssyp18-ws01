@@ -31,6 +31,7 @@ void Unit::display(re::Camera camera){
     re::Point2f screen_pos = camera.world_to_screen(geo_pos); 
 
     float size = camera.meter_to_screen(50);
+    re::draw_rectangle(screen_pos - re::Point2f(size,size), re::Point2f(size,size), re::GREEN);
 }
 
 void Unit::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {

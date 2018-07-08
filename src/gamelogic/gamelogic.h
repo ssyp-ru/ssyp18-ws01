@@ -4,7 +4,6 @@
 #include <RealEngine/physic_core.h>
 #include <RealEngine/camera.h>
 #include "../map.h"
-#include "../obstacles_generator.h"
 
 #include "../player.h"
 
