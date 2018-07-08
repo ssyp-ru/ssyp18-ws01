@@ -50,3 +50,13 @@ void Unit::go_to(re::Point2f finish_point){
     setVelocity((finish_point - getPosition()).Normalized() * 130);
     goto_point = finish_point;
 }
+
+void Unit::attack(int target_id)
+{
+    
+}
+
+void Unit::attack_event(int target_id)
+{
+
+}

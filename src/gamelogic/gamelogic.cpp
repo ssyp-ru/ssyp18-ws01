@@ -117,7 +117,16 @@ void GameLogic::click( re::Point2f pos ) {
         }
     }
 
-    auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
-    move_event->set_shared(true);
-    re::publish_event(move_event);
+    if (target.first == -1)
+    {
+        auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
+        move_event->set_shared(true);
+        re::publish_event(move_event);
+    } else {
+        Unit* unitObj = dynamic_cast<Unit*>(target.second);
+        if (unitObj)
+        {
+            dynamic_cast<Player*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
+        }
+    }
 }
