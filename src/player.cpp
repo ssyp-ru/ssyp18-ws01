@@ -1,4 +1,5 @@
-#include <RealEngine/physic_core.h>
+#include "RealEngine/physic_core.h"
+#include "RealEngine/config_manager.h"
 #include "player.h"
 #include <iostream>
 
@@ -68,6 +69,11 @@ void Player::display(re::Camera camera){
                         screen_pos.x + size, screen_pos.y + size,
                         0, 0, 1, 1,
                         movingAnim_Forward->getNextFrame());
+
+    if (re::ConfigManager::get_property("common/debug_display") == "1"){
+        re::Point2f screen_pos = camera.world_to_screen(goto_point);
+        re::draw_rectangle(screen_pos - re::Point2f(5, 5), re::Point2f(10, 10), re::RED);
+    }
 }
 
 void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {

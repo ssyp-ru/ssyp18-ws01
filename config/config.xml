@@ -1,0 +1,4 @@
+<config>
+    <common debug_display="1">
+    <log console="info" file="debug">
+</config>

@@ -38,6 +38,5 @@ public:
 private:
     int expToNextLevel[18] = { 100 };
     int exp, level, hp, maxhp;
-    re::Point2f goto_point;
 };
 

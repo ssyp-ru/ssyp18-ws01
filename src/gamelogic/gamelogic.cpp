@@ -1,6 +1,7 @@
 #include <iostream>
 #include "gamelogic.h"
-#include <RealEngine/physic_core.h>
+#include "RealEngine/physic_core.h"
+#include "RealEngine/config_manager.h"
 #include <fstream>
 #include <chrono>
 
@@ -98,6 +99,10 @@ void GameLogic::draw( re::Camera camera )
     for( auto player : players )
     {
         player->display( camera );
+    }
+
+    if (re::ConfigManager::get_property("common/debug_display") == "1"){
+        world.debug_display(camera);
     }
 }
 
