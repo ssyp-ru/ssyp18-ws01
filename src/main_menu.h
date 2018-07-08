@@ -22,7 +22,7 @@ public:
 
     void on_key_pressed(re::Key key);
     void setup();
-    void display();
+    void display(int mouseX, int mouseY);
 
     void join_game();
     void create_game();
@@ -47,7 +47,7 @@ private:
     re::BaseButtonPtr choose_dark_button_;
     re::BaseButtonPtr choose_bright_button_;
     re::BaseButtonPtr go_button_;
-    int mouseX, mouseY;
+    //int mouseX, mouseY;
     re::ImagePtr menuBackground;
     re::ImagePtr players;
     std::string ip;

@@ -8,25 +8,19 @@
 
 
 
-class MainMenu {
+class GameMenu {
 public:
-    MainMenu(re::GuiManager& guiManager);
+    GameMenu(re::GuiManager& guiManager);
 
     void setup();
-    void display();
+    void display(int mouseX, int mouseY);
 
-    void skill1(){
+    void skill1(); 
+    void skill2();
+    void skill3();
+    void skill4();
 
-    }
-    void skill2(){
-
-    }
-    void skill3(){
-
-    }
-    void skill4(){
-
-    }
+    void set_val(int new_exp, int new_hp, int new_mp);
 
 private:
     re::GuiManager& guiManager_;
@@ -34,9 +28,8 @@ private:
     re::BaseButtonPtr skill2_button;
     re::BaseButtonPtr skill3_button;
     re::BaseButtonPtr skill4_button;
-    int mouseX, mouseY;
-    re::ImagePtr menuBackground;
-    re::ImagePtr players;
+    //int mouseX, mouseY;
+    int exp = 10, hp = 100, mp = 50;
 
-    Lobby lobby;
+    //Lobby lobby;
 };
