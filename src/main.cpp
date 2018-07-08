@@ -3,19 +3,22 @@
 #include <RealEngine/camera.h>
 #include <RealEngine/network.h>
 #include <RealEngine/event.h>
-#include <RealEngine/math.h>
+
 #include <iostream>
 #include <memory>
-#include <vector>
+
 #include "event.h"
 #include "map.h"
 #include "player.h"
 #include "main_menu.h"
+
 #include "event.h"
 #include "events/move_event.h"
 #include "events/network_event.h"
+
 #include "gamelogic/gamelogic.h"
 #include "gamelogic/lobby.h"
+
 #include "networkmanager.h"
 
 enum class NetworkState {
@@ -154,16 +157,14 @@ public:
     }
 
 private:
-    int count_of_cells = 250;
-    int size_map = 5000;
-    int scale = size_map / count_of_cells;
     GameState game_state = GameState::GAME;
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;
     re::GuiManager gui_manager;
+
     re::Point2f cursor_pos;
-    float zoom = 5;
+    float zoom = 10;
     int mouseX, mouseY;
     std::shared_ptr<Player> player;
 

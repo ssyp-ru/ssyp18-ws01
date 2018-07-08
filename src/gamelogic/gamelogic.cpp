@@ -1,13 +1,13 @@
 #include <iostream>
 #include "gamelogic.h"
 #include <RealEngine/physic_core.h>
-//#include <fstream>
-#include "../obstacles_generator.h"
+#include <fstream>
+
+using namespace std;
 
 GameLogic::GameLogic()
 {
     this->map = Map( world, "map.tmx" );
-    obstacles = generate_obstacles(20, 250, 250, world);
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
@@ -21,8 +21,8 @@ void GameLogic::update()
 
 void GameLogic::draw( re::Camera camera )
 {
-    //ofstream fout;
-   // fout.open("map.txt");
+    ofstream fout;
+    fout.open("map.txt");
     map.draw(camera);
     for( auto object : this->world.getWorld() )
     {
@@ -32,14 +32,14 @@ void GameLogic::draw( re::Camera camera )
     for (size_t i = 0; i < obstacles.size(); i++){
         for (size_t j = 0; j < obstacles.size(); j++){
             if (obstacles[i][j] == 1){
-               // fout << obstacles[i][j];
+                fout << obstacles[i][j];
                 re::draw_rectangle(j * 2, i * 2, 2, 2, re::Color(0, 0, 0));
             }
             else{
-                //fout << obstacles[i][j];
+                fout << obstacles[i][j];
             }
         }
-       // fout << std::endl;
+        fout << std::endl;
     }
-    //fout.close();
+    fout.close();
 }
