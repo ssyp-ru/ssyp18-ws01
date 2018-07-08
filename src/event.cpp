@@ -36,6 +36,7 @@ void deserealize( std::vector<char> msg ) {
                 break;
             }
         }
+        break;
     case GAME_EVENT_CATEGORY:
         switch( int(j["type"]) ) {
             case int(GameEventType::GAME_START):

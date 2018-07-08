@@ -120,6 +120,8 @@ void Player::go_to(re::Point2f finish_point){
 void Player::on_event(std::shared_ptr<re::Event> event) {
     if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
         std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
-        go_to(move_event->finish_point);
+        if( this->get_id() == move_event->player_id ) {
+            go_to(move_event->finish_point);
+        }
     }
 }
