@@ -48,8 +48,7 @@ public:
         re::subscribe_to_all(&game_logic);
         player = std::make_shared<Player>(re::Point2f(400, 2200));
         game_logic.world.addObject(player);
-
-        //  auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
+         //  auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
       //  move_event->set_shared(true);
       //  re::publish_event(move_event);
 
@@ -129,7 +128,7 @@ public:
     }
 
     void on_button_pressed(int button) override {
-
+        gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
         std::cout << int(camera.screen_to_world(cursor_pos).y / scale) << " " <<
         int(camera.screen_to_world(cursor_pos).x / scale) << std::endl;
      //   if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
@@ -137,7 +136,7 @@ public:
                 std::cout << " 0 " << std::endl;
 
 
-        gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
+        
         if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
             [int(camera.screen_to_world(cursor_pos).x / scale)] == 0 )){
             std::vector <std::vector <int>> count_;
