@@ -17,7 +17,7 @@ void MainMenu::create_game(){
     re::publish_event( server_up_event );
 
     LobbyMember owner;
-    owner.name = "owner";
+    owner.name = nick;
     owner.team = 0;
     
     lobby.join( owner );
