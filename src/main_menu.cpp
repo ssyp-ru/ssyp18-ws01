@@ -4,12 +4,83 @@ MainMenu::MainMenu(re::GuiManager& guiManager)
     : guiManager_(guiManager)
 {}
 
+void MainMenu::join_game(){
+    connect_button_->set_active(true);
+    join_game_button_->set_active(false);
+    empty_ip_button_->set_active(true);
+    menu_state = MenuState::IP_INPUT;
+}
+
+void MainMenu::create_game(){
+
+    auto server_up_event = std::make_shared<NetworkServerUpEvent>( 11999 );
+    re::publish_event( server_up_event );
+
+    LobbyMember owner;
+    owner.name = "owner";
+    owner.team = 0;
+    
+    lobby.join( owner );
+
+    guiManager_.layer_set_active("main_menu", false);
+    guiManager_.layer_set_active("select_side", true);
+}
+
+void MainMenu::exit_game(){
+    re::exitApp();
+}
+
+void MainMenu::set_nick(){
+    change_nick_button_->set_active(true);
+    menu_state = MenuState::NICK_INPUT;
+}
+void MainMenu::set_ip(){
+}
+
+void MainMenu::change_nick(){
+    change_nick_button_->set_active(false);
+    menu_state = MenuState::MAIN_MENU;
+}
+
+void MainMenu::connect(){
+    connect_button_->set_active(false);
+    empty_ip_button_->set_active(false);
+    join_game_button_->set_active(true);
+    menu_state = MenuState::MAIN_MENU;
+    guiManager_.layer_set_active("main_menu", false);
+    guiManager_.layer_set_active("select_side", true);
+
+    auto connect_event = std::make_shared<NetworkConnectEvent>( ip, 11999 );
+    re::publish_event( connect_event );
+    go_button_->set_active(false);
+}
+
+void MainMenu::go(){
+    auto start_event = std::make_shared<GameStartEvent>();
+    start_event->set_shared(true);
+    re::publish_event( start_event );
+}
+
+
+void MainMenu::choose_dark(){
+    auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( nick, 1 , lobby.get_self_id() );
+    lobby_switch_event->set_shared(true);
+    re::publish_event( lobby_switch_event );
+}
+
+void MainMenu::choose_bright(){
+    auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( nick, 0, lobby.get_self_id()  );
+    lobby_switch_event->set_shared(true);
+    re::publish_event( lobby_switch_event );
+}
+ 
+
+
+
+
 void MainMenu::setup() {
     menuBackground = std::make_shared<re::Image>("menu.png");
     players = std::make_shared<re::Image>("players.png");
-
-
-
 
     re::ImagePtr join_icon = std::make_shared<re::Image>("join.png");
     join_game_button_ = std::make_shared<re::BaseButton>(20, 220, "join", join_icon, join_icon);
@@ -74,9 +145,10 @@ void MainMenu::setup() {
 
 void MainMenu::display() {
     re::draw_image(0, 0, menuBackground);
-    guiManager_.display(mouseX, mouseY);  
+    guiManager_.display(mouseX, mouseY); 
+    re::draw_text_custom(empty_nick_button_->get_pos().x + 10, empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
     if(empty_ip_button_->is_active()){
-        re::draw_text_custom(empty_ip_button_->get_pos().x + 5, empty_ip_button_->get_pos().y + 30, 6, ip, re::DARKGRAY);
+        re::draw_text_custom(empty_ip_button_->get_pos().x + 10, empty_ip_button_->get_pos().y + 30, 6, ip, re::GRAY);
     }
     if(choose_dark_button_->is_active()){
         re::draw_image(20, 20, players);
@@ -110,5 +182,13 @@ void MainMenu::on_key_pressed(re::Key key){
     }
     if(menu_state == MenuState::IP_INPUT && (int)key == (int)re::Key::BackSpace && ip.size() > 0){
         ip.pop_back();
+    }
+
+    if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::A && (int)key <= (int)re::Key::Z)){
+        char key_val = (int)key + (int)'A' - (int)re::Key::A;
+        nick += key_val;
+    }
+    if(menu_state == MenuState::NICK_INPUT && (int)key == (int)re::Key::BackSpace && nick.size() > 0){
+        nick.pop_back();
     }
 }
