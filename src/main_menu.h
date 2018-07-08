@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "events/game_event.h"
 #include "events/network_event.h"
 #include "gamelogic/lobby.h"
 
@@ -74,7 +75,11 @@ public:
     }
 
     void go(){
+        std::cout << "GO! GO! GO!" << std::endl;
         
+        auto start_event = std::make_shared<GameStartEvent>();
+        start_event->set_shared(true);
+        re::publish_event( start_event );
     }
 
 

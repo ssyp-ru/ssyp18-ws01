@@ -33,29 +33,45 @@ enum class GameState {
     GAME
 };
 
-class MainApp : public re::IBaseApp{
+class MainApp : public re::IBaseApp
+              , public re::EventSubscriber
+{
 public:
     MainApp()
         : main_menu(gui_manager)
-    {}
+    {
+        re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
+    }
 
     NetworkState network_state;
 
     void setup() override {
-        camera.view_at( re::Point2f(0,0) );
+        if (fullscreen)
+            re::go_full_screen();
+
+        camera.view_at(re::Point2f(200, 4000));
+
         camera.scale( zoom );
-
+        
         main_menu.setup();
-
+        
         re::subscribe_to_all(&game_logic);
-
-        player = std::make_shared<Player>(re::Point2f(100, 2200));
-        game_logic.world.addObject(player);
+         //  auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
+      //  move_event->set_shared(true);
+      //  re::publish_event(move_event);
 
         this->network_state = NetworkState::menu;
     }
 
     void update() override {
+        // std::cout << player->get_way_size() << std::endl;
+        // if(player->get_way_size() > 0){
+        //     re::Point2f next = player->get_next_step();
+        //     auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(next.y * scale, next.x * scale));
+        //     move_event->set_shared(true);
+        //     re::publish_event(move_event);
+        // }
+
         switch (game_state) {
             case GameState::MAIN_MENU: {
                 return;
@@ -65,9 +81,22 @@ public:
             }
             case GameState::GAME: {
                 game_logic.update();
-                player->update();
                 return;
             }
+        }
+    }
+
+    void on_event( std::shared_ptr<re::Event> event ) {
+        switch( event->get_category() ) {
+        case GAME_EVENT_CATEGORY:
+            switch( event->get_type() ) {
+                case int(GameEventType::GAME_START):
+                {
+                    game_state = GameState::GAME;
+                    break;
+                }
+            }
+            break;
         }
     }
 
@@ -82,7 +111,6 @@ public:
             }
             case GameState::GAME: {
                 game_logic.draw(camera);
-                player->display(camera);
                 return;
             }
         }
@@ -102,16 +130,16 @@ public:
         switch( key ) {
             case re::Key::Escape: re::exitApp();
             case re::Key::W:
-                //camera.translate( re::Point2f( 0,-20 ) );
+                camera.translate( re::Point2f( 0,-20 ) );
                 break;
             case re::Key::S:
-                //camera.translate( re::Point2f( 0,20 ) );
+                camera.translate( re::Point2f( 0,20 ) );
                 break;
             case re::Key::A:
-                //camera.translate( re::Point2f( -20,0 ) );
+                camera.translate( re::Point2f( -20,0 ) );
                 break;
             case re::Key::D:
-                //camera.translate( re::Point2f( 20,0 ) );
+                camera.translate( re::Point2f( 20,0 ) );
                 break;
             case re::Key::Q:
                 zoom += 0.5;
@@ -127,12 +155,15 @@ public:
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
 
-        if (game_state == GameState::GAME){
+        if( game_state == GameState::GAME ) {
+            game_logic.click( camera.screen_to_world( cursor_pos ) );
+        }
+        /*if (game_state == GameState::GAME){
             re::Point2f finish_point = camera.screen_to_world(cursor_pos);
             auto move_event = std::make_shared<MoveEvent>(0, finish_point);
             move_event->set_shared(true);
             re::publish_event(move_event);
-        }
+        }*/
     }
 
 private:
@@ -143,15 +174,15 @@ private:
     re::GuiManager gui_manager;
 
     re::Point2f cursor_pos;
-    float zoom = 10;
+    float zoom = 1;
     int mouseX, mouseY;
-    std::shared_ptr<Player> player;
+    bool fullscreen = true;
 
     NetworkManager network_manager;
 };
 
 int main(){
     re::setWindowName( "RealEngine" );
-    re::runApp( 1280, 800, std::make_shared<MainApp>() );
+    re::runApp( 1600, 900, std::make_shared<MainApp>() );
     return 0;
 }

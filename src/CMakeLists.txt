@@ -3,10 +3,11 @@ set(EXECUTABLE  main.cpp
                 map.cpp
                 event.cpp
                 gamelogic/gamelogic.cpp
-                drawable_game_object.cpp
+                gameobject.cpp
                 networkmanager.cpp
                 player.cpp
                 main_menu.cpp
+                unit.cpp
                 )
 
 add_compile_options(-std=c++17)

@@ -5,6 +5,7 @@
 #include <vector>
 #include "../events/lobby_event.h"
 #include "../events/network_event.h"
+#include "../events/game_event.h"
 
 class Lobby : public re::EventSubscriber {
 public:
@@ -13,6 +14,7 @@ public:
     {
         re::subscribe_to_event_category( this, LOBBY_EVENT_CATEGORY );
         re::subscribe_to_event_category( this, NETWORK_EVENT_CATEGORY );
+        re::subscribe_to_event_category( this, GAME_EVENT_CATEGORY );
     }
 
     bool is_server = false;
@@ -60,7 +62,6 @@ public:
                                                 re::Event>(event);
                     members[join_event->id].name = join_event->name;
                     members[join_event->id].team = join_event->team;
-                    need_sync = true;
                     break;
                 }
             }
@@ -102,6 +103,29 @@ public:
                     break;
                 }
             }
+            break;
+        case GAME_EVENT_CATEGORY:
+            switch( event->get_type() )
+            {
+                case int(GameEventType::GAME_START):
+                {
+                    if( this->is_server ) {
+                        auto is_server_event = std::make_shared<GameHostEvent>();
+                        re::publish_event(is_server_event);
+                    }
+                    for( size_t i = 0; i < members.size(); i++ ) {
+                        auto join_event = std::make_shared<GamePlayersJoinEvent>(members[i],false);
+                        if( int(i) == this->self_id ) {
+                            join_event->is_local = true;
+                        }
+                        join_event->set_shared(false);
+                        re::publish_event( join_event );
+                    }
+                    members.clear();
+                    break;
+                }
+            }
+            break;
         }
 
         if( need_sync && is_server ) {

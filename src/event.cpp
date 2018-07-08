@@ -1,6 +1,7 @@
 #include "event.h"
 #include "events/move_event.h"
 #include "events/lobby_event.h"
+#include "events/game_event.h"
 #include <json.hpp>
 
 void deserealize( std::vector<char> msg ) {
@@ -14,6 +15,13 @@ void deserealize( std::vector<char> msg ) {
                 std::shared_ptr<MoveEvent> move_input = std::make_shared<MoveEvent>(0,re::Point2f());
                 move_input->deserialize(msg);
                 re::publish_event( move_input );
+                break;
+            }
+            case int(MoveEventType::PLAYER_SYNC) :
+            {
+                auto sync_event = std::make_shared<MoveSyncEvent>( 0, re::Point2f(0,0), re::Point2f(0,0) );
+                sync_event->deserialize(msg);
+                re::publish_event( sync_event );
                 break;
             }
         }
@@ -32,6 +40,16 @@ void deserealize( std::vector<char> msg ) {
                 auto sync_event = std::make_shared<LobbySyncEvent>( std::vector<LobbyMember>() );
                 sync_event->deserialize(msg);
                 re::publish_event( sync_event );
+                break;
+            }
+        }
+        break;
+    case GAME_EVENT_CATEGORY:
+        switch( int(j["type"]) ) {
+            case int(GameEventType::GAME_START):
+            {
+                auto start_event = std::make_shared<GameStartEvent>();
+                re::publish_event(start_event);
                 break;
             }
         }

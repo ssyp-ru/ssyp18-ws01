@@ -3,7 +3,7 @@
 #include <iostream>
 
 Player::Player(re::Point2f pos) 
-    : DrawableGameObject(pos) 
+    : Unit(pos) 
 {
     level = 1;
     exp = 0;
@@ -27,55 +27,30 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
 
-    re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+    //re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
+    re::subscribe_to_all( this );
+    
     physic_type = PLAYER_PHYSIC_TYPE;
 
-    addPoint(re::Point2f(-5, -5));
-    addPoint(re::Point2f(-5, 5));
-    addPoint(re::Point2f(5, 5));
-    addPoint(re::Point2f(5, -5));
-    addEdge(0, 1);
-    addEdge(1, 2);
-    addEdge(2, 3);
-    addEdge(3, 0);
-    setRigidbodySimulated(true);
 }
 
-// void Player::tryCast(int abilityIndex){
-    // if ((abilityIndex < 0) || ((uint)abilityIndex >= abilities.size())) return;
-    // if ((abilities[abilityIndex]->getRequiredLevel() <= level) && (abilities[abilityIndex]->canCast())){
-        // abilities[abilityIndex]->cast();
+void Player::attack() {
+
+}
+
+void Player::add_exp(int amount){
+    // exp += amount;
+    // if ((level != 20) && (exp >= expToNextLevel[level - 1])){
+    //     std::cout << "New level!\n";
+    //     exp -= expToNextLevel[level - 1];
+    //     level++;
+    //     maxhp += maxhp * 0.1;
+    //     if (level == 20) exp = 0;
     // }
-// }
-
-/*void Player::increaseHP(){
-    int i;
-    if (i > 100) {
-        i = 0;
-        hp += 1;
-    }
-    i += increase_speed;
-}*/
-
-int Player::getLevel() { return level; }
-
-void Player::addExp(int amount){
-    exp += amount;
-    if ((level != 20) && (exp >= expToNextLevel[level - 1])){
-        std::cout << "New level!\n";
-        exp -= expToNextLevel[level - 1];
-        level++;
-        maxhp += maxhp * 0.1;
-        if (level == 20) exp = 0;
-    }
 }
 
 void Player::update(){
-    //re::Point2f pos(position.x, position.y);
-    if (getPosition().distance_to(goto_point) < 50)
-        setVelocity(re::Point2f(0,0));
-    //position.x += velosity.x;
-    //position.y += velosity.y;
+    Unit::update();
 }
 
 void Player::reduceCooldowns(){
@@ -99,25 +74,12 @@ void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {
 
 }
 
-void Player::go_to(re::Point2f finish_point){
-    //re::Point2f geo_pos(position.x, position.y);
-    //re::Point2f vel((finish_point - geo_pos).x, (finish_point - geo_pos).y);
-
-    // setVelocity(vel);
-    //velosity = finish_point - geo_pos;
-    //velosity.normalize();
-    //velosity *= 50;
-
-    setVelocity((finish_point - getPosition()).Normalized() * 50);
-
-    //setVelocity(velosity);
-
-    goto_point = finish_point;
-}
-
 
 void Player::on_event(std::shared_ptr<re::Event> event) {
-    std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
-    // std::cout << "Player::on_event, points: " << move_event->finish_point_.x << "\n";
-    go_to(move_event->finish_point);
+    if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
+        std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
+        if( this->get_id() == move_event->player_id ) {
+            go_to(move_event->finish_point);
+        }
+    }
 }

@@ -5,23 +5,17 @@
 #include <RealEngine/camera.h>
 #include <RealEngine/graphic.h>
 
-class GameObject : public re::GameObject {
+class GameObject {
 public:
-    GameObject( re::Point2f pos, int object_id );
+    GameObject();
+    virtual ~GameObject() {}
 
-    virtual void display(re::Camera camera) {
-        re::Point2f pos = re::Point2f( this->position.X, this->position.Y );
-        for (auto curEdge : *getEdges()) {
-            re::draw_line(
-                camera.world_to_screen( pos + re::Point2f( curEdge.P1->X, curEdge.P1->Y )),
-                camera.world_to_screen( pos + re::Point2f( curEdge.P2->X, curEdge.P2->Y )),
-                re::BLACK );
-        }
-    }
+    int get_id();
 
-    int get_id() {
-        return this->object_id_;
-    }
+    static GameObject *get_object_by_id( int id );
+
+    static std::map<int,class GameObject*> object_map;
 private:
     int object_id_;
+    static int object_count;
 };
