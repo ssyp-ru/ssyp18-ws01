@@ -5,11 +5,9 @@ MainMenu::MainMenu(re::GuiManager& guiManager)
 {}
 
 void MainMenu::setup() {
+    re::subscribe_to_event_category( this, NETWORK_EVENT_CATEGORY );
     menuBackground = std::make_shared<re::Image>("menu.png");
     players = std::make_shared<re::Image>("players.png");
-
-
-
 
     re::ImagePtr join_icon = std::make_shared<re::Image>("join.png");
     join_game_button_ = std::make_shared<re::BaseButton>(20, 220, "join", join_icon, join_icon);

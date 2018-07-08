@@ -8,7 +8,7 @@ NetworkManager::NetworkManager() {
 
 bool NetworkManager::connect( std::string address, int port ) {
     tcp_client_ = re::TCPClient::create();
-    if( !tcp_client_->connect( "127.0.0.1", 11999 ) ) {
+    if( !tcp_client_->connect( address.c_str(), 11999 ) ) {
         return false;
     }
 
