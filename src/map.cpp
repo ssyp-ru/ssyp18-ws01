@@ -22,6 +22,8 @@ Map::Map( re::PhysicWorld &world, std::string path )
                 dobj->addEdge(i, i + 1);
             dobj->addEdge(objectData.poly.points.size() - 1, 0);
             dobj->setRigidbodySimulated(false);
+            dobj->setBounciness(0.0);
+            dobj->setFriction(1.0);
             re::PhysicObjectPtr obj = dobj;
             obj->physic_type = PLATFORM_PHYSIC_TYPE;
             obj->not_check_mask = PLATFORM_PHYSIC_TYPE;
