@@ -25,69 +25,16 @@ public:
     void display();
     virtual void on_event( std::shared_ptr<re::Event> event );
 
-    void join_game(){
-        connect_button_->set_active(true);
-        join_game_button_->set_active(false);
-        empty_ip_button_->set_active(true);
-        menu_state = MenuState::IP_INPUT;
-    }
-
-    void create_game(){
-
-        auto server_up_event = std::make_shared<NetworkServerUpEvent>( 11999 );
-        re::publish_event( server_up_event );
-
-        LobbyMember owner;
-        owner.name = "owner";
-        owner.team = 0;
-        
-        lobby.join( owner );
-
-        guiManager_.layer_set_active("main_menu", false);
-        guiManager_.layer_set_active("select_side", true);
-    }
-
-    void exit_game(){
-        re::exitApp();
-    }
-
-    void set_nick(){
-        change_nick_button_->set_active(true);
-        menu_state = MenuState::NICK_INPUT;
-    }
-    void set_ip(){
-    }
-
-     void change_nick(){
-        change_nick_button_->set_active(false);
-        menu_state = MenuState::MAIN_MENU;
-    }
-    
-    void connect(){
-        auto connect_event = std::make_shared<NetworkConnectEvent>( ip, 11999 );
-        re::publish_event( connect_event );
-        go_button_->set_active(false);
-    }
-
-    void go(){
-        auto start_event = std::make_shared<GameStartEvent>();
-        start_event->set_shared(true);
-        re::publish_event( start_event );
-    }
-
-
-    void choose_dark(){
-        auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some evil player", 1 , lobby.get_self_id() );
-        lobby_switch_event->set_shared(true);
-        re::publish_event( lobby_switch_event );
-    }
-
-    void choose_bright(){
-        auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some good player", 0, lobby.get_self_id()  );
-        lobby_switch_event->set_shared(true);
-        re::publish_event( lobby_switch_event );
-    }
-
+    void join_game();
+    void create_game();
+    void exit_game();
+    void set_nick();
+    void change_nick();
+    void set_ip();
+    void connect();
+    void go();
+    void choose_dark();
+    void choose_bright();
 
 private:
     re::GuiManager& guiManager_;
@@ -105,7 +52,7 @@ private:
     re::ImagePtr menuBackground;
     re::ImagePtr players;
     std::string ip;
-    std::string nick;
+    std::string nick = "NONAME";
     MenuState menu_state = MenuState::MAIN_MENU;
 
 
