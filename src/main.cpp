@@ -94,6 +94,11 @@ public:
     }
 
     void on_key_pressed(re::Key key){
+        if(game_state == GameState::MAIN_MENU){
+            main_menu.on_key_pressed(key);
+        }
+        
+        
         switch( key ) {
             case re::Key::Escape: re::exitApp();
             case re::Key::W:
@@ -131,7 +136,7 @@ public:
     }
 
 private:
-    GameState game_state = GameState::GAME;
+    GameState game_state = GameState::MAIN_MENU;
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;

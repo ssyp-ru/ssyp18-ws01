@@ -9,22 +9,28 @@
 #include "events/network_event.h"
 #include "gamelogic/lobby.h"
 
+enum class MenuState {
+    MAIN_MENU,
+    IP_INPUT,
+    NICK_INPUT
+};
+
 class MainMenu {
 public:
     MainMenu(re::GuiManager& guiManager);
 
+    void on_key_pressed(re::Key key);
     void setup();
     void display();
 
-    void join_name(){
-        std::cout << "Join Game" << std::endl;
+    void join_game(){
         connect_button_->set_active(true);
         join_game_button_->set_active(false);
         empty_ip_button_->set_active(true);
+        menu_state = MenuState::IP_INPUT;
     }
 
     void create_game(){
-        std::cout << "Create Game" << std::endl;
 
         auto server_up_event = std::make_shared<NetworkServerUpEvent>( 11999 );
         re::publish_event( server_up_event );
@@ -40,27 +46,25 @@ public:
     }
 
     void exit_game(){
-        std::cout << "Exit Game" << std::endl;
         re::exitApp();
     }
 
     void set_nick(){
-        std::cout << "empty button" << std::endl;
         change_nick_button_->set_active(true);
+        menu_state = MenuState::NICK_INPUT;
     }
     void set_ip(){
-        std::cout << "empty button" << std::endl;
     }
 
      void change_nick(){
-        std::cout << "change nick" << std::endl;
         change_nick_button_->set_active(false);
+        menu_state = MenuState::MAIN_MENU;
     }
      void connect(){
-        std::cout << "connect to server" << std::endl;
         connect_button_->set_active(false);
         empty_ip_button_->set_active(false);
         join_game_button_->set_active(true);
+        menu_state = MenuState::MAIN_MENU;
         guiManager_.layer_set_active("main_menu", false);
         guiManager_.layer_set_active("select_side", true);
 
@@ -70,21 +74,17 @@ public:
     }
 
     void go(){
-        std::cout << "GO! GO! GO!" << std::endl;
+        
     }
 
 
     void choose_dark(){
-        std::cout << "choose_dark_button_ side" << std::endl;
-
         auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some evil player", 1 , lobby.get_self_id() );
         lobby_switch_event->set_shared(true);
         re::publish_event( lobby_switch_event );
     }
 
     void choose_bright(){
-        std::cout << "choose_bright_button_ side" << std::endl;
-
         auto lobby_switch_event = std::make_shared<LobbyJoinEvent>( "Some good player", 0, lobby.get_self_id()  );
         lobby_switch_event->set_shared(true);
         re::publish_event( lobby_switch_event );
@@ -106,6 +106,10 @@ private:
     int mouseX, mouseY;
     re::ImagePtr menuBackground;
     re::ImagePtr players;
+    std::string ip;
+    std::string nick;
+    MenuState menu_state = MenuState::MAIN_MENU;
+
 
     Lobby lobby;
 };
