@@ -18,7 +18,7 @@ public:
     void draw( re::Camera );
 
     void click( re::Point2f pos );
-public:    
+private:    
     std::vector<std::vector<int>> obstacles;
     re::PhysicWorld world;
     Map map;
