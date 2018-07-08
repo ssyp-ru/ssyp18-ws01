@@ -35,9 +35,6 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     if( join_event->is_local ) {
                         self_player_id = player->get_id();
                     }
-                    auto player2 = std::make_shared<Player>( re::Point2f(330, 4660));
-                    this->units.push_back(player2);
-                    world.addObject(player2);
                     break;
                 }
                 case int(GameEventType::GAME_HOST):
