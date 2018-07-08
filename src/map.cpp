@@ -1,7 +1,7 @@
 #include "map.h"
 
 #include "RealEngine/math.h"
-
+#include <iostream>
 #include "physgameobject.h"
 
 Map::Map() {

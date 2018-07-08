@@ -29,13 +29,8 @@ Player::Player(re::Point2f pos)
     movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
 
     //re::subscribe_to_event_type(this, MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_MOVE);
-    re::subscribe_to_all( this );
     
     physic_type = PLAYER_PHYSIC_TYPE;
-
-}
-
-void Player::attack() {
 
 }
 
@@ -78,14 +73,4 @@ void Player::display(re::Camera camera){
 
 void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {
 
-}
-
-
-void Player::on_event(std::shared_ptr<re::Event> event) {
-    if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
-        std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
-        if( this->get_id() == move_event->player_id ) {
-            go_to(move_event->finish_point);
-        }
-    }
 }

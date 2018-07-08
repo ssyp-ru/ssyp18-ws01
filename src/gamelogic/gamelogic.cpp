@@ -29,7 +29,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                 
                 auto player = std::make_shared<Player>( re::Point2f(330, 4690));
-                this->players.push_back(player);
+                this->units.push_back(player);
                 world.addObject(player);
                 if( join_event->is_local ) {
                     self_player_id = player->get_id();
@@ -81,8 +81,8 @@ void GameLogic::update() {
         re::publish_event(sync_event);
     }
 
-    for (auto& player: players) {
-        player->update();
+    for (auto& unit: units) {
+        unit->update();
     }
 }
 
@@ -96,9 +96,9 @@ void GameLogic::draw( re::Camera camera )
         drawable_object->display( camera );
     }
 
-    for( auto player : players )
+    for( auto unit : units )
     {
-        player->display( camera );
+        unit->display( camera );
     }
 
     if (re::ConfigManager::get_property("common/debug_display") == "1"){
@@ -126,7 +126,12 @@ void GameLogic::click( re::Point2f pos ) {
         Unit* unitObj = dynamic_cast<Unit*>(target.second);
         if (unitObj)
         {
-            dynamic_cast<Player*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
+            if (this->self_player_id != target.first)
+                dynamic_cast<Unit*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
+        } else {
+            auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
+            move_event->set_shared(true);
+            re::publish_event(move_event);
         }
     }
 }

@@ -23,7 +23,7 @@ public:
     re::PhysicWorld world;
     Map map;
 
-    std::vector<std::shared_ptr<Player>> players;
+    std::vector<std::shared_ptr<Unit>> units;
     int self_player_id;
     bool is_server;
 
