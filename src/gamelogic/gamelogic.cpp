@@ -71,7 +71,10 @@ void GameLogic::update() {
                                                                 player->getVelocity() );
             sync_event->set_shared(true);
             re::publish_event(sync_event);
-        }
+    }
+    
+    for (auto& player: players) {
+        player->update();
     }
 }
 

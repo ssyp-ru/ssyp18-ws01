@@ -7,6 +7,7 @@ set(EXECUTABLE  main.cpp
                 networkmanager.cpp
                 player.cpp
                 main_menu.cpp
+                unit.cpp
                 )
 
 add_compile_options(-std=c++17)
