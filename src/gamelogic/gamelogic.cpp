@@ -2,6 +2,7 @@
 #include "gamelogic.h"
 #include <RealEngine/physic_core.h>
 #include <fstream>
+#include <chrono>
 
 using namespace std;
 
@@ -9,16 +10,19 @@ using namespace std;
 #include "../events/game_event.h"
 #include "../physgameobject.h"
 
+const int sync_time = 100'000;
+
 GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
+    last_sync_time = std::chrono::steady_clock::now();   
+    this->is_server = false;
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
     switch( event->get_category() )
     {
     case GAME_EVENT_CATEGORY:
-        switch( event->get_type() )
-        {
+        switch( event->get_type() ) {
             case int(GameEventType::PLAYERS_JOIN):
             {
                 auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
@@ -31,12 +35,44 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 }
                 break;
             }
+            case int(GameEventType::GAME_HOST):
+            {
+                this->is_server = true;
+                break;
+            }
+        }
+        break;
+    case MOVE_EVENT_CATEGORY:
+        switch( event->get_type() ) {
+            case int(MoveEventType::PLAYER_SYNC):
+            {
+                if( is_server ) {
+                    return;
+                }
+                auto sync_event = std::dynamic_pointer_cast<MoveSyncEvent,re::Event>( event );
+                PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->player_id );
+                player->setPosition( sync_event->pos );
+                player->setVelocity( sync_event->vec );
+            }
         }
     }
 }
 
 void GameLogic::update() {
     world.updateTick();
+
+    int time_milils = (std::chrono::duration_cast<std::chrono::microseconds>
+            (std::chrono::steady_clock::now() - last_sync_time)).count();
+    if (is_server && time_milils > sync_time){
+        last_sync_time = std::chrono::steady_clock::now();   
+        for( auto player : players ) {
+            auto sync_event = std::make_shared<MoveSyncEvent>(  player->get_id(),
+                                                                player->getPosition(),
+                                                                player->getVelocity() );
+            sync_event->set_shared(true);
+            re::publish_event(sync_event);
+        }
+    }
 }
 
 void GameLogic::draw( re::Camera camera )

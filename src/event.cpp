@@ -17,6 +17,13 @@ void deserealize( std::vector<char> msg ) {
                 re::publish_event( move_input );
                 break;
             }
+            case int(MoveEventType::PLAYER_SYNC) :
+            {
+                auto sync_event = std::make_shared<MoveSyncEvent>( 0, re::Point2f(0,0), re::Point2f(0,0) );
+                sync_event->deserialize(msg);
+                re::publish_event( sync_event );
+                break;
+            }
         }
         break;
     case LOBBY_EVENT_CATEGORY:
