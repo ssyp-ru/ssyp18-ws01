@@ -9,34 +9,35 @@
 #include "events/move_event.h"
 
 #include "physgameobject.h"
+#include "unit.h"
 
 class Player 
-    : public PhysGameObject
+    : public Unit
     , public re::EventSubscriber
 {
 public:
+    static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
+
     Player(re::Point2f pos);
-    // void tryCast(int abilityIndex);
-    // void addAbility(Ability *ab);
-    // std::vector<Ability*>* getAbilities();
-    void addExp(int amount);
-    void on_event(std::shared_ptr<re::Event> event);
-    int getLevel();
-    void reduceCooldowns();
-    virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
+    ~Player() = default;
+    
     void attack();
     void update();
-    virtual void display(re::Camera camera);
-    void go_to(re::Point2f finish_point);
+    void display(re::Camera camera);
+
+    void on_event(std::shared_ptr<re::Event> event);
+
+    void add_exp(int amount);
+    int get_level() { return level; }
+    void reduceCooldowns();
+    virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
 
     re::AnimationPtr movingAnim_Forward; // moving animation
     re::ResourceManager resource_manager;
 
-    static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
 private:
-    // std::vector<Ability*> abilities;
     int expToNextLevel[18] = { 100 };
     int exp, level, hp, maxhp;
-    re::Point2f velosity, goto_point;
+    re::Point2f goto_point;
 };
 

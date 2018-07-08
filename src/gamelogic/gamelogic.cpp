@@ -37,6 +37,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
 
 void GameLogic::update() {
     world.updateTick();
+    for (auto& player: players) {
+        player->update();
+    }
 }
 
 void GameLogic::draw( re::Camera camera )
