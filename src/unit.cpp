@@ -17,6 +17,8 @@ Unit::Unit(re::Point2f pos)
     addEdge(2, 3);
     addEdge(3, 0);
     setRigidbodySimulated(true);
+    setFriction(1.0);
+    setBounciness(0.0);
 }
 
 
