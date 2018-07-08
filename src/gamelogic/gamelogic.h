@@ -18,12 +18,12 @@ public:
     void draw( re::Camera );
 
     void click( re::Point2f pos );
-public:    
+private:    
     std::vector<std::vector<int>> obstacles;
     re::PhysicWorld world;
     Map map;
 
-    std::vector<std::shared_ptr<Player>> players;
+    std::vector<std::shared_ptr<Unit>> units;
     int self_player_id;
     bool is_server;
 
