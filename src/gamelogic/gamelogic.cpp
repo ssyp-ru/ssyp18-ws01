@@ -50,9 +50,11 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     return;
                 }
                 auto sync_event = std::dynamic_pointer_cast<MoveSyncEvent,re::Event>( event );
-                PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->player_id );
-                player->setPosition( sync_event->pos );
-                player->setVelocity( sync_event->vec );
+                for( size_t i = 0; i < sync_event->objects.size(); i++ ) {
+                    PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->objects[i].object_id );
+                    player->setPosition( sync_event->objects[i].position );
+                    player->setVelocity( sync_event->objects[i].velocity );
+                }
             }
         }
     }
@@ -65,13 +67,17 @@ void GameLogic::update() {
             (std::chrono::steady_clock::now() - last_sync_time)).count();
     if (is_server && time_milils > sync_time){
         last_sync_time = std::chrono::steady_clock::now();   
+        std::vector<MoveSyncData> move_sync_data;
         for( auto player : players ) {
-            auto sync_event = std::make_shared<MoveSyncEvent>(  player->get_id(),
-                                                                player->getPosition(),
-                                                                player->getVelocity() );
-            sync_event->set_shared(true);
-            re::publish_event(sync_event);
+            MoveSyncData data;
+            data.position = player->getPosition();
+            data.velocity = player->getVelocity();
+            data.object_id = player->get_id();
+            move_sync_data.push_back( data );
         }
+        auto sync_event = std::make_shared<MoveSyncEvent>( move_sync_data );
+        sync_event->set_shared(true);
+        re::publish_event(sync_event);
     }
 
     for (auto& player: players) {
