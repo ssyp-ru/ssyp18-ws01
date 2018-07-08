@@ -13,7 +13,7 @@ void MainMenu::setup() {
 
     re::ImagePtr join_icon = std::make_shared<re::Image>("join.png");
     join_game_button_ = std::make_shared<re::BaseButton>(20, 220, "join", join_icon, join_icon);
-    join_game_button_->register_action(std::bind(&MainMenu::join_name, this));
+    join_game_button_->register_action(std::bind(&MainMenu::join_game, this));
     guiManager_.register_button(join_game_button_, "main_menu");
 
     re::ImagePtr create_icon = std::make_shared<re::Image>("create.png");
@@ -51,8 +51,8 @@ void MainMenu::setup() {
     empty_ip_button_->set_active(false);
 
 
-    re::ImagePtr choose_dark_button__icon = std::make_shared<re::Image>("dark.png");
-    choose_dark_button_ = std::make_shared<re::BaseButton>(20, 760, "dark", choose_dark_button__icon, choose_dark_button__icon);
+    re::ImagePtr dark_icon = std::make_shared<re::Image>("dark.png");
+    choose_dark_button_ = std::make_shared<re::BaseButton>(20, 760, "dark",dark_icon, dark_icon);
     choose_dark_button_->register_action(std::bind(&MainMenu::choose_dark, this));
     guiManager_.register_button(choose_dark_button_, "select_side");
 
@@ -75,6 +75,9 @@ void MainMenu::setup() {
 void MainMenu::display() {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY);  
+    if(empty_ip_button_->is_active()){
+        re::draw_text_custom(empty_ip_button_->get_pos().x + 5, empty_ip_button_->get_pos().y + 30, 6, ip, re::DARKGRAY);
+    }
     if(choose_dark_button_->is_active()){
         re::draw_image(20, 20, players);
         re::draw_image(20, 420, players);
@@ -94,5 +97,18 @@ void MainMenu::display() {
                     break;
             }
         }
+    }
+
+}
+void MainMenu::on_key_pressed(re::Key key){
+    if(menu_state == MenuState::IP_INPUT && ((int)key >= (int)re::Key::Num0 && (int)key <= (int)re::Key::Num9)){
+        char key_val = (int)key + (int)'0' - (int)re::Key::Num0;
+        ip += key_val;
+    }
+    if(menu_state == MenuState::IP_INPUT && (int)key == (int)re::Key::P){
+        ip += '.';
+    }
+    if(menu_state == MenuState::IP_INPUT && (int)key == (int)re::Key::BackSpace && ip.size() > 0){
+        ip.pop_back();
     }
 }

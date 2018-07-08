@@ -122,6 +122,11 @@ public:
     }
 
     void on_key_pressed(re::Key key){
+        if(game_state == GameState::MAIN_MENU){
+            main_menu.on_key_pressed(key);
+        }
+        
+        
         switch( key ) {
             case re::Key::Escape: re::exitApp();
             case re::Key::W:
