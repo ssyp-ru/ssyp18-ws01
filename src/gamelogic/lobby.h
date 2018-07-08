@@ -109,6 +109,10 @@ public:
             {
                 case int(GameEventType::GAME_START):
                 {
+                    if( this->is_server ) {
+                        auto is_server_event = std::make_shared<GameHostEvent>();
+                        re::publish_event(is_server_event);
+                    }
                     for( size_t i = 0; i < members.size(); i++ ) {
                         auto join_event = std::make_shared<GamePlayersJoinEvent>(members[i],false);
                         if( int(i) == this->self_id ) {

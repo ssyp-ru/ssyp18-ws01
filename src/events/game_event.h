@@ -11,7 +11,8 @@ const int GAME_EVENT_CATEGORY = 4;
 
 enum class GameEventType {
     GAME_START,
-    PLAYERS_JOIN
+    PLAYERS_JOIN,
+    GAME_HOST
 };
 
 class GameStartEvent : public re::Event {
@@ -50,4 +51,11 @@ public:
 
     LobbyMember player;
     bool is_local;
+};
+
+class GameHostEvent : public re::Event {
+public:
+    GameHostEvent() 
+        : Event(GAME_EVENT_CATEGORY, (int)GameEventType::GAME_HOST)
+    {}
 };

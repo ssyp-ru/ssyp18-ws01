@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include <RealEngine/event.h>
 #include <RealEngine/physic_core.h>
 #include <RealEngine/camera.h>
@@ -19,10 +21,11 @@ public:
 public:    
     std::vector<std::vector<int>> obstacles;
     re::PhysicWorld world;
-
     Map map;
 
     std::vector<std::shared_ptr<Player>> players;
-
     int self_player_id;
+    bool is_server;
+
+    std::chrono::time_point<std::chrono::steady_clock> last_sync_time;
 };

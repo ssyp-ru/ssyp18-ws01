@@ -18,5 +18,4 @@ public:
 private:
     int object_id_;
     static int object_count;
-    bool is_server;
 };
