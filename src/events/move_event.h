@@ -103,7 +103,7 @@ public:
         }
     }
 
-    std::string get_describe_string() { return "MoveSyncEvent"; }
+    std::string get_describe_string() { return ""; }
 
     std::vector<MoveSyncData> objects;
 };
