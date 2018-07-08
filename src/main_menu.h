@@ -16,13 +16,14 @@ enum class MenuState {
     NICK_INPUT
 };
 
-class MainMenu {
+class MainMenu : public re::EventSubscriber{
 public:
     MainMenu(re::GuiManager& guiManager);
 
     void on_key_pressed(re::Key key);
     void setup();
     void display();
+    virtual void on_event( std::shared_ptr<re::Event> event );
 
     void join_game();
     void create_game();

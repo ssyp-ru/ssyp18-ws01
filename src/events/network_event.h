@@ -11,6 +11,7 @@ enum class NetworkEventType {
     CLIENT_CONNECTED,
     CLIENT_DISCONNECTED,
     CONNECT,
+    CONNECT_COMPLETE,
     START_SERVER
 };
 
@@ -41,6 +42,13 @@ public:
     {}
     std::string address;
     int port;
+};
+
+class NetworkConnectCompleteEvent : public re::Event {
+public:
+    NetworkConnectCompleteEvent()
+        : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CONNECT_COMPLETE)
+    {}
 };
 
 class NetworkServerUpEvent : public re::Event {
