@@ -48,14 +48,15 @@ public:
 
         player = std::make_shared<Player>(re::Point2f(400, 2200));
         game_logic.world.addObject(player);
-      //  auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
-      //  move_event->set_shared(true);
-      //  re::publish_event(move_event);
+        auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
+       move_event->set_shared(true);
+        re::publish_event(move_event);
 
         this->network_state = NetworkState::menu;
     }
 
     void update() override {
+        std::cout << player->get_way_size() << std::endl;
         if(player->get_way_size() > 0){
             re::Point2f next = player->get_next_step();
             auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(next.y * scale, next.x * scale));
@@ -128,20 +129,20 @@ public:
 
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
-        std::cout << int(camera.screen_to_world(cursor_pos).y / scale) << " " <<
-        int(camera.screen_to_world(cursor_pos).x / scale) << std::endl;
-     //   if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
-       //     [int(camera.screen_to_world(cursor_pos).x / scale)] == 0 )){
-                std::cout << " 0 " << std::endl;
+       // std::cout << int(camera.screen_to_world(cursor_pos).y / scale) << " " <<
+        //int(camera.screen_to_world(cursor_pos).x / scale) << std::endl;
+        /*if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
+            [int(camera.screen_to_world(cursor_pos).x / scale)] == 0 )){
+                //std::cout << " 0 " << std::endl;
             std::vector <std::vector <int>> count_;
             player->set_way(re::get_the_way(game_logic.obstacles,  count_of_cells, int(player->getPosition().y / scale),
             int(player->getPosition().x / scale), int(camera.screen_to_world(cursor_pos).y / scale),
             int(camera.screen_to_world(cursor_pos).x / scale), count_));
-        //}
+        }*/
     }
 
 private:
-    int count_of_cells = 250;
+    int count_of_cells = 100;
     int size_map = 5000;
     int scale = size_map / count_of_cells;
     GameState game_state = GameState::GAME;
