@@ -21,6 +21,8 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CLIENT_CONNECTED)
         , sock_id(sock_id)
     {}
+
+    std::string get_describe_string() { return "NetworkConnectionEvent"; }
     int sock_id;
 };
 
@@ -30,6 +32,8 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CLIENT_DISCONNECTED)
         , sock_id(sock_id)
     {}
+
+    std::string get_describe_string() { return "NetworkDisconnectionEvent"; }
     int sock_id;
 };
 
@@ -40,6 +44,8 @@ public:
         , address(address)
         , port(port)
     {}
+
+    std::string get_describe_string() { return "NetworkConnectEvent"; }
     std::string address;
     int port;
 };
@@ -49,6 +55,8 @@ public:
     NetworkConnectCompleteEvent()
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CONNECT_COMPLETE)
     {}
+
+    std::string get_describe_string() { return "NetworkConnectCompleteEvent"; }
 };
 
 class NetworkServerUpEvent : public re::Event {
@@ -57,5 +65,7 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::START_SERVER)
         , port(port)
     {}
+
+    std::string get_describe_string() { return "NetworkServerUpEvent"; }
     int port;
 };

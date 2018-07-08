@@ -44,6 +44,13 @@ public:
         player_id = j["id"];
     }
 
+    std::string get_describe_string() { 
+        std::string s("MoveEvent");
+        s = s + " id: " + std::to_string(player_id) + " p: [" 
+            + std::to_string((int)finish_point.x) + ", " + std::to_string((int)finish_point.y) + "]";
+        return s; 
+    }
+
     re::Point2f finish_point;
     int player_id;
 };
@@ -95,6 +102,8 @@ public:
             new_data.object_id  = j[std::to_string(i)]["id"];
         }
     }
+
+    std::string get_describe_string() { return "MoveSyncEvent"; }
 
     std::vector<MoveSyncData> objects;
 };

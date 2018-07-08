@@ -60,6 +60,8 @@ public:
         }
     }
 
+    std::string get_describe_string() { return "LobbySyncEvent"; }
+
     std::vector<LobbyMember> members;
 };
 
@@ -94,6 +96,8 @@ public:
         team = j["team"];
         id = j["id"];
     }
+
+    std::string get_describe_string() { return "LobbyJoinEvent"; }
 
     std::string name;
     int team;
