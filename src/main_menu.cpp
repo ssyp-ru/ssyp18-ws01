@@ -72,6 +72,20 @@ void MainMenu::setup() {
 
 }
 
+void MainMenu::on_event( std::shared_ptr<re::Event> event )
+{
+    if( event->get_category() == NETWORK_EVENT_CATEGORY &&
+        event->get_type() == int(NetworkEventType::CONNECT_COMPLETE) )
+    {
+        connect_button_->set_active(false);
+        empty_ip_button_->set_active(false);
+        join_game_button_->set_active(true);
+        menu_state = MenuState::MAIN_MENU;
+        guiManager_.layer_set_active("main_menu", false);
+        guiManager_.layer_set_active("select_side", true);
+    }
+}    
+
 void MainMenu::display() {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY);  

@@ -16,13 +16,14 @@ enum class MenuState {
     NICK_INPUT
 };
 
-class MainMenu {
+class MainMenu : public re::EventSubscriber{
 public:
     MainMenu(re::GuiManager& guiManager);
 
     void on_key_pressed(re::Key key);
     void setup();
     void display();
+    virtual void on_event( std::shared_ptr<re::Event> event );
 
     void join_game(){
         connect_button_->set_active(true);
@@ -61,14 +62,8 @@ public:
         change_nick_button_->set_active(false);
         menu_state = MenuState::MAIN_MENU;
     }
-     void connect(){
-        connect_button_->set_active(false);
-        empty_ip_button_->set_active(false);
-        join_game_button_->set_active(true);
-        menu_state = MenuState::MAIN_MENU;
-        guiManager_.layer_set_active("main_menu", false);
-        guiManager_.layer_set_active("select_side", true);
-
+    
+    void connect(){
         auto connect_event = std::make_shared<NetworkConnectEvent>( ip, 11999 );
         re::publish_event( connect_event );
         go_button_->set_active(false);
