@@ -81,6 +81,20 @@ public:
             }
             case GameState::GAME: {
                 game_logic.update();
+
+                if( game_state == GameState::GAME ) {
+                    if( cursor_pos.y < 50 ) {
+                        camera.translate( re::Point2f( 0, -20 ) );
+                    } else if( re::get_height() - cursor_pos.y < 50 ) {
+                        camera.translate( re::Point2f( 0, 20 ) );
+                    }
+                    if( cursor_pos.x < 50 ) {
+                        camera.translate( re::Point2f( -20, 0 ) );
+                    } else if( re::get_width() - cursor_pos.x < 50 ) {
+                        camera.translate( re::Point2f( 20, 0 ) );
+                    }
+
+                }
                 return;
             }
         }
