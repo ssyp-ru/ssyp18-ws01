@@ -6,13 +6,12 @@
 #include <RealEngine/physic_core.h>
 #include "RealEngine/resource_manager.h"
 #include "RealEngine/event.h"
-//#include <RealEngine/time.h>
-#include "drawable_game_object.h"
 #include "events/move_event.h"
 
+#include "physgameobject.h"
 
 class Player 
-    : public DrawableGameObject
+    : public PhysGameObject
     , public re::EventSubscriber
 {
 public:

@@ -5,6 +5,7 @@
 #include <vector>
 #include "../events/lobby_event.h"
 #include "../events/network_event.h"
+#include "../events/game_event.h"
 
 class Lobby : public re::EventSubscriber {
 public:
@@ -13,6 +14,7 @@ public:
     {
         re::subscribe_to_event_category( this, LOBBY_EVENT_CATEGORY );
         re::subscribe_to_event_category( this, NETWORK_EVENT_CATEGORY );
+        re::subscribe_to_event_category( this, GAME_EVENT_CATEGORY );
     }
 
     bool is_server = false;
@@ -99,6 +101,20 @@ public:
                     new_member.sock_id = connect_event->sock_id;
                     new_member.player_id = members.size();
                     members.push_back( new_member );
+                    break;
+                }
+            }
+        case GAME_EVENT_CATEGORY:
+            switch( event->get_type() )
+            {
+                case int(GameEventType::GAME_START):
+                {
+                    for( auto member : members ) {
+                        auto join_event = std::make_shared<GamePlayersJoinEvent>(member);
+                        join_event->set_shared(false);
+                        re::publish_event( join_event );
+                    }
+                    members.clear();
                     break;
                 }
             }

@@ -2,6 +2,8 @@
 
 #include "RealEngine/math.h"
 
+#include "physgameobject.h"
+
 Map::Map() {
 
 } 
@@ -12,7 +14,7 @@ Map::Map( re::PhysicWorld &world, std::string path )
 
     for (const auto& objectData : map.objectgroup[0].group)
     {
-        auto dobj = std::make_shared<DrawableGameObject>(re::Point2f(objectData.x, objectData.y));
+        auto dobj = std::make_shared<PhysGameObject>(re::Point2f(objectData.x, objectData.y));
         if (!objectData.poly.points.empty()){
             for (auto vertex : objectData.poly.points)
                 dobj->addPoint(re::Point2f(vertex.x, vertex.y));
@@ -33,10 +35,9 @@ void Map::draw( re::Camera camera ) {
     if( !this->backgroung ) {
         this->backgroung = std::make_shared<re::Image>( map.imagelayer[0].img_path );
     }
-    re::draw_image_part( re::Point2f(0,0), 
+    re::draw_image_part( camera.world_to_screen( re::Point2f(0,0) ), 
                          camera.world_to_screen(size_background), 
                          re::Point2f(0,0),
                          re::Point2f(1,1),
                          this->backgroung );
-    this->backgroung->getTex();
 }

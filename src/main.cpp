@@ -33,11 +33,15 @@ enum class GameState {
     GAME
 };
 
-class MainApp : public re::IBaseApp{
+class MainApp : public re::IBaseApp
+              , public re::EventSubscriber
+{
 public:
     MainApp()
         : main_menu(gui_manager)
-    {}
+    {
+        re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
+    }
 
     NetworkState network_state;
 
@@ -79,6 +83,20 @@ public:
         }
     }
 
+    void on_event( std::shared_ptr<re::Event> event ) {
+        switch( event->get_category() ) {
+        case GAME_EVENT_CATEGORY:
+            switch( event->get_type() ) {
+                case int(GameEventType::GAME_START):
+                {
+                    game_state = GameState::GAME;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
     void display() override {
         switch (game_state) {
             case GameState::MAIN_MENU: {
@@ -104,16 +122,16 @@ public:
         switch( key ) {
             case re::Key::Escape: re::exitApp();
             case re::Key::W:
-                //camera.translate( re::Point2f( 0,-20 ) );
+                camera.translate( re::Point2f( 0,-20 ) );
                 break;
             case re::Key::S:
-                //camera.translate( re::Point2f( 0,20 ) );
+                camera.translate( re::Point2f( 0,20 ) );
                 break;
             case re::Key::A:
-                //camera.translate( re::Point2f( -20,0 ) );
+                camera.translate( re::Point2f( -20,0 ) );
                 break;
             case re::Key::D:
-                //camera.translate( re::Point2f( 20,0 ) );
+                camera.translate( re::Point2f( 20,0 ) );
                 break;
             case re::Key::Q:
                 zoom += 0.5;
@@ -128,21 +146,11 @@ public:
 
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
-     //   if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
-       //     [int(camera.screen_to_world(cursor_pos).x / scale)] == 0 )){
-                std::cout << " 0 " << std::endl;
 
-
-        
-        // if((game_state == GameState::GAME) && (game_logic.obstacles[int(camera.screen_to_world(cursor_pos).y / scale)]
-        //     [int(camera.screen_to_world(cursor_pos).x / scale)] == 0 )){
-        //     std::vector <std::vector <int>> count_;
-        //     player->set_way(re::get_the_way(game_logic.obstacles,  count_of_cells, int(player->getPosition().y / scale),
-        //     int(player->getPosition().x / scale), int(camera.screen_to_world(cursor_pos).y / scale),
-        //     int(camera.screen_to_world(cursor_pos).x / scale), count_));
-        // }
-/*
-        if (game_state == GameState::GAME){
+        if( game_state == GameState::GAME ) {
+            game_logic.click( camera.screen_to_world( cursor_pos ) );
+        }
+        /*if (game_state == GameState::GAME){
             re::Point2f finish_point = camera.screen_to_world(cursor_pos);
             auto move_event = std::make_shared<MoveEvent>(0, finish_point);
             move_event->set_shared(true);
@@ -151,7 +159,7 @@ public:
     }
 
 private:
-    GameState game_state = GameState::GAME;
+    GameState game_state = GameState::MAIN_MENU;
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;
