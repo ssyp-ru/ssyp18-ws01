@@ -31,7 +31,8 @@ public:
     void reduceCooldowns();
     virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
 
-    re::AnimationPtr movingAnim_Forward; // moving animation
+    re::AnimationPtr movingAnim_Forward;
+    re::ImagePtr stay_image;
     re::ResourceManager resource_manager;
 
 private:

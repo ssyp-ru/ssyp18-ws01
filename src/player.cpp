@@ -52,19 +52,36 @@ void Player::load_animation() {
 
     resource_manager.load_file("resource.xml");
 
-    re::ImagePtr image = resource_manager.get_image("player_move1");
-    movingAnim_Forward->add_frame(image);
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move2"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move3"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move5"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move6"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move7"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move8"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move9"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move10"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
+    if (side == Side::BRIGHT){
+        stay_image = resource_manager.get_image("player_move1");
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move1"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move2"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move3"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move5"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move6"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move7"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move8"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move9"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move10"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
+    } else {
+        stay_image = resource_manager.get_image("d_player_move1");
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move1"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move2"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move3"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move4"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move5"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move6"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move7"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move8"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move9"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move10"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move11"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("d_player_move12"));
+    }
+
 }
 
 void Player::display(re::Camera camera){
@@ -86,7 +103,7 @@ void Player::display(re::Camera camera){
         re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
                             screen_pos.x + size, screen_pos.y + size,
                             0, 0, 1, 1,
-                            resource_manager.get_image("player_move1"));
+                            stay_image);
     }
 
     if (re::ConfigManager::get_property("common/debug_display") == "1"){
