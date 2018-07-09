@@ -209,10 +209,6 @@ public:
         if( game_state == GameState::GAME ) {
             game_logic.click( camera.screen_to_world( cursor_pos ) );
         }
-        std::string infotext = std::to_string(cursor_pos.x);
-        re::Log::set_screen_level(re::Log::LEVEL::INFO);
-
-        re::Log::debug(infotext);
         /*if (game_state == GameState::GAME){
             re::Point2f finish_point = camera.screen_to_world(cursor_pos);
             auto move_event = std::make_shared<MoveEvent>(0, finish_point);
