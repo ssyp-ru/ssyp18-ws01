@@ -2,17 +2,19 @@
 #include "RealEngine/config_manager.h"
 #include "unit.h"
 #include <iostream>
-
+#include <vector>
+#include <cmath>
+#include <algorithm>
 Unit::Unit(re::Point2f pos) 
     : PhysGameObject(pos) 
 {
     hp = 500;
     maxhp = 500;
 
-    addPoint(re::Point2f(-30, -30));
-    addPoint(re::Point2f(-30, 30));
-    addPoint(re::Point2f(30, 30));
-    addPoint(re::Point2f(30, -30));
+    addPoint(re::Point2f(-10, 25));
+    addPoint(re::Point2f(-10, 35));
+    addPoint(re::Point2f(5, 35));
+    addPoint(re::Point2f(5, 25));
     addEdge(0, 1);
     addEdge(1, 2);
     addEdge(2, 3);
@@ -125,4 +127,53 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
             cur_action = Action::MOVING;
         }
     }
+}
+
+void Unit::update_way(){
+    for(unsigned int i = 0; i < way.size(); i++){
+        way[i] = re::Point2f(way[i].y * 20 + 10, way[i].x * 20 + 10);
+    }
+}
+
+void Unit::set_new_way(re::Point2f finish, std::vector<std::vector<int>> map){
+    std::vector<std::vector<int>> count;
+    way = re::a_star(map, 250, int(getPosition().y / 20),  int(getPosition().x / 20),  int(finish.y / 20),
+                  int(finish.x / 20), count);
+                  update_way();
+    std::cout << "finish cell "<< int(finish.y / 20) << " " << int(finish.x / 20) << std::endl;
+    index = 0;
+}
+
+re::Point2f Unit::get_cell(int index){
+    return way[index];
+}
+unsigned int Unit::get_index(){
+    return index;
+}
+
+void Unit::update_index(){
+    index ++;
+}
+void Unit::move_unit(){
+
+    re::Point2f next = get_cell(get_index());
+    setVelocity((next - this->getPosition()).Normalized() * movespeed);
+    if(((abs(next.x - this->getPosition().x) < 10) && (abs(next.y  - this->getPosition().y) < 10)) && 
+       (get_index() != way.size())) {
+        update_index();
+        re::Point2f next = get_cell(get_index());
+        setVelocity((next - this->getPosition()).Normalized() * movespeed);
+    }
+
+     if(((abs(next.x - this->getPosition().x) < 10) && (abs(next.y - this->getPosition().y) < 10)) && 
+       (get_index() == way.size())) {
+        //std:: cout << "setVelosity 0"<< std::endl;
+        re::Point2f next = get_cell(get_index());
+        setVelocity((next - this->getPosition()).Normalized() * 0);
+        way.clear();
+    }
+    //std:: cout << "Player position " << this->getPosition().x << " " << this->getPosition().y    << std::endl ;
+    //std:: cout << "index " << get_index() << std::endl ;
+    //std:: cout << " ################## "<< std::endl ;
+    
 }

@@ -4,7 +4,7 @@
 #include "RealEngine/config_manager.h"
 #include <fstream>
 #include <chrono>
-
+#include "../obstacles_generator.h"
 using namespace std;
 
 #include "../events/move_event.h"
@@ -16,7 +16,8 @@ const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
-    last_sync_time = std::chrono::steady_clock::now();   
+    last_sync_time = std::chrono::steady_clock::now();  
+    obstacles = generate_obstacles (20, 250, 250, world);
     this->is_server = false;
 }
 
@@ -29,7 +30,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(340, 4680));
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -82,6 +83,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
 void GameLogic::update() {
     world.updateTick();
 
+     if(units[0]->way.size() != 0)
+        units[0]->move_unit();
+
     int time_milils = (std::chrono::duration_cast<std::chrono::microseconds>
             (std::chrono::steady_clock::now() - last_sync_time)).count();
     if (is_server && time_milils > sync_time){
@@ -107,7 +111,7 @@ void GameLogic::update() {
 void GameLogic::draw( re::Camera camera )
 {
     map.draw(camera);
-
+   
     for( auto object : this->world.getWorld() )
     {
         auto drawable_object = std::static_pointer_cast<PhysGameObject,re::PhysicObject>( object );
@@ -142,9 +146,11 @@ void GameLogic::click( re::Point2f pos ) {
 
     if (target.first == -1)
     {
-        auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
-        move_event->set_shared(true);
-        re::publish_event(move_event);
+
+        units[0]->set_new_way(pos, obstacles);
+
+        
+;
     } else {
         Unit* unitObj = dynamic_cast<Unit*>(target.second);
         if (unitObj)
@@ -152,9 +158,7 @@ void GameLogic::click( re::Point2f pos ) {
             if (this->self_player_id != target.first)
                 dynamic_cast<Unit*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
         } else {
-            auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
-            move_event->set_shared(true);
-            re::publish_event(move_event);
+             units[0]->set_new_way(pos, obstacles);
         }
     }
 }
