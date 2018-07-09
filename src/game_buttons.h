@@ -13,7 +13,7 @@
 
 class GameMenu {
 public:
-    GameMenu(re::GuiManager& guiManager);
+    GameMenu(re::GuiManager& guiManager, GameLogic& gameLogic);
 
     void setup();
     void display(int mouseX, int mouseY);
@@ -34,5 +34,6 @@ private:
     //int mouseX, mouseY;
     int exp = 10, hp = 100, mp = 50;
 
+    GameLogic& game_logic;
     //Lobby lobby;
 };

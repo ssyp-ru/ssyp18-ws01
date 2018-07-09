@@ -81,7 +81,7 @@ class MainApp : public re::IBaseApp
 public:
     MainApp()
         : main_menu(gui_manager)
-        ,  game_menu(gui_manager)
+        , game_menu(gui_manager, game_logic)
     {
         set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
@@ -225,7 +225,6 @@ public:
         if((game_state == GameState::GAME ) && (game_logic.obstacles[int(camera.screen_to_world( cursor_pos ).y  / 20)]
                                                         [int(camera.screen_to_world( cursor_pos ).x  / 20)] == 0)) {
 
-            std::cout << int(cursor_pos.x) << " " << int(cursor_pos.y)   << std::endl;
             game_logic.click( camera.screen_to_world( cursor_pos ) );
         }
     }

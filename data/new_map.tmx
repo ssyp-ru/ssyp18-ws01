@@ -255,7 +255,7 @@
 </data>
  </layer>
  <imagelayer name="Image Layer 1">
-  <image source="../ucantry/ssyp18/map.png" width="5000" height="5000"/>
+  <image source="map.png" width="5000" height="5000"/>
  </imagelayer>
  <objectgroup name="collisions">
   <object id="34" x="4454" y="3">

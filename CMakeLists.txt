@@ -13,6 +13,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 set(FILE_TO_COPY
     config/resource.xml
     config/config.xml
+    data/new_map.tmx
     data/map.tmx
     data/map.png
     data/mage_front_1.png
@@ -45,6 +46,7 @@ set(FILE_TO_COPY
     data/dark.png
     data/bright.png
     data/go.png
+    data/screen_panel.png
 )
 
 

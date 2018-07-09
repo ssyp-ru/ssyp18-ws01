@@ -17,7 +17,7 @@ const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
     ofstream fout("cppstudio.txt"); // создаём объект класса ofstream для записи и связываем его с файлом cppstudio.txt
-    this->map = Map( world, "map.tmx" );
+    this->map = Map( world, "new_map.tmx" );
     last_sync_time = std::chrono::steady_clock::now();  
     obstacles = generate_obstacles (20, 250, 250, world);
     for (int i = 0; i < 250; i++){

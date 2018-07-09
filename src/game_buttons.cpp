@@ -1,7 +1,8 @@
 #include "game_buttons.h"
 
-GameMenu::GameMenu(re::GuiManager& guiManager) 
+GameMenu::GameMenu(re::GuiManager& guiManager, GameLogic& gameLogic) 
     : guiManager_(guiManager)
+    , game_logic(gameLogic)
 {}
 
 void GameMenu::skill1(){
@@ -12,10 +13,10 @@ void GameMenu::skill3(){
 }
 void GameMenu::skill4(){
 }
-void GameMenu::set_val(int new_exp, int new_hp, int new_mp){
-    exp = new_exp;
+void GameMenu::set_hp(int new_hp){
+    // exp = new_exp;
     hp = new_hp;
-    mp = new_mp;
+    // mp = new_mp;
 
 }
 
