@@ -4,9 +4,9 @@
 #include "RealEngine/config_manager.h"
 #include <fstream>
 #include <chrono>
-
+#include "../obstacles_generator.h"
 using namespace std;
-
+#include <fstream>
 #include "../events/move_event.h"
 #include "../events/spawn_event.h"
 #include "../events/game_event.h"
@@ -16,9 +16,23 @@ using namespace std;
 const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
+    ofstream fout("cppstudio.txt"); // создаём объект класса ofstream для записи и связываем его с файлом cppstudio.txt
     this->map = Map( world, "map.tmx" );
-    last_sync_time = std::chrono::steady_clock::now();   
+    last_sync_time = std::chrono::steady_clock::now();  
+    obstacles = generate_obstacles (20, 250, 250, world);
+    for (int i = 0; i < 250; i++){
+        for (int j = 0; j < 250; j++){
+            fout << obstacles[i][j];
+        }
+        fout << std::endl;
+    }
+    fout.close();
     this->is_server = false;
+    this->self_player_id = -1;
+}
+
+int GameLogic::get_self_id(){
+    return self_player_id;
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
@@ -30,7 +44,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(330, (4690 + rand()%100)), obstacles );
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -81,7 +95,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
                     Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
-                    player->attack( attack_event->target_id );
+                    if( player != nullptr ) {
+                        player->attack( attack_event->target_id );
+                    }
                     return;
                 }
             }
@@ -125,7 +141,9 @@ void GameLogic::update() {
     }
 
     for (auto& unit: units) {
-        unit->update();
+        if( unit ) {
+            unit->update();
+        }
     }
 
     if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
@@ -138,7 +156,7 @@ void GameLogic::update() {
 void GameLogic::draw( re::Camera camera )
 {
     map.draw(camera);
-
+   
     for( auto object : this->world.getWorld() )
     {
         auto drawable_object = std::static_pointer_cast<PhysGameObject,re::PhysicObject>( object );
@@ -192,5 +210,6 @@ void GameLogic::click( re::Point2f pos ) {
             move_event->set_shared(true);
             re::publish_event(move_event);
         }
+
     }
 }

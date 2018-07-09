@@ -17,11 +17,14 @@ class Player
 public:
     static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
 
+    Player(re::Point2f pos, std::vector<std::vector<int>> &new_map);
     Player(re::Point2f pos);
     ~Player() = default;
     
     void update();
     void display(re::Camera camera);
+
+    
 
     void add_exp(int amount);
     int get_level() { return level; }

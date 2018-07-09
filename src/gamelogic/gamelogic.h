@@ -16,10 +16,11 @@ public:
     virtual void on_event(re::EventPtr event);
     void update();
     void draw( re::Camera );
-
+    int get_self_id();
     void click( re::Point2f pos );
+        std::vector<std::vector<int>> obstacles;
 private:    
-    std::vector<std::vector<int>> obstacles;
+
     re::PhysicWorld world;
     Map map;
 
