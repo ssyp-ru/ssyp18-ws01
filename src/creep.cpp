@@ -100,19 +100,17 @@ void Creep::load_animation() {
 
     resource_manager.load_file("resource.xml");
 
-    re::ImagePtr image = resource_manager.get_image("player_move1");
-    movingAnim_Forward->add_frame(image);
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move2"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move3"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move4"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move5"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move6"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move7"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move8"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move9"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move10"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move11"));
-    movingAnim_Forward->add_frame(resource_manager.get_image("player_move12"));
+
+    if (side == Side::BRIGHT)
+    {
+        movingAnim_Forward->add_frame(resource_manager.get_image("bright_creep_left_move1"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("bright_creep_left_move2"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("bright_creep_left_move3"));
+    } else {
+        movingAnim_Forward->add_frame(resource_manager.get_image("dark_creep_left_move1"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("dark_creep_left_move2"));
+        movingAnim_Forward->add_frame(resource_manager.get_image("dark_creep_left_move3"));
+    }
 }
 
 void Creep::display(re::Camera camera){
@@ -125,10 +123,16 @@ void Creep::display(re::Camera camera){
 
     float size = camera.meter_to_screen(50);
 
-    re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
-                        screen_pos.x + size, screen_pos.y + size,
-                        0, 0, 1, 1,
-                        movingAnim_Forward->getNextFrame());
+    if (getVelocity().x >= 0)
+        re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
+                            screen_pos.x + size, screen_pos.y + size,
+                            1, 0, 0, 1,
+                            movingAnim_Forward->getNextFrame());
+    else
+        re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
+                            screen_pos.x + size, screen_pos.y + size,
+                            0, 0, 1, 1,
+                            movingAnim_Forward->getNextFrame());
 
     if (re::ConfigManager::get_property("common/debug_display") == "1"){
         re::Point2f screen_pos = camera.world_to_screen(goto_point);
