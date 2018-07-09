@@ -6,6 +6,7 @@
 #include <RealEngine/config_manager.h>
 #include <RealEngine/logger.h>
 
+
 #include <iostream>
 #include <memory>
 
@@ -13,6 +14,7 @@
 #include "map.h"
 #include "player.h"
 #include "main_menu.h"
+#include "game_buttons.h"
 
 #include "event.h"
 #include "events/move_event.h"
@@ -67,6 +69,7 @@ class MainApp : public re::IBaseApp
 public:
     MainApp()
         : main_menu(gui_manager)
+        ,  game_menu(gui_manager)
     {
         set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
@@ -135,6 +138,8 @@ public:
             switch( event->get_type() ) {
                 case int(GameEventType::GAME_START):
                 {
+                    gui_manager.layer_set_active("select_side", false);
+                    gui_manager.layer_set_active("game_menu", true);
                     game_state = GameState::GAME;
                     break;
                 }
@@ -146,14 +151,16 @@ public:
     void display() override {
         switch (game_state) {
             case GameState::MAIN_MENU: {
-                main_menu.display();
+                main_menu.display(cursor_pos.x, cursor_pos.y );
                 return;
             }
             case GameState::LOBBY: {
                 return;
             }
             case GameState::GAME: {
+                
                 game_logic.draw(camera);
+                game_menu.display(cursor_pos.x, cursor_pos.y);
                 return;
             }
         }
@@ -214,6 +221,7 @@ private:
     GameLogic game_logic;
     re::Camera camera;
     MainMenu main_menu;
+    GameMenu game_menu;
     re::GuiManager gui_manager;
 
     re::Point2f cursor_pos;

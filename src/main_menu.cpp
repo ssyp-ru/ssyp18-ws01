@@ -135,7 +135,7 @@ void MainMenu::setup() {
 
 
     re::ImagePtr go_icon = std::make_shared<re::Image>("go.png");
-    go_button_ = std::make_shared<re::BaseButton>(420, 360, "go", go_icon, go_icon);
+    go_button_ = std::make_shared<re::BaseButton>(450, 360, "go", go_icon, go_icon);
     go_button_->register_action(std::bind(&MainMenu::go, this));
     guiManager_.register_button(go_button_, "select_side");
 
@@ -157,7 +157,7 @@ void MainMenu::on_event( std::shared_ptr<re::Event> event )
     }
 }    
 
-void MainMenu::display() {
+void MainMenu::display(int mouseX, int mouseY) {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY); 
     re::draw_text_custom(empty_nick_button_->get_pos().x + 10, empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
