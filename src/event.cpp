@@ -21,9 +21,11 @@ void deserealize( std::vector<char> msg ) {
             }
             case int(MoveEventType::PLAYER_SYNC) :
             {
-                auto sync_event = std::make_shared<MoveSyncEvent>( std::vector<MoveSyncData>() );
-                sync_event->deserialize(msg);
-                re::publish_event( sync_event );
+                try {
+                    auto sync_event = std::make_shared<MoveSyncEvent>( std::vector<MoveSyncData>() );
+                    sync_event->deserialize(msg);
+                    re::publish_event( sync_event );
+                } catch (...) {}
                 break;
             }
         }
