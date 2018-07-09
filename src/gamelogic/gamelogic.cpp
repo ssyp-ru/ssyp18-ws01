@@ -55,8 +55,10 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     auto sync_event = std::dynamic_pointer_cast<MoveSyncEvent,re::Event>( event );
                     for( size_t i = 0; i < sync_event->objects.size(); i++ ) {
                         PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->objects[i].object_id );
-                        player->setPosition( sync_event->objects[i].position );
-                        player->setVelocity( sync_event->objects[i].velocity );
+                        if ( player != nullptr ) {
+                            player->setPosition( sync_event->objects[i].position );
+                            player->setVelocity( sync_event->objects[i].velocity );
+                        }
                     }
                 }
             }
@@ -69,6 +71,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                         if ((*iter)->get_id() == death_event->player_id){
                             world.removeObject(*iter);
                             units.erase(iter);
+                            GameObject::object_map[death_event->player_id] = nullptr;
                             return;
                         }
                     }
@@ -151,9 +154,12 @@ void GameLogic::draw( re::Camera camera )
 }
 
 void GameLogic::click( re::Point2f pos ) {
-    std::pair<int,GameObject*> target;
-    target.first = -1;
+    std::pair<int,GameObject*> target(-1, 0);
+    //target.first = -1;
     for( auto object : GameObject::object_map) {
+        if( object.second == nullptr ) {
+            continue;
+        }
         PhysGameObject * phys_object = dynamic_cast<PhysGameObject*>( object.second );
         if( phys_object && phys_object->isPointInside( pos ) ) {
             // Work around object with HUGE radius
