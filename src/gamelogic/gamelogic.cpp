@@ -22,6 +22,7 @@ GameLogic::GameLogic() {
     last_sync_time = std::chrono::steady_clock::now();  
     obstacles = generate_obstacles (20, 250, 250, world);
     this->is_server = false;
+    this->self_player_id = -1;
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
@@ -82,7 +83,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(340, 4680), obstacles);
+                    auto player = std::make_shared<Player>( re::Point2f(330, (4690 + rand()%100)), obstacles );
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -138,7 +139,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
                     std::cout << attack_event->player_id;
                     Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
-                    player->attack( attack_event->target_id );
+                    if( player != nullptr ) {
+                        player->attack( attack_event->target_id );
+                    }
                     return;
                 }
             }
@@ -182,7 +185,9 @@ void GameLogic::update() {
     }
 
     for (auto& unit: units) {
-        unit->update();
+        if( unit ) {
+            unit->update();
+        }
     }
 
     if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
