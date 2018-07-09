@@ -12,6 +12,7 @@
 #include "physgameobject.h"
 
 enum class Action { IDLE, MOVING, ATTACKING };
+enum class Side { BRIGHT, DARK };
 
 class Unit 
     : public PhysGameObject
@@ -29,6 +30,8 @@ public:
     void dealDamage(int damage);
     void onDeath();
     void setAction(Action action) { cur_action = action; };
+    void setUnitsArray(std::vector<std::shared_ptr<Unit>> *units) { this->units = units; };
+
     void move_unit();
     void set_new_way(re::Point2f finish);
     void on_event(std::shared_ptr<re::Event> event);
@@ -38,15 +41,16 @@ public:
     re::Point2f get_cell(int index);
     // from Physic Engine
     virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
-   
 
+    Side side = Side::BRIGHT;
 protected:
     void go_to(re::Point2f finish_point);
     void attack_event();
 
 protected:
     // std::vector<Ability*> abilities;
-     std::vector <re::Point2f> way;
+    std::vector<std::shared_ptr<Unit>> *units;
+    std::vector <re::Point2f> way;
     int index;
     int hp, maxhp;
     float attack_per_second = 1.0;

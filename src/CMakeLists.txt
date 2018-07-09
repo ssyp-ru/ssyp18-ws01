@@ -10,6 +10,7 @@ set(EXECUTABLE  main.cpp
                 main_menu.cpp
                 game_buttons.cpp
                 unit.cpp
+                creep.cpp
                 )
 
 add_compile_options(-std=c++17)
