@@ -19,6 +19,7 @@ GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
     last_sync_time = std::chrono::steady_clock::now();   
     this->is_server = false;
+    this->self_player_id = -1;
 }
 
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
