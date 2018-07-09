@@ -79,7 +79,7 @@ class MainApp : public re::IBaseApp
 public:
     MainApp()
         : main_menu(gui_manager)
-        ,  game_menu(gui_manager, game_logic)
+        ,  game_menu(gui_manager)
     {
         set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
