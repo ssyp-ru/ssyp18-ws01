@@ -73,6 +73,13 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     }
                     return;
                 }
+                case (int)AttackEventType::PLAYER_ATTACK :
+                {
+                    auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
+                    Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
+                    player->attack( attack_event->target_id );
+                    return;
+                }
             }
         }
     }
@@ -84,7 +91,7 @@ void GameLogic::update() {
 
     int time_milils = (std::chrono::duration_cast<std::chrono::microseconds>
             (std::chrono::steady_clock::now() - last_sync_time)).count();
-    if (is_server && time_milils > sync_time){
+    if (is_server && (time_milils > sync_time)){
         last_sync_time = std::chrono::steady_clock::now();   
         std::vector<MoveSyncData> move_sync_data;
         for( auto& unit : units ) {
@@ -147,10 +154,12 @@ void GameLogic::click( re::Point2f pos ) {
         re::publish_event(move_event);
     } else {
         Unit* unitObj = dynamic_cast<Unit*>(target.second);
-        if (unitObj)
-        {
-            if (this->self_player_id != target.first)
-                dynamic_cast<Unit*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
+        if (unitObj) {
+            if (this->self_player_id != target.first) {
+                auto attack_event = std::make_shared<AttackEvent>(this->self_player_id, target.first);
+                attack_event->set_shared(true);
+                re::publish_event( attack_event );
+            }
         } else {
             auto move_event = std::make_shared<MoveEvent>(this->self_player_id, pos);
             move_event->set_shared(true);

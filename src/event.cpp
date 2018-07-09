@@ -2,6 +2,7 @@
 #include "events/move_event.h"
 #include "events/lobby_event.h"
 #include "events/game_event.h"
+#include "events/attack_event.h"
 #include <json.hpp>
 
 void deserealize( std::vector<char> msg ) {
@@ -53,6 +54,18 @@ void deserealize( std::vector<char> msg ) {
                 break;
             }
         }
+        break;
+    case ATTACK_EVENT_CATEGORY:
+        switch( int(j["type"]) ) {
+            case int(AttackEventType::PLAYER_ATTACK):
+            {
+                auto attack_event = std::make_shared<AttackEvent>( 0, 0 );
+                attack_event->deserialize( msg );
+                re::publish_event( attack_event );
+                break;
+            }
+        }
+        break;
     }
 }
 
