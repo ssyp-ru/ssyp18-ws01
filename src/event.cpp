@@ -2,6 +2,7 @@
 #include "events/move_event.h"
 #include "events/lobby_event.h"
 #include "events/game_event.h"
+#include "events/attack_event.h"
 #include <json.hpp>
 
 void deserealize( std::vector<char> msg ) {
@@ -19,7 +20,7 @@ void deserealize( std::vector<char> msg ) {
             }
             case int(MoveEventType::PLAYER_SYNC) :
             {
-                auto sync_event = std::make_shared<MoveSyncEvent>( 0, re::Point2f(0,0), re::Point2f(0,0) );
+                auto sync_event = std::make_shared<MoveSyncEvent>( std::vector<MoveSyncData>() );
                 sync_event->deserialize(msg);
                 re::publish_event( sync_event );
                 break;
@@ -53,6 +54,18 @@ void deserealize( std::vector<char> msg ) {
                 break;
             }
         }
+        break;
+    case ATTACK_EVENT_CATEGORY:
+        switch( int(j["type"]) ) {
+            case int(AttackEventType::PLAYER_ATTACK):
+            {
+                auto attack_event = std::make_shared<AttackEvent>( 0, 0 );
+                attack_event->deserialize( msg );
+                re::publish_event( attack_event );
+                break;
+            }
+        }
+        break;
     }
 }
 

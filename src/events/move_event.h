@@ -44,29 +44,44 @@ public:
         player_id = j["id"];
     }
 
+    std::string get_describe_string() { 
+        std::string s("MoveEvent");
+        s = s + " id: " + std::to_string(player_id) + " p: [" 
+            + std::to_string((int)finish_point.x) + ", " + std::to_string((int)finish_point.y) + "]";
+        return s; 
+    }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
+
     re::Point2f finish_point;
     int player_id;
 };
 
+struct MoveSyncData {
+    re::Point2f position;
+    re::Point2f velocity;
+    int object_id;
+};
+
 class MoveSyncEvent : public re::Event {
 public:
-    MoveSyncEvent(int _player_id, re::Point2f pos, re::Point2f vec)
+    MoveSyncEvent(std::vector<MoveSyncData> objects)
         : Event(MOVE_EVENT_CATEGORY, (int)MoveEventType::PLAYER_SYNC)
-        , pos(pos)
-        , vec(vec)
-        , player_id(_player_id)
+        , objects(objects)
     {}
 
     std::vector<char> serialize()
     {
         nlohmann::json j;
-        j["category"] = this->get_category();
-        j["type"] = this->get_type();
-        j["x"] = this->pos.x;
-        j["y"] = this->pos.y;
-        j["vec_x"] = this->vec.x;
-        j["vec_y"] = this->vec.y;
-        j["id"] = this->player_id;
+        j["category"] = MOVE_EVENT_CATEGORY;
+        j["type"] = (int)MoveEventType::PLAYER_SYNC;
+        j["object_count"] = this->objects.size();
+        for( size_t i = 0; i < objects.size(); i++ ) {
+            j[std::to_string(i)]["x"]     = objects[i].position.x;
+            j[std::to_string(i)]["y"]     = objects[i].position.y;
+            j[std::to_string(i)]["vec_x"] = objects[i].velocity.x;
+            j[std::to_string(i)]["vec_y"] = objects[i].velocity.y;
+            j[std::to_string(i)]["id"]    = objects[i].object_id;
+        }
 
         std::string raw_json = j.dump();
         std::vector<char> msg(raw_json.c_str(),raw_json.c_str()+raw_json.size());
@@ -78,14 +93,20 @@ public:
         std::string raw_json( msg.data(), msg.size() );
 
         nlohmann::json j = nlohmann::json::parse(raw_json);
-        pos.x = j["x"];
-        pos.y = j["y"];
-        vec.x = j["vec_x"];
-        vec.y = j["vec_y"];
-        player_id = j["id"];
+        size_t object_count = j["object_count"];
+        for( size_t i = 0; i < object_count; i++ ) {
+            MoveSyncData new_data;
+            new_data.position.x = j[std::to_string(i)]["x"];
+            new_data.position.y = j[std::to_string(i)]["y"];
+            new_data.velocity.x = j[std::to_string(i)]["vec_x"];
+            new_data.velocity.y = j[std::to_string(i)]["vec_y"];
+            new_data.object_id  = j[std::to_string(i)]["id"];
+            objects.push_back( new_data );
+        }
     }
 
-    re::Point2f pos;
-    re::Point2f vec;
-    int player_id;
+    std::string get_describe_string() { return "MoveSyncEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::TRACE; };
+
+    std::vector<MoveSyncData> objects;
 };

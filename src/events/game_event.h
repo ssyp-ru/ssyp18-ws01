@@ -36,6 +36,9 @@ public:
 
         nlohmann::json j = nlohmann::json::parse(raw_json);
     }
+
+    std::string get_describe_string() { return "GameStartEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 };
 
 class GamePlayersJoinEvent : public re::Event {
@@ -49,6 +52,9 @@ public:
         this->is_local = is_local;
     }
 
+    std::string get_describe_string() { return "GamePlayersJoinEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
+
     LobbyMember player;
     bool is_local;
 };
@@ -58,4 +64,7 @@ public:
     GameHostEvent() 
         : Event(GAME_EVENT_CATEGORY, (int)GameEventType::GAME_HOST)
     {}
+
+    std::string get_describe_string() { return "GameHostEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 };

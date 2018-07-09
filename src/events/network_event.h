@@ -11,6 +11,7 @@ enum class NetworkEventType {
     CLIENT_CONNECTED,
     CLIENT_DISCONNECTED,
     CONNECT,
+    CONNECT_COMPLETE,
     START_SERVER
 };
 
@@ -20,6 +21,9 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CLIENT_CONNECTED)
         , sock_id(sock_id)
     {}
+
+    std::string get_describe_string() { return "NetworkConnectionEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int sock_id;
 };
 
@@ -29,6 +33,9 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CLIENT_DISCONNECTED)
         , sock_id(sock_id)
     {}
+
+    std::string get_describe_string() { return "NetworkDisconnectionEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int sock_id;
 };
 
@@ -39,8 +46,21 @@ public:
         , address(address)
         , port(port)
     {}
+
+    std::string get_describe_string() { return "NetworkConnectEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     std::string address;
     int port;
+};
+
+class NetworkConnectCompleteEvent : public re::Event {
+public:
+    NetworkConnectCompleteEvent()
+        : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::CONNECT_COMPLETE)
+    {}
+
+    std::string get_describe_string() { return "NetworkConnectCompleteEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 };
 
 class NetworkServerUpEvent : public re::Event {
@@ -49,5 +69,8 @@ public:
         : Event(NETWORK_EVENT_CATEGORY, (int)NetworkEventType::START_SERVER)
         , port(port)
     {}
+
+    std::string get_describe_string() { return "NetworkServerUpEvent"; }
+    re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
     int port;
 };

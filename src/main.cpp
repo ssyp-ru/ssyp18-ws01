@@ -3,6 +3,8 @@
 #include <RealEngine/camera.h>
 #include <RealEngine/network.h>
 #include <RealEngine/event.h>
+#include <RealEngine/config_manager.h>
+#include <RealEngine/logger.h>
 
 
 #include <iostream>
@@ -38,6 +40,29 @@ enum class GameState {
 const int camera_move_detect_szie = 50;
 const int camera_move_speed = 20;
 
+void set_log_level(){
+    std::string console_level = re::ConfigManager::get_property("log/console");
+    std::string file_level = re::ConfigManager::get_property("log/file");
+    if (console_level == "trace") {
+        re::Log::set_console_level(re::Log::LEVEL::TRACE);
+    }
+    if (console_level == "debug") {
+        re::Log::set_console_level(re::Log::LEVEL::DEBUG);
+    }
+    if (console_level == "info") {
+        re::Log::set_console_level(re::Log::LEVEL::INFO);
+    }
+    if (file_level == "trace") {
+        re::Log::set_file_level(re::Log::LEVEL::TRACE);
+    }
+    if (file_level == "debug") {
+        re::Log::set_file_level(re::Log::LEVEL::DEBUG);
+    }
+    if (file_level == "info") {
+        re::Log::set_file_level(re::Log::LEVEL::INFO);
+    }
+}
+
 class MainApp : public re::IBaseApp
               , public re::EventSubscriber
 {
@@ -46,6 +71,7 @@ public:
         : main_menu(gui_manager)
         ,  game_menu(gui_manager)
     {
+        set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
     }
 

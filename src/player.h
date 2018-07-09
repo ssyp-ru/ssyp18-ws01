@@ -13,7 +13,6 @@
 
 class Player 
     : public Unit
-    , public re::EventSubscriber
 {
 public:
     static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
@@ -21,11 +20,8 @@ public:
     Player(re::Point2f pos);
     ~Player() = default;
     
-    void attack();
     void update();
     void display(re::Camera camera);
-
-    void on_event(std::shared_ptr<re::Event> event);
 
     void add_exp(int amount);
     int get_level() { return level; }
@@ -36,8 +32,8 @@ public:
     re::ResourceManager resource_manager;
 
 private:
+    void load_animation();
     int expToNextLevel[18] = { 100 };
     int exp, level, hp, maxhp;
-    re::Point2f goto_point;
 };
 
