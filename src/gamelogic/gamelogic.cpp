@@ -20,6 +20,10 @@ GameLogic::GameLogic() {
     this->is_server = false;
 }
 
+int GameLogic::get_self_id(){
+    return self_player_id;
+}
+
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
     switch( event->get_category() )
     {

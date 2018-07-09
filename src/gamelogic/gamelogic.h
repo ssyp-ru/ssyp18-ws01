@@ -16,7 +16,7 @@ public:
     virtual void on_event(re::EventPtr event);
     void update();
     void draw( re::Camera );
-
+    int get_self_id();
     void click( re::Point2f pos );
 private:    
     std::vector<std::vector<int>> obstacles;

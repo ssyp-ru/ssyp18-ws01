@@ -26,6 +26,9 @@ Unit::Unit(re::Point2f pos)
     re::subscribe_to_all( this );
 }
 
+double Unit::get_hp(){
+    return hp / maxhp * 100;
+}
 
 void Unit::update(){
     if (cur_action == Action::MOVING)
