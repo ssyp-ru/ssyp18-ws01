@@ -26,6 +26,7 @@ Player::Player(re::Point2f pos)
 
 }
 
+
 void Player::add_exp(int amount){
     // exp += amount;
     // if ((level != 20) && (exp >= expToNextLevel[level - 1])){
