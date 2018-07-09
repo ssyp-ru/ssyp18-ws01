@@ -31,7 +31,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(330, (4690 + rand()%100)) );
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -126,7 +126,9 @@ void GameLogic::update() {
     }
 
     for (auto& unit: units) {
-        unit->update();
+        if( unit ) {
+            unit->update();
+        }
     }
 
     if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
