@@ -38,23 +38,20 @@ Creep::Creep(re::Point2f pos, Side side, Line line)
 
 void Creep::checkAggro()
 {
-    int i = 0;
     for (auto iter : *(units))
     {
         auto unit = std::dynamic_pointer_cast<Unit>(iter);
         if (unit)
         {
-            i++;
             if ((unit->side != side) && (unit->getPosition().distance_to(getPosition()) <= aggroRange))
             {
-                std::cout << "attack!" << std::endl;
+                std::cout << (side == Side::BRIGHT ? "BRIGHT" : "DARK") << " " << (unit->side == Side::BRIGHT ? "BRIGHT" : "DARK") << std::endl;
                 auto attack_event = std::make_shared<AttackEvent>(get_id(), unit->get_id());
                 attack_event->set_shared(true);
                 re::publish_event( attack_event );
             }
         }
     }
-    std::cout << i << " units checked" << std::endl;
 }
 
 void Creep::update(){
@@ -65,7 +62,6 @@ void Creep::update(){
             re::Point2f* next = waypath.next();
             if (next != nullptr)
             {
-                std::cout << next->x << " " << next->y << std::endl;
                 go_to(*next);
             } else {
                 std::cout << "stop!" << std::endl;

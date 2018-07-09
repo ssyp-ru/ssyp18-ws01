@@ -4,10 +4,11 @@
 #include "RealEngine/config_manager.h"
 #include <fstream>
 #include <chrono>
-
+#include "../obstacles_generator.h"
 using namespace std;
 
 #include "../events/move_event.h"
+#include "../events/spawn_event.h"
 #include "../events/game_event.h"
 #include "../events/attack_event.h"
 #include "../events/creeps_spawn_event.h"
@@ -18,7 +19,8 @@ const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
-    last_sync_time = std::chrono::steady_clock::now();   
+    last_sync_time = std::chrono::steady_clock::now();  
+    obstacles = generate_obstacles (20, 250, 250, world);
     this->is_server = false;
 }
 
@@ -80,7 +82,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(340, 4680), obstacles);
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -109,8 +111,10 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     auto sync_event = std::dynamic_pointer_cast<MoveSyncEvent,re::Event>( event );
                     for( size_t i = 0; i < sync_event->objects.size(); i++ ) {
                         PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->objects[i].object_id );
-                        player->setPosition( sync_event->objects[i].position );
-                        player->setVelocity( sync_event->objects[i].velocity );
+                        if ( player != nullptr ) {
+                            player->setPosition( sync_event->objects[i].position );
+                            player->setVelocity( sync_event->objects[i].velocity );
+                        }
                     }
                 }
             }
@@ -123,6 +127,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                         if ((*iter)->get_id() == death_event->player_id){
                             world.removeObject(*iter);
                             units.erase(iter);
+                            GameObject::object_map[death_event->player_id] = nullptr;
                             return;
                         }
                     }
@@ -134,6 +139,20 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     std::cout << attack_event->player_id;
                     Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
                     player->attack( attack_event->target_id );
+                    return;
+                }
+            }
+            break;
+        case SPAWN_EVENT_CATEGORY:
+            switch( event->get_type() ) {
+                case int( int(SpawnEventType::PLAYER_RESPAWN) ):
+                {
+                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    this->units.push_back(player);
+                    world.addObject(player);
+                    if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
+                        this->self_player_id = player->get_id();
+                    }
                     return;
                 }
             }
@@ -165,12 +184,18 @@ void GameLogic::update() {
     for (auto& unit: units) {
         unit->update();
     }
+
+    if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
+        auto respawn_event = std::make_shared<PlayerRespawnEvent>();
+        respawn_event->set_shared( true );
+        re::publish_event( respawn_event );            
+    }
 }
 
 void GameLogic::draw( re::Camera camera )
 {
     map.draw(camera);
-
+   
     for( auto object : this->world.getWorld() )
     {
         auto drawable_object = std::static_pointer_cast<PhysGameObject,re::PhysicObject>( object );
@@ -188,9 +213,12 @@ void GameLogic::draw( re::Camera camera )
 }
 
 void GameLogic::click( re::Point2f pos ) {
-    std::pair<int,GameObject*> target;
-    target.first = -1;
+    std::pair<int,GameObject*> target(-1, 0);
+    //target.first = -1;
     for( auto object : GameObject::object_map) {
+        if( object.second == nullptr ) {
+            continue;
+        }
         PhysGameObject * phys_object = dynamic_cast<PhysGameObject*>( object.second );
         if( phys_object && phys_object->isPointInside( pos ) ) {
             // Work around object with HUGE radius
@@ -221,5 +249,6 @@ void GameLogic::click( re::Point2f pos ) {
             move_event->set_shared(true);
             re::publish_event(move_event);
         }
+
     }
 }

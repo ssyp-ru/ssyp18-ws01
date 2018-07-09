@@ -1,24 +1,20 @@
-#pragma once
-
-#include "RealEngine/event.h"
-#include "RealEngine/math.h"
+#include <RealEngine/event.h>
 
 #include <json.hpp>
 
-const int CREEPS_SPAWN_EVENT_CATEGORY = 10;
+const int SPAWN_EVENT_CATEGORY = 7;
 
-enum class CreepsSpawnEventType {
-    NORMAL_CREEPS
+enum class SpawnEventType {
+    PLAYER_RESPAWN
 };
 
-class CreepsSpawnEvent : public re::Event {
+class PlayerRespawnEvent : public re::Event {
 public:
-    CreepsSpawnEvent()
-        : Event(CREEPS_SPAWN_EVENT_CATEGORY, (int)CreepsSpawnEventType::NORMAL_CREEPS)
+    PlayerRespawnEvent()
+        : Event(SPAWN_EVENT_CATEGORY, (int)SpawnEventType::PLAYER_RESPAWN)
     {}
 
-    std::vector<char> serialize()
-    {
+    std::vector<char> serialize() {
         nlohmann::json j;
         j["category"] = this->get_category();
         j["type"] = this->get_type();
@@ -28,13 +24,12 @@ public:
         return msg;
     }
 
-    void deserialize( std::vector<char> msg )
-    {
+    void deserialize( std::vector<char> msg ) {
         std::string raw_json( msg.data(), msg.size() );
 
         nlohmann::json j = nlohmann::json::parse(raw_json);
     }
 
-    std::string get_describe_string() { return "CreepsSpawnEvent"; }
+    std::string get_describe_string() { return "PlayerRespawnEvent"; }
     re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 };

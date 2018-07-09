@@ -5,7 +5,7 @@
 
 #include <json.hpp>
 
-const int ATTACK_EVENT_CATEGORY = 6;
+const int ATTACK_EVENT_CATEGORY = 11;
 
 enum class AttackEventType {
     PLAYER_ATTACK,

@@ -7,6 +7,7 @@ set(EXECUTABLE  main.cpp
                 networkmanager.cpp
                 player.cpp
                 main_menu.cpp
+                game_buttons.cpp
                 unit.cpp
                 creep.cpp
                 )
