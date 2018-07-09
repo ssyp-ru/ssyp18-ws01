@@ -21,7 +21,7 @@ GameLogic::GameLogic() {
     ofstream fout("cppstudio.txt"); // создаём объект класса ofstream для записи и связываем его с файлом cppstudio.txt
     this->map = Map( world, "new_map.tmx" );
     last_sync_time = std::chrono::steady_clock::now();  
-    obstacles = generate_obstacles (20, 250, 250, world);
+    obstacles = generate_obstacles(20, 250, 250, world);
     for (int i = 0; i < 250; i++){
         for (int j = 0; j < 250; j++){
             fout << obstacles[i][j];
@@ -99,7 +99,8 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
-                    auto creepsSpawn = std::make_shared<CreepsSpawnEvent>();
+                        auto creepsSpawn = std::make_shared<CreepsSpawnEvent>();
+                        player_spawned_once = true;
                         self_player_id = player->get_id();
                         std::cout << "throwing creeps spawning event" << std::endl;
                         creepsSpawn->set_shared(true);
@@ -202,10 +203,10 @@ void GameLogic::update() {
         }
     }
 
-    if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
+    if(player_spawned_once && GameObject::get_object_by_id( self_player_id ) == nullptr) {
         auto respawn_event = std::make_shared<PlayerRespawnEvent>();
         respawn_event->set_shared( true );
-        re::publish_event( respawn_event );            
+        re::publish_event( respawn_event );
     }
 }
 

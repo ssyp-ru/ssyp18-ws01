@@ -27,6 +27,7 @@ private:
     std::vector<std::shared_ptr<Unit>> units;
     int self_player_id;
     bool is_server;
+    bool player_spawned_once = false;
 
     std::chrono::time_point<std::chrono::steady_clock> last_sync_time;
 };
