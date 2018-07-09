@@ -21,6 +21,18 @@ set(FILE_TO_COPY
     data/mage_front_9.png
     data/mage_front_10.png
     data/mage_front_11.png
+    data/Br_creep_left_1.png
+    data/Br_creep_left_2.png
+    data/Br_creep_left_3.png
+    data/Br_creep_right_1.png
+    data/Br_creep_right_2.png
+    data/Br_creep_right_3.png
+    data/D_creep_left_1.png
+    data/D_creep_left_2.png
+    data/D_creep_left_3.png
+    data/D_creep_right_1.png
+    data/D_creep_right_2.png
+    data/D_creep_right_3.png
     data/change.png
     data/connect.png
     data/create.png
