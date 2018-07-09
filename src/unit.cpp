@@ -68,9 +68,14 @@ void Unit::display(re::Camera camera){
 
 void Unit::draw_fireball( re::Camera camera ) {
     if( fireball_alive ) {
-        re::Point2f target_pos = ((Unit*)GameObject::get_object_by_id(target_id))->getPosition();
+        Unit *target = (Unit*)GameObject::get_object_by_id(target_id);
+        if(target == nullptr) {
+            fireball_alive = false;
+            return;
+        }
+        re::Point2f target_pos = target->getPosition();
         if( cur_action != Action::ATTACKING || 
-            (fireball_pos - target_pos).length() < 1 ) {
+            (fireball_pos - target_pos).length() < 12 ) {
             fireball_alive = false;
         } else {
             re::Point2f vector = fireball_pos - target_pos;
@@ -135,8 +140,12 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEAL_DAMAGE))
     {
         std::shared_ptr<DealDamageEvent> attack_event = std::static_pointer_cast<DealDamageEvent>(event);
-        // std::cout << "attack event! " << this->get_id() << " : " << attack_event->player_id << " > " << attack_event->target_id << std::endl;
-        dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        //dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        GameObject *object = GameObject::get_object_by_id(attack_event->target_id);
+        if( object != nullptr ) {
+            Unit *target = dynamic_cast<Unit*>( object );
+            target->dealDamage(attack_event->damage);
+        }
     }
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEATH))
     {
