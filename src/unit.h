@@ -40,7 +40,6 @@ public:
     re::Point2f get_cell(int index);
     // from Physic Engine
     virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
-   
 
     Side side = Side::BRIGHT;
 protected:

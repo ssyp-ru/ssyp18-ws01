@@ -166,22 +166,31 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
             set_new_way(move_event->finish_point);
         }
     }
-    if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEAL_DAMAGE))
+    if (event->get_category() == ATTACK_EVENT_CATEGORY)
     {
-        std::shared_ptr<DealDamageEvent> attack_event = std::static_pointer_cast<DealDamageEvent>(event);
-        //dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
-        GameObject *object = GameObject::get_object_by_id(attack_event->target_id);
-        if( object != nullptr ) {
-            Unit *target = dynamic_cast<Unit*>( object );
-            target->dealDamage(attack_event->damage);
-        }
-    }
-    if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEATH))
-    {
-        std::shared_ptr<DeathEvent> death_event = std::static_pointer_cast<DeathEvent>(event);
-        if (target_id == death_event->player_id){
-            target_id = -1;
-            cur_action = Action::MOVING;
+        switch (event->get_type())
+        {
+            case ((int)AttackEventType::PLAYER_DEAL_DAMAGE):
+            {
+                std::shared_ptr<DealDamageEvent> attack_event = std::static_pointer_cast<DealDamageEvent>(event);
+                //dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+                GameObject *object = GameObject::get_object_by_id(attack_event->target_id);
+                if( object != nullptr ) {
+                    Unit *target = dynamic_cast<Unit*>( object );
+                    target->dealDamage(attack_event->damage);
+                }
+                return;
+            }
+            case ((int)AttackEventType::PLAYER_DEATH):
+            {
+                std::shared_ptr<DeathEvent> death_event = std::static_pointer_cast<DeathEvent>(event);                
+                if (target_id == death_event->player_id)
+                {
+                    target_id = -1;
+                    cur_action = Action::IDLE;
+                }
+                return;
+            }
         }
     }
 }
