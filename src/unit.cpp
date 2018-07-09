@@ -189,6 +189,7 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
                 std::shared_ptr<DeathEvent> death_event = std::static_pointer_cast<DeathEvent>(event);                
                 if (target_id == death_event->player_id)
                 {
+                    std::cout << "IT'S TIME TO STOP!" << std::endl;
                     target_id = -1;
                     cur_action = Action::IDLE;
                 }

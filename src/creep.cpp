@@ -57,8 +57,8 @@ void Creep::checkAggro()
 void Creep::update(){
     if (cur_action == Action::IDLE)
     {
-        //if (getPosition().distance_to(goto_point) >= 20)
-        //    cur_action = Action::MOVING;
+        if (getPosition().distance_to(goto_point) >= 20)
+            cur_action = Action::MOVING;
     }
     if (cur_action == Action::MOVING)
     {
@@ -67,7 +67,8 @@ void Creep::update(){
             re::Point2f* next = waypath.next();
             if (next != nullptr)
             {
-                set_new_way(*next);
+                go_to(*next);
+                //set_new_way(*next);
             } else {
                 std::cout << "stop!" << std::endl;
                 cur_action = Action::IDLE;
