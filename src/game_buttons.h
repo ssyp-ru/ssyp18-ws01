@@ -3,14 +3,14 @@
 #include "RealEngine/math.h"
 #include "RealEngine/gui/base_button.h"
 #include "RealEngine/gui/gui_manager.h"
-
+#include "gamelogic/gamelogic.h"
 #include <iostream>
 
 
 
 class GameMenu {
 public:
-    GameMenu(re::GuiManager& guiManager);
+    GameMenu(re::GuiManager& guiManager, GameLogic& gameLogic);
 
     void setup();
     void display(int mouseX, int mouseY);
@@ -24,12 +24,9 @@ public:
 
 private:
     re::GuiManager& guiManager_;
-    re::BaseButtonPtr skill1_button;
-    re::BaseButtonPtr skill2_button;
-    re::BaseButtonPtr skill3_button;
-    re::BaseButtonPtr skill4_button;
+    GameLogic& game_logic;
     //int mouseX, mouseY;
     int exp = 10, hp = 100, mp = 50;
 
-    //Lobby lobby;
+    Lobby lobby;
 };

@@ -25,6 +25,9 @@ Player::Player(re::Point2f pos)
     physic_type = PLAYER_PHYSIC_TYPE;
 
 }
+double Player::get_hp(){
+    return hp / maxhp * 100;
+}
 
 void Player::add_exp(int amount){
     // exp += amount;
