@@ -82,7 +82,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
                     Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
-                    player->attack( attack_event->target_id );
+                    if( Unit != nullptr ) {
+                        player->attack( attack_event->target_id );
+                    }
                     return;
                 }
             }
