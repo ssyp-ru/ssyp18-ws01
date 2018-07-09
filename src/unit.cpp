@@ -5,12 +5,35 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+
 Unit::Unit(re::Point2f pos) 
     : PhysGameObject(pos) 
 {
     hp = 500;
     maxhp = 500;
+    addPoint(re::Point2f(-10, 25));
+    addPoint(re::Point2f(-10, 35));
+    addPoint(re::Point2f(5, 35));
+    addPoint(re::Point2f(5, 25));
+    addEdge(0, 1);
+    addEdge(1, 2);
+    addEdge(2, 3);
+    addEdge(3, 0);
+    setRigidbodySimulated(true);
+    setFriction(1.0);
+    setBounciness(0.0);
 
+    last_attack_time = std::chrono::steady_clock::now();
+
+    re::subscribe_to_all( this );
+}
+
+Unit::Unit(re::Point2f pos, std::vector<std::vector<int>> &new_map) 
+    : PhysGameObject(pos) 
+{
+    hp = 500;
+    maxhp = 500;
+    map = new_map;
     addPoint(re::Point2f(-10, 25));
     addPoint(re::Point2f(-10, 35));
     addPoint(re::Point2f(5, 35));
@@ -30,6 +53,10 @@ Unit::Unit(re::Point2f pos)
 
 
 void Unit::update(){
+
+    if(way.size() != 0){
+        move_unit();
+    }
     if (cur_action == Action::MOVING)
     {
         if (getPosition().distance_to(goto_point) < 20)
@@ -131,7 +158,7 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
     if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
         std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
         if( this->get_id() == move_event->player_id ) {
-            go_to(move_event->finish_point);
+            set_new_way(move_event->finish_point);
         }
     }
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEAL_DAMAGE))
@@ -156,12 +183,11 @@ void Unit::update_way(){
     }
 }
 
-void Unit::set_new_way(re::Point2f finish, std::vector<std::vector<int>> map){
+void Unit::set_new_way(re::Point2f finish){
     std::vector<std::vector<int>> count;
     way = re::a_star(map, 250, int(getPosition().y / 20),  int(getPosition().x / 20),  int(finish.y / 20),
                   int(finish.x / 20), count);
                   update_way();
-    std::cout << "finish cell "<< int(finish.y / 20) << " " << int(finish.x / 20) << std::endl;
     index = 0;
 }
 
@@ -187,14 +213,9 @@ void Unit::move_unit(){
     }
 
      if(((abs(next.x - this->getPosition().x) < 10) && (abs(next.y - this->getPosition().y) < 10)) && 
-       (get_index() == way.size())) {
-        //std:: cout << "setVelosity 0"<< std::endl;
+       (get_index() == way.size())) {   
         re::Point2f next = get_cell(get_index());
         setVelocity((next - this->getPosition()).Normalized() * 0);
         way.clear();
-    }
-    //std:: cout << "Player position " << this->getPosition().x << " " << this->getPosition().y    << std::endl ;
-    //std:: cout << "index " << get_index() << std::endl ;
-    //std:: cout << " ################## "<< std::endl ;
-    
+    }   
 }
