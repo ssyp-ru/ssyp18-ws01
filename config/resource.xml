@@ -13,6 +13,19 @@
         <im id="player_move11" file="mage_front_10.png" />
         <im id="player_move12" file="mage_front_9.png" />
 
+        <im id="d_player_move1" file="d_mage_front_1.png" />
+        <im id="d_player_move2" file="d_mage_front_2.png" />
+        <im id="d_player_move3" file="d_mage_front_3.png" />
+        <im id="d_player_move4" file="d_mage_front_4.png" />
+        <im id="d_player_move5" file="d_mage_front_3.png" />
+        <im id="d_player_move6" file="d_mage_front_2.png" />
+        <im id="d_player_move7" file="d_mage_front_1.png" />
+        <im id="d_player_move8" file="d_mage_front_9.png" />
+        <im id="d_player_move9" file="d_mage_front_10.png" />
+        <im id="d_player_move10" file="d_mage_front_11.png" />
+        <im id="d_player_move11" file="d_mage_front_10.png" />
+        <im id="d_player_move12" file="d_mage_front_9.png" />
+
 
         <im id="bright_creep_left_move1" file="Br_creep_left_1.png" />
         <im id="bright_creep_left_move2" file="Br_creep_left_2.png" />
