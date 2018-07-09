@@ -74,6 +74,8 @@ void Player::display(re::Camera camera){
         re::Point2f screen_pos = camera.world_to_screen(goto_point);
         re::draw_rectangle(screen_pos - re::Point2f(5, 5), re::Point2f(10, 10), re::RED);
     }
+
+    draw_fireball( camera );
 }
 
 void Player::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {

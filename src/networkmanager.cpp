@@ -38,8 +38,7 @@ void NetworkManager::on_event(std::shared_ptr<re::Event> event) {
             case int(NetworkEventType::CONNECT):
             {
                 auto connect_event = std::dynamic_pointer_cast<NetworkConnectEvent,re::Event>( event );
-                if( this->connect( connect_event->address, connect_event->port ) )
-                {
+                if( this->connect( connect_event->address, connect_event->port ) ) {
                     auto connect_complete_event = std::make_shared<NetworkConnectCompleteEvent>();
                     re::publish_event( connect_complete_event );
                 } else {

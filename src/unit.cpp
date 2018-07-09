@@ -62,6 +62,26 @@ void Unit::display(re::Camera camera){
         re::Point2f screen_pos = camera.world_to_screen(goto_point);
         re::draw_rectangle(screen_pos, re::Point2f(size, size), re::RED);
     }
+
+    draw_fireball( camera );
+}
+
+void Unit::draw_fireball( re::Camera camera ) {
+    if( fireball_alive ) {
+        re::Point2f target_pos = ((Unit*)GameObject::get_object_by_id(target_id))->getPosition();
+        if( cur_action != Action::ATTACKING || 
+            (fireball_pos - target_pos).length() < 1 ) {
+            fireball_alive = false;
+        } else {
+            re::Point2f vector = fireball_pos - target_pos;
+            vector.normalize();
+            fireball_pos -= vector * 10;
+            float size = camera.meter_to_screen(10);
+            re::draw_rectangle( camera.world_to_screen(fireball_pos),
+                                re::Point2f(size,size),
+                                re::RED );
+        }
+    }
 }
 
 void Unit::onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) {
@@ -81,6 +101,8 @@ void Unit::attack(int target_id)
 
 void Unit::attack_event()
 {
+    fireball_alive = true;
+    fireball_pos = this->getPosition();
     last_attack_time = std::chrono::steady_clock::now();
     //dynamic_cast<Unit*>(GameObject::get_object_by_id(target_id))->dealDamage(damage);
     re::publish_event(std::make_shared<DealDamageEvent>(this->get_id(), target_id, damage));
