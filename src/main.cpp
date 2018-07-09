@@ -15,6 +15,7 @@
 #include "player.h"
 #include "main_menu.h"
 #include "game_buttons.h"
+#include "flappybird.h"
 
 #include "event.h"
 #include "events/move_event.h"
@@ -34,6 +35,7 @@ enum class NetworkState {
 enum class GameState {
     MAIN_MENU,
     LOBBY,
+    FLAPPY_BIRD,
     GAME
 };
 
@@ -79,7 +81,7 @@ class MainApp : public re::IBaseApp
 public:
     MainApp()
         : main_menu(gui_manager)
-        ,  game_menu(gui_manager)
+        , game_menu(gui_manager, game_logic)
     {
         set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
@@ -98,6 +100,7 @@ public:
         main_menu.setup();
         
         re::subscribe_to_all(&game_logic);
+        flappy_bird.setup();
         this->network_state = NetworkState::menu;
     }
 
@@ -127,6 +130,9 @@ public:
                 }
                 return;
             }
+            case GameState::FLAPPY_BIRD: {
+                flappy_bird.update();
+            }
         }
     }
 
@@ -155,6 +161,10 @@ public:
             case GameState::LOBBY: {
                 return;
             }
+            case GameState::FLAPPY_BIRD: {
+                flappy_bird.display();
+                return;
+            }
             case GameState::GAME: {
                 
                 game_logic.draw(camera);
@@ -171,7 +181,16 @@ public:
 
     void on_key_pressed(re::Key key){
         if(game_state == GameState::MAIN_MENU){
+            if( key == re::Key::L ) {
+                game_state = GameState::FLAPPY_BIRD;
+            }
             main_menu.on_key_pressed(key);
+        } else if(game_state == GameState::FLAPPY_BIRD) {
+            if( key == re::Key::Escape ) {
+                game_state = GameState::MAIN_MENU;
+                return;
+            }
+            flappy_bird.on_key_pressed(key);
         }
         
         
@@ -206,7 +225,6 @@ public:
         if((game_state == GameState::GAME ) && (game_logic.obstacles[int(camera.screen_to_world( cursor_pos ).y  / 20)]
                                                         [int(camera.screen_to_world( cursor_pos ).x  / 20)] == 0)) {
 
-            std::cout << int(cursor_pos.x) << " " << int(cursor_pos.y)   << std::endl;
             game_logic.click( camera.screen_to_world( cursor_pos ) );
         }
     }
@@ -223,6 +241,8 @@ private:
     float zoom = 1;
     int mouseX, mouseY;
     bool fullscreen = true;
+
+    FlappyBird flappy_bird;
 
     NetworkManager network_manager;
 };

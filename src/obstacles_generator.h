@@ -11,8 +11,14 @@ static std::vector<std::vector<int>> generate_obstacles (float cell_size, int co
     std::vector<std::vector<int>> map_vector;
     std::vector<re::PhysicObjectPtr> obj = world.getWorld();
     for (int i = 0; i < counter_X; i++){
+        // std::cout << ".\n";
         map_vector.push_back(std::vector<int>());
-        for (int j = 0; j < counter_Y; j++){                
+        for (int j = 0; j < counter_Y; j++){
+            if ((i == 0) || (j == 0) || (i == counter_Y - 1) || (j == counter_X - 1)){
+                map_vector[i].push_back(1);
+                continue;
+            }
+ 
             free = true;
             re::PhysicObjectPtr ptrobj = std::make_shared<re::PhysicObject>();
             ptrobj->setPosition(re::Point2f(j * cell_size, i * cell_size));
@@ -26,21 +32,19 @@ static std::vector<std::vector<int>> generate_obstacles (float cell_size, int co
             ptrobj->addEdge(0, 3);
 
             for (size_t k = 0; k < obj.size(); k++){
-                if (ptrobj->needTestWith(*(obj[k]))){
+               if (ptrobj->needTestWith(*(obj[k]))){
                     if (ptrobj->removeCollisionWith(*(obj[k])).length() > 1e-6){
                         map_vector[i].push_back(1);
-//                        std::cout << '1' << std::flush;
                         free = false;  // 1 is blocked
                         break;
                     }
-                }
+               }
             }
             if (free) {
-//                std::cout << '0' << std::flush;
                 map_vector[i].push_back(0);
             }
         } 
-//        std::cout << std::endl;
-   }
-return std::vector<std::vector<int>> (map_vector);
+    }
+
+    return map_vector;
 }

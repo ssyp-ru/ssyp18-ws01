@@ -1,7 +1,8 @@
 #include "game_buttons.h"
 
-GameMenu::GameMenu(re::GuiManager& guiManager) 
+GameMenu::GameMenu(re::GuiManager& guiManager, GameLogic& gameLogic) 
     : guiManager_(guiManager)
+    , game_logic(gameLogic)
 {}
 
 void GameMenu::skill1(){
@@ -12,10 +13,10 @@ void GameMenu::skill3(){
 }
 void GameMenu::skill4(){
 }
-void GameMenu::set_val(int new_exp, int new_hp, int new_mp){
-    exp = new_exp;
+void GameMenu::set_hp(int new_hp){
+    // exp = new_exp;
     hp = new_hp;
-    mp = new_mp;
+    // mp = new_mp;
 
 }
 
@@ -45,9 +46,12 @@ void GameMenu::setup() {
 }
 
 void GameMenu::display(int mouseX, int mouseY) {
-    re::draw_rectangle(0, 700, 1600, 200, re::DARKGREEN);
-    guiManager_.display(mouseX, mouseY);  
-    re::draw_rectangle(250, 710, exp * 10, 50, re::YELLOW);
-    re::draw_rectangle(250, 770, hp * 10, 50, re::RED);
-    re::draw_rectangle(250, 830, mp * 10, 50, re::BLUE);
+    re::ImagePtr hud = std::make_shared<re::Image>("screen_panel.png");
+    re::draw_image(0, 711, hud);
+    guiManager_.display(mouseX, mouseY);
+    Unit* unit= (Unit*)GameObject::get_object_by_id(game_logic.get_self_id());
+    this->set_hp(unit->get_hp());
+    re::draw_rectangle(294, 732, exp * 7 + 6, 40, re::Color(198, 182, 29));
+    re::draw_rectangle(294, 786, hp * 7 + 6, 41, re::Color(177, 33, 7));
+    re::draw_rectangle(293, 842, mp * 7 + 6, 40, re::Color(3, 31, 177));
 }

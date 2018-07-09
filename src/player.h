@@ -24,6 +24,8 @@ public:
     void update();
     void display(re::Camera camera);
 
+    
+
     void add_exp(int amount);
     int get_level() { return level; }
     void reduceCooldowns();

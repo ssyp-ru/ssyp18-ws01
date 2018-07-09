@@ -23,6 +23,7 @@ public:
     Unit(re::Point2f pos, std::vector<std::vector<int>> &new_map);
      Unit(re::Point2f pos);
     ~Unit(){}
+    double get_hp();
     virtual void attack(int target_id);
     virtual void update();
     virtual void display(re::Camera camera);
