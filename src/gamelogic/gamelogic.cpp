@@ -6,7 +6,7 @@
 #include <chrono>
 #include "../obstacles_generator.h"
 using namespace std;
-
+#include <fstream>
 #include "../events/move_event.h"
 #include "../events/spawn_event.h"
 #include "../events/game_event.h"
@@ -16,9 +16,17 @@ using namespace std;
 const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
+    ofstream fout("cppstudio.txt"); // создаём объект класса ofstream для записи и связываем его с файлом cppstudio.txt
     this->map = Map( world, "map.tmx" );
     last_sync_time = std::chrono::steady_clock::now();  
     obstacles = generate_obstacles (20, 250, 250, world);
+    for (int i = 0; i < 250; i++){
+        for (int j = 0; j < 250; j++){
+            fout << obstacles[i][j];
+        }
+        fout << std::endl;
+    }
+    fout.close();
     this->is_server = false;
     this->self_player_id = -1;
 }
