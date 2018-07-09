@@ -3,6 +3,17 @@
 #include "player.h"
 #include <iostream>
 
+Player::Player(re::Point2f pos, std::vector<std::vector<int>> &new_map) 
+    : Unit(pos, new_map) 
+{
+    level = 1;
+    exp = 0;
+    hp = 500;
+    maxhp = 500;
+
+    physic_type = PLAYER_PHYSIC_TYPE;
+
+}
 Player::Player(re::Point2f pos) 
     : Unit(pos) 
 {

@@ -4,7 +4,7 @@
 #include "RealEngine/config_manager.h"
 #include <fstream>
 #include <chrono>
-
+#include "../obstacles_generator.h"
 using namespace std;
 
 #include "../events/move_event.h"
@@ -17,7 +17,8 @@ const int sync_time = 100'000;
 
 GameLogic::GameLogic() {
     this->map = Map( world, "map.tmx" );
-    last_sync_time = std::chrono::steady_clock::now();   
+    last_sync_time = std::chrono::steady_clock::now();  
+    obstacles = generate_obstacles (20, 250, 250, world);
     this->is_server = false;
 }
 
@@ -30,7 +31,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(340, 4680), obstacles);
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
@@ -138,7 +139,7 @@ void GameLogic::update() {
 void GameLogic::draw( re::Camera camera )
 {
     map.draw(camera);
-
+   
     for( auto object : this->world.getWorld() )
     {
         auto drawable_object = std::static_pointer_cast<PhysGameObject,re::PhysicObject>( object );
@@ -192,5 +193,6 @@ void GameLogic::click( re::Point2f pos ) {
             move_event->set_shared(true);
             re::publish_event(move_event);
         }
+
     }
 }

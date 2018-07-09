@@ -19,7 +19,8 @@ class Unit
 {
 public:
 
-    Unit(re::Point2f pos);
+    Unit(re::Point2f pos, std::vector<std::vector<int>> &new_map);
+     Unit(re::Point2f pos);
     ~Unit(){}
     virtual void attack(int target_id);
     virtual void update();
@@ -27,11 +28,16 @@ public:
     void dealDamage(int damage);
     void onDeath();
     void setAction(Action action) { cur_action = action; };
-
+    void move_unit();
+    void set_new_way(re::Point2f finish);
     void on_event(std::shared_ptr<re::Event> event);
-
+    void update_way();
+    unsigned int get_index();
+    void update_index();
+    re::Point2f get_cell(int index);
     // from Physic Engine
     virtual void onCollisionStay(re::PhysicObjectPtr to, re::Point2f vec) override;
+   
 
 protected:
     void go_to(re::Point2f finish_point);
@@ -39,6 +45,8 @@ protected:
 
 protected:
     // std::vector<Ability*> abilities;
+     std::vector <re::Point2f> way;
+    int index;
     int hp, maxhp;
     float attack_per_second = 1.0;
     int target_id = 0;
@@ -48,6 +56,7 @@ protected:
     std::chrono::steady_clock::time_point last_attack_time;
     re::Point2f goto_point = re::Point2f();
     Action cur_action = Action::IDLE;
+    std::vector<std::vector<int>> map;
 
     re::Point2f fireball_pos;
     bool fireball_alive = false;
