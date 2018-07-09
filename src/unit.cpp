@@ -77,7 +77,6 @@ void Unit::attack(int target_id)
 {
     cur_action = Action::ATTACKING;
     this->target_id = target_id;
-    re::publish_event(std::make_shared<AttackEvent>(this->get_id(), target_id));
 }
 
 void Unit::attack_event()
