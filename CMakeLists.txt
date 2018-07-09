@@ -23,6 +23,13 @@ set(FILE_TO_COPY
     data/mage_front_9.png
     data/mage_front_10.png
     data/mage_front_11.png
+    data/d_mage_front_1.png
+    data/d_mage_front_2.png
+    data/d_mage_front_3.png
+    data/d_mage_front_4.png
+    data/d_mage_front_9.png
+    data/d_mage_front_10.png
+    data/d_mage_front_11.png
     data/Br_creep_left_1.png
     data/Br_creep_left_2.png
     data/Br_creep_left_3.png
