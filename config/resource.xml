@@ -12,6 +12,23 @@
         <im id="player_move10" file="mage_front_11.png" />
         <im id="player_move11" file="mage_front_10.png" />
         <im id="player_move12" file="mage_front_9.png" />
+
+
+        <im id="bright_creep_left_move1" file="Br_creep_left_1.png" />
+        <im id="bright_creep_left_move2" file="Br_creep_left_2.png" />
+        <im id="bright_creep_left_move3" file="Br_creep_left_3.png" />
+
+        <im id="bright_creep_right_move1" file="Br_creep_right_1.png" />
+        <im id="bright_creep_right_move2" file="Br_creep_right_2.png" />
+        <im id="bright_creep_right_move3" file="Br_creep_right_3.png" />
+
+        <im id="dark_creep_left_move1" file="D_creep_left_1.png" />
+        <im id="dark_creep_left_move2" file="D_creep_left_2.png" />
+        <im id="dark_creep_left_move3" file="D_creep_left_3.png" />
+
+        <im id="dark_creep_left_move1" file="D_creep_right_1.png" />
+        <im id="dark_creep_right_move2" file="D_creep_right_2.png" />
+        <im id="dark_creep_right_move3" file="D_creep_right_3.png" />
     </images>
 
     <sprites>
