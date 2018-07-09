@@ -40,7 +40,7 @@ void MainMenu::set_ip(){
 
 void MainMenu::change_nick(){
     change_nick_button_->set_active(false);
-    std::ofstream fout(nick.txt);
+    std::ofstream fout("nick.txt");
     fout << nick;
     fout.close();
     menu_state = MenuState::MAIN_MENU;
@@ -83,7 +83,7 @@ void MainMenu::choose_bright(){
 
 
 void MainMenu::setup() {
-    std::ifsteream fin("nick.txt");
+    std::ifstream fin("nick.txt");
     fin >> nick;
     fin.close();
 
@@ -182,7 +182,7 @@ void MainMenu::display(int mouseX, int mouseY) {
         for( int i = 0; i < lobby.get_players_count(); i++ ) {
             switch( int(lobby.get_player(i).team) ) {
                 case 0:
-                if(lobby.get_player(i).name) == nick{
+                if(lobby.get_player(i).name == nick){
                     re::draw_text(40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::LIGHTRED);
                 }else{
                     re::draw_text(40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::WHITE);
@@ -215,12 +215,12 @@ void MainMenu::on_key_pressed(re::Key key){
     }
 
     if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::A &&
-       (int)key <= (int)re::Key::Z) && nick.size >=  30){
+       (int)key <= (int)re::Key::Z) && nick.size() >=  30){
         char key_val = (int)key + (int)'A' - (int)re::Key::A;
         nick += key_val;
     }
     if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::Num0 &&
-        (int)key <= (int)re::Key::Num9) && nick.size >=  30){
+        (int)key <= (int)re::Key::Num9) && nick.size() >=  30){
         char key_val = (int)key + (int)'0' - (int)re::Key::Num0;
         nick += key_val;
     }
