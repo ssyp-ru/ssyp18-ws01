@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <memory>
-
+#include <unistd.h>
 #include "event.h"
 #include "map.h"
 #include "player.h"
@@ -43,6 +43,7 @@ const int camera_move_speed = 20;
 void set_log_level(){
     std::string console_level = re::ConfigManager::get_property("log/console");
     std::string file_level = re::ConfigManager::get_property("log/file");
+    std::string screen_level = re::ConfigManager::get_property("log/screen");
     if (console_level == "trace") {
         re::Log::set_console_level(re::Log::LEVEL::TRACE);
     }
@@ -60,6 +61,15 @@ void set_log_level(){
     }
     if (file_level == "info") {
         re::Log::set_file_level(re::Log::LEVEL::INFO);
+    }
+    if (screen_level == "trace") {
+        re::Log::set_screen_level(re::Log::LEVEL::TRACE);
+    }
+    if (screen_level == "debug") {
+        re::Log::set_screen_level(re::Log::LEVEL::DEBUG);
+    }
+    if (screen_level == "info") {
+        re::Log::set_screen_level(re::Log::LEVEL::INFO);
     }
 }
 
@@ -103,7 +113,6 @@ public:
         //     move_event->set_shared(true);
         //     re::publish_event(move_event);
         // }
-
         switch (game_state) {
             case GameState::MAIN_MENU: {
                 return;
@@ -204,7 +213,6 @@ public:
 
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
-
         if( game_state == GameState::GAME ) {
             game_logic.click( camera.screen_to_world( cursor_pos ) );
         }
