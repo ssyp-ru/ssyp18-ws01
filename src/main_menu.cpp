@@ -143,7 +143,7 @@ void MainMenu::setup() {
 
 
     re::ImagePtr go_icon = std::make_shared<re::Image>("go.png");
-    go_button_ = std::make_shared<re::BaseButton>(450, 360, "go", go_icon, go_icon);
+    go_button_ = std::make_shared<re::BaseButton>(500, 360, "go", go_icon, go_icon);
     go_button_->register_action(std::bind(&MainMenu::go, this));
     guiManager_.register_button(go_button_, "select_side");
 
@@ -168,7 +168,8 @@ void MainMenu::on_event( std::shared_ptr<re::Event> event )
 void MainMenu::display(int mouseX, int mouseY) {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY); 
-    re::draw_text_custom(empty_nick_button_->get_pos().x + 10, empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
+    re::draw_text_custom(empty_nick_button_->get_pos().x + 10,
+                         empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
     if(empty_ip_button_->is_active()){
         re::draw_text_custom(empty_ip_button_->get_pos().x + 10, empty_ip_button_->get_pos().y + 30, 6, ip, re::GRAY);
     }
@@ -191,9 +192,9 @@ void MainMenu::display(int mouseX, int mouseY) {
                     break;
                 case 1:
                 if(lobby.get_player(i).name == nick){
-                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK );
+                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::DARKRED);
                 }else{
-                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK );
+                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK);
                 }
                     team_b_count++;
                     break;
@@ -215,12 +216,12 @@ void MainMenu::on_key_pressed(re::Key key){
     }
 
     if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::A &&
-       (int)key <= (int)re::Key::Z) && nick.size() >=  30){
+       (int)key <= (int)re::Key::Z) && nick.size() <=  30){
         char key_val = (int)key + (int)'A' - (int)re::Key::A;
         nick += key_val;
     }
     if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::Num0 &&
-        (int)key <= (int)re::Key::Num9) && nick.size() >=  30){
+        (int)key <= (int)re::Key::Num9) && nick.size() <=  30){
         char key_val = (int)key + (int)'0' - (int)re::Key::Num0;
         nick += key_val;
     }
