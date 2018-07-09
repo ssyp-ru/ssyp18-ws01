@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <memory>
-
+#include <unistd.h>
 #include "event.h"
 #include "map.h"
 #include "player.h"
@@ -43,6 +43,7 @@ const int camera_move_speed = 20;
 void set_log_level(){
     std::string console_level = re::ConfigManager::get_property("log/console");
     std::string file_level = re::ConfigManager::get_property("log/file");
+    std::string screen_level = re::ConfigManager::get_property("log/screen");
     if (console_level == "trace") {
         re::Log::set_console_level(re::Log::LEVEL::TRACE);
     }
@@ -60,6 +61,15 @@ void set_log_level(){
     }
     if (file_level == "info") {
         re::Log::set_file_level(re::Log::LEVEL::INFO);
+    }
+    if (screen_level == "trace") {
+        re::Log::set_screen_level(re::Log::LEVEL::TRACE);
+    }
+    if (screen_level == "debug") {
+        re::Log::set_screen_level(re::Log::LEVEL::DEBUG);
+    }
+    if (screen_level == "info") {
+        re::Log::set_screen_level(re::Log::LEVEL::INFO);
     }
 }
 
