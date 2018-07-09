@@ -93,7 +93,9 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     auto player = std::make_shared<Player>( re::Point2f(330, 4690));
                     this->units.push_back(player);
                     world.addObject(player);
-                    this->self_player_id = player->get_id();
+                    if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
+                        this->self_player_id = player->get_id();
+                    }
                     return;
                 }
             }

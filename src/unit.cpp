@@ -68,9 +68,14 @@ void Unit::display(re::Camera camera){
 
 void Unit::draw_fireball( re::Camera camera ) {
     if( fireball_alive ) {
-        re::Point2f target_pos = ((Unit*)GameObject::get_object_by_id(target_id))->getPosition();
+        Unit *target = (Unit*)GameObject::get_object_by_id(target_id);
+        if(target == nullptr) {
+            fireball_alive = false;
+            return;
+        }
+        re::Point2f target_pos = target->getPosition();
         if( cur_action != Action::ATTACKING || 
-            (fireball_pos - target_pos).length() < 1 ) {
+            (fireball_pos - target_pos).length() < 12 ) {
             fireball_alive = false;
         } else {
             re::Point2f vector = fireball_pos - target_pos;
