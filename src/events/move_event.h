@@ -101,6 +101,7 @@ public:
             new_data.velocity.x = j[std::to_string(i)]["vec_x"];
             new_data.velocity.y = j[std::to_string(i)]["vec_y"];
             new_data.object_id  = j[std::to_string(i)]["id"];
+            objects.push_back( new_data );
         }
     }
 

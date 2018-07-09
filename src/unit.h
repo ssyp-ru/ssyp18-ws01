@@ -55,5 +55,10 @@ protected:
     re::Point2f goto_point = re::Point2f();
     Action cur_action = Action::IDLE;
     
+
+    re::Point2f fireball_pos;
+    bool fireball_alive = false;
+
+    void draw_fireball(re::Camera camera);
 };
 

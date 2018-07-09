@@ -1,4 +1,5 @@
 #include "main_menu.h"
+#include <fstream>
 
 MainMenu::MainMenu(re::GuiManager& guiManager) 
     : guiManager_(guiManager)
@@ -39,6 +40,9 @@ void MainMenu::set_ip(){
 
 void MainMenu::change_nick(){
     change_nick_button_->set_active(false);
+    std::ofstream fout("nick.txt");
+    fout << nick;
+    fout.close();
     menu_state = MenuState::MAIN_MENU;
 }
 
@@ -79,6 +83,10 @@ void MainMenu::choose_bright(){
 
 
 void MainMenu::setup() {
+    std::ifstream fin("nick.txt");
+    fin >> nick;
+    fin.close();
+
     menuBackground = std::make_shared<re::Image>("menu.png");
     players = std::make_shared<re::Image>("players.png");
 
@@ -135,7 +143,7 @@ void MainMenu::setup() {
 
 
     re::ImagePtr go_icon = std::make_shared<re::Image>("go.png");
-    go_button_ = std::make_shared<re::BaseButton>(420, 360, "go", go_icon, go_icon);
+    go_button_ = std::make_shared<re::BaseButton>(500, 360, "go", go_icon, go_icon);
     go_button_->register_action(std::bind(&MainMenu::go, this));
     guiManager_.register_button(go_button_, "select_side");
 
@@ -157,10 +165,11 @@ void MainMenu::on_event( std::shared_ptr<re::Event> event )
     }
 }    
 
-void MainMenu::display() {
+void MainMenu::display(int mouseX, int mouseY) {
     re::draw_image(0, 0, menuBackground);
     guiManager_.display(mouseX, mouseY); 
-    re::draw_text_custom(empty_nick_button_->get_pos().x + 10, empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
+    re::draw_text_custom(empty_nick_button_->get_pos().x + 10,
+                         empty_nick_button_->get_pos().y + 30, 6, nick, re::GRAY); 
     if(empty_ip_button_->is_active()){
         re::draw_text_custom(empty_ip_button_->get_pos().x + 10, empty_ip_button_->get_pos().y + 30, 6, ip, re::GRAY);
     }
@@ -174,17 +183,25 @@ void MainMenu::display() {
         for( int i = 0; i < lobby.get_players_count(); i++ ) {
             switch( int(lobby.get_player(i).team) ) {
                 case 0:
-                    re::draw_text( 40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::WHITE );
+                if(lobby.get_player(i).name == nick){
+                    re::draw_text(40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::LIGHTRED);
+                }else{
+                    re::draw_text(40, 50 + (team_a_count * 30), lobby.get_player(i).name, re::WHITE);
+                }
                     team_a_count++;
                     break;
                 case 1:
-                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK );
+                if(lobby.get_player(i).name == nick){
+                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::DARKRED);
+                }else{
+                    re::draw_text( 40, 450 + (team_b_count * 30), lobby.get_player(i).name, re::BLACK);
+                }
                     team_b_count++;
                     break;
             }
         }
     }
-
+//test changes
 }
 void MainMenu::on_key_pressed(re::Key key){
     if(menu_state == MenuState::IP_INPUT && ((int)key >= (int)re::Key::Num0 && (int)key <= (int)re::Key::Num9)){
@@ -198,8 +215,14 @@ void MainMenu::on_key_pressed(re::Key key){
         ip.pop_back();
     }
 
-    if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::A && (int)key <= (int)re::Key::Z)){
+    if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::A &&
+       (int)key <= (int)re::Key::Z) && nick.size() <=  30){
         char key_val = (int)key + (int)'A' - (int)re::Key::A;
+        nick += key_val;
+    }
+    if(menu_state == MenuState::NICK_INPUT && ((int)key >= (int)re::Key::Num0 &&
+        (int)key <= (int)re::Key::Num9) && nick.size() <=  30){
+        char key_val = (int)key + (int)'0' - (int)re::Key::Num0;
         nick += key_val;
     }
     if(menu_state == MenuState::NICK_INPUT && (int)key == (int)re::Key::BackSpace && nick.size() > 0){

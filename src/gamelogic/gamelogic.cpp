@@ -55,8 +55,10 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     auto sync_event = std::dynamic_pointer_cast<MoveSyncEvent,re::Event>( event );
                     for( size_t i = 0; i < sync_event->objects.size(); i++ ) {
                         PhysGameObject *player = (PhysGameObject*)GameObject::get_object_by_id( sync_event->objects[i].object_id );
-                        player->setPosition( sync_event->objects[i].position );
-                        player->setVelocity( sync_event->objects[i].velocity );
+                        if ( player != nullptr ) {
+                            player->setPosition( sync_event->objects[i].position );
+                            player->setVelocity( sync_event->objects[i].velocity );
+                        }
                     }
                 }
             }
@@ -69,9 +71,17 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                         if ((*iter)->get_id() == death_event->player_id){
                             world.removeObject(*iter);
                             units.erase(iter);
+                            GameObject::object_map[death_event->player_id] = nullptr;
                             return;
                         }
                     }
+                    return;
+                }
+                case (int)AttackEventType::PLAYER_ATTACK :
+                {
+                    auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
+                    Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
+                    player->attack( attack_event->target_id );
                     return;
                 }
             }
@@ -88,7 +98,7 @@ void GameLogic::update() {
 
     int time_milils = (std::chrono::duration_cast<std::chrono::microseconds>
             (std::chrono::steady_clock::now() - last_sync_time)).count();
-    if (is_server && time_milils > sync_time){
+    if (is_server && (time_milils > sync_time)){
         last_sync_time = std::chrono::steady_clock::now();   
         std::vector<MoveSyncData> move_sync_data;
         for( auto& unit : units ) {
@@ -129,9 +139,12 @@ void GameLogic::draw( re::Camera camera )
 }
 
 void GameLogic::click( re::Point2f pos ) {
-    std::pair<int,GameObject*> target;
-    target.first = -1;
+    std::pair<int,GameObject*> target(-1, 0);
+    //target.first = -1;
     for( auto object : GameObject::object_map) {
+        if( object.second == nullptr ) {
+            continue;
+        }
         PhysGameObject * phys_object = dynamic_cast<PhysGameObject*>( object.second );
         if( phys_object && phys_object->isPointInside( pos ) ) {
             // Work around object with HUGE radius
@@ -153,10 +166,12 @@ void GameLogic::click( re::Point2f pos ) {
 ;
     } else {
         Unit* unitObj = dynamic_cast<Unit*>(target.second);
-        if (unitObj)
-        {
-            if (this->self_player_id != target.first)
-                dynamic_cast<Unit*>(GameObject::get_object_by_id(this->self_player_id))->attack(target.first);
+        if (unitObj) {
+            if (this->self_player_id != target.first) {
+                auto attack_event = std::make_shared<AttackEvent>(this->self_player_id, target.first);
+                attack_event->set_shared(true);
+                re::publish_event( attack_event );
+            }
         } else {
              units[0]->set_new_way(pos, obstacles);
         }

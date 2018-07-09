@@ -32,6 +32,7 @@ public:
     re::ResourceManager resource_manager;
 
 private:
+    void load_animation();
     int expToNextLevel[18] = { 100 };
     int exp, level, hp, maxhp;
 };
