@@ -65,10 +65,17 @@ void Player::display(re::Camera camera){
 
     float size = camera.meter_to_screen(50);
 
-    re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
-                        screen_pos.x + size, screen_pos.y + size,
-                        0, 0, 1, 1,
-                        movingAnim_Forward->getNextFrame());
+    if( this->getVelocity() != re::Point2f(0,0) ) {
+        re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
+                            screen_pos.x + size, screen_pos.y + size,
+                            0, 0, 1, 1,
+                            movingAnim_Forward->getNextFrame());
+    } else {
+        re::draw_image_part(screen_pos.x - size, screen_pos.y - size,
+                            screen_pos.x + size, screen_pos.y + size,
+                            0, 0, 1, 1,
+                            resource_manager.get_image("player_move1"));
+    }
 
     if (re::ConfigManager::get_property("common/debug_display") == "1"){
         re::Point2f screen_pos = camera.world_to_screen(goto_point);
