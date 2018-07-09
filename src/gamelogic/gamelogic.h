@@ -18,8 +18,9 @@ public:
     void draw( re::Camera );
     int get_self_id();
     void click( re::Point2f pos );
+        std::vector<std::vector<int>> obstacles;
 private:    
-    std::vector<std::vector<int>> obstacles;
+
     re::PhysicWorld world;
     Map map;
 

@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <memory>
-
+#include <unistd.h>
 #include "event.h"
 #include "map.h"
 #include "player.h"
@@ -43,6 +43,7 @@ const int camera_move_speed = 20;
 void set_log_level(){
     std::string console_level = re::ConfigManager::get_property("log/console");
     std::string file_level = re::ConfigManager::get_property("log/file");
+    std::string screen_level = re::ConfigManager::get_property("log/screen");
     if (console_level == "trace") {
         re::Log::set_console_level(re::Log::LEVEL::TRACE);
     }
@@ -61,6 +62,15 @@ void set_log_level(){
     if (file_level == "info") {
         re::Log::set_file_level(re::Log::LEVEL::INFO);
     }
+    if (screen_level == "trace") {
+        re::Log::set_screen_level(re::Log::LEVEL::TRACE);
+    }
+    if (screen_level == "debug") {
+        re::Log::set_screen_level(re::Log::LEVEL::DEBUG);
+    }
+    if (screen_level == "info") {
+        re::Log::set_screen_level(re::Log::LEVEL::INFO);
+    }
 }
 
 class MainApp : public re::IBaseApp
@@ -69,7 +79,7 @@ class MainApp : public re::IBaseApp
 public:
     MainApp()
         : main_menu(gui_manager)
-        ,  game_menu(gui_manager, game_logic)
+        ,  game_menu(gui_manager)
     {
         set_log_level();
         re::subscribe_to_event_type( this, GAME_EVENT_CATEGORY, int(GameEventType::GAME_START) );
@@ -88,22 +98,10 @@ public:
         main_menu.setup();
         
         re::subscribe_to_all(&game_logic);
-         //  auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(2500, 2500));
-      //  move_event->set_shared(true);
-      //  re::publish_event(move_event);
-
         this->network_state = NetworkState::menu;
     }
 
     void update() override {
-        // std::cout << player->get_way_size() << std::endl;
-        // if(player->get_way_size() > 0){
-        //     re::Point2f next = player->get_next_step();
-        //     auto move_event = std::make_shared<MoveEvent>(0, re::Point2f(next.y * scale, next.x * scale));
-        //     move_event->set_shared(true);
-        //     re::publish_event(move_event);
-        // }
-
         switch (game_state) {
             case GameState::MAIN_MENU: {
                 return;
@@ -205,15 +203,12 @@ public:
     void on_button_pressed(int button) override {
         gui_manager.on_click(button, cursor_pos.x, cursor_pos.y);
 
-        if( game_state == GameState::GAME ) {
+        if((game_state == GameState::GAME ) && (game_logic.obstacles[int(camera.screen_to_world( cursor_pos ).y  / 20)]
+                                                        [int(camera.screen_to_world( cursor_pos ).x  / 20)] == 0)) {
+
+            std::cout << int(cursor_pos.x) << " " << int(cursor_pos.y)   << std::endl;
             game_logic.click( camera.screen_to_world( cursor_pos ) );
         }
-        /*if (game_state == GameState::GAME){
-            re::Point2f finish_point = camera.screen_to_world(cursor_pos);
-            auto move_event = std::make_shared<MoveEvent>(0, finish_point);
-            move_event->set_shared(true);
-            re::publish_event(move_event);
-        }*/
     }
 
 private:

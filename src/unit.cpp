@@ -2,17 +2,42 @@
 #include "RealEngine/config_manager.h"
 #include "unit.h"
 #include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
 
 Unit::Unit(re::Point2f pos) 
     : PhysGameObject(pos) 
 {
     hp = 500;
     maxhp = 500;
+    addPoint(re::Point2f(-10, 25));
+    addPoint(re::Point2f(-10, 35));
+    addPoint(re::Point2f(5, 35));
+    addPoint(re::Point2f(5, 25));
+    addEdge(0, 1);
+    addEdge(1, 2);
+    addEdge(2, 3);
+    addEdge(3, 0);
+    setRigidbodySimulated(true);
+    setFriction(1.0);
+    setBounciness(0.0);
 
-    addPoint(re::Point2f(-30, -30));
-    addPoint(re::Point2f(-30, 30));
-    addPoint(re::Point2f(30, 30));
-    addPoint(re::Point2f(30, -30));
+    last_attack_time = std::chrono::steady_clock::now();
+
+    re::subscribe_to_all( this );
+}
+
+Unit::Unit(re::Point2f pos, std::vector<std::vector<int>> &new_map) 
+    : PhysGameObject(pos) 
+{
+    hp = 500;
+    maxhp = 500;
+    map = new_map;
+    addPoint(re::Point2f(-10, 25));
+    addPoint(re::Point2f(-10, 35));
+    addPoint(re::Point2f(5, 35));
+    addPoint(re::Point2f(5, 25));
     addEdge(0, 1);
     addEdge(1, 2);
     addEdge(2, 3);
@@ -31,6 +56,10 @@ double Unit::get_hp(){
 }
 
 void Unit::update(){
+
+    if(way.size() != 0){
+        move_unit();
+    }
     if (cur_action == Action::MOVING)
     {
         if (getPosition().distance_to(goto_point) < 20)
@@ -71,9 +100,14 @@ void Unit::display(re::Camera camera){
 
 void Unit::draw_fireball( re::Camera camera ) {
     if( fireball_alive ) {
-        re::Point2f target_pos = ((Unit*)GameObject::get_object_by_id(target_id))->getPosition();
+        Unit *target = (Unit*)GameObject::get_object_by_id(target_id);
+        if(target == nullptr) {
+            fireball_alive = false;
+            return;
+        }
+        re::Point2f target_pos = target->getPosition();
         if( cur_action != Action::ATTACKING || 
-            (fireball_pos - target_pos).length() < 1 ) {
+            (fireball_pos - target_pos).length() < 12 ) {
             fireball_alive = false;
         } else {
             re::Point2f vector = fireball_pos - target_pos;
@@ -132,14 +166,18 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
     if( event->get_category() == MOVE_EVENT_CATEGORY && event->get_type() == int(MoveEventType::PLAYER_MOVE) ) {
         std::shared_ptr<MoveEvent> move_event = std::static_pointer_cast<MoveEvent>(event);
         if( this->get_id() == move_event->player_id ) {
-            go_to(move_event->finish_point);
+            set_new_way(move_event->finish_point);
         }
     }
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEAL_DAMAGE))
     {
         std::shared_ptr<DealDamageEvent> attack_event = std::static_pointer_cast<DealDamageEvent>(event);
-        // std::cout << "attack event! " << this->get_id() << " : " << attack_event->player_id << " > " << attack_event->target_id << std::endl;
-        dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        //dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        GameObject *object = GameObject::get_object_by_id(attack_event->target_id);
+        if( object != nullptr ) {
+            Unit *target = dynamic_cast<Unit*>( object );
+            target->dealDamage(attack_event->damage);
+        }
     }
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEATH))
     {
@@ -149,4 +187,47 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
             cur_action = Action::MOVING;
         }
     }
+}
+
+void Unit::update_way(){
+    for(unsigned int i = 0; i < way.size(); i++){
+        way[i] = re::Point2f(way[i].y * 20 + 10, way[i].x * 20 + 10);
+    }
+}
+
+void Unit::set_new_way(re::Point2f finish){
+    std::vector<std::vector<int>> count;
+    way = re::a_star(map, 250, int(getPosition().y / 20),  int(getPosition().x / 20),  int(finish.y / 20),
+                  int(finish.x / 20), count);
+                  update_way();
+    index = 0;
+}
+
+re::Point2f Unit::get_cell(int index){
+    return way[index];
+}
+unsigned int Unit::get_index(){
+    return index;
+}
+
+void Unit::update_index(){
+    index ++;
+}
+void Unit::move_unit(){
+
+    re::Point2f next = get_cell(get_index());
+    setVelocity((next - this->getPosition()).Normalized() * movespeed);
+    if(((abs(next.x - this->getPosition().x) < 10) && (abs(next.y  - this->getPosition().y) < 10)) && 
+       (get_index() != way.size())) {
+        update_index();
+        re::Point2f next = get_cell(get_index());
+        setVelocity((next - this->getPosition()).Normalized() * movespeed);
+    }
+
+     if(((abs(next.x - this->getPosition().x) < 10) && (abs(next.y - this->getPosition().y) < 10)) && 
+       (get_index() == way.size())) {   
+        re::Point2f next = get_cell(get_index());
+        setVelocity((next - this->getPosition()).Normalized() * 0);
+        way.clear();
+    }   
 }

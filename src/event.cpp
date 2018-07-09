@@ -3,6 +3,7 @@
 #include "events/lobby_event.h"
 #include "events/game_event.h"
 #include "events/attack_event.h"
+#include "events/spawn_event.h"
 #include <json.hpp>
 
 void deserealize( std::vector<char> msg ) {
@@ -20,9 +21,11 @@ void deserealize( std::vector<char> msg ) {
             }
             case int(MoveEventType::PLAYER_SYNC) :
             {
-                auto sync_event = std::make_shared<MoveSyncEvent>( std::vector<MoveSyncData>() );
-                sync_event->deserialize(msg);
-                re::publish_event( sync_event );
+                try {
+                    auto sync_event = std::make_shared<MoveSyncEvent>( std::vector<MoveSyncData>() );
+                    sync_event->deserialize(msg);
+                    re::publish_event( sync_event );
+                } catch (...) {}
                 break;
             }
         }
@@ -66,6 +69,15 @@ void deserealize( std::vector<char> msg ) {
             }
         }
         break;
+    case SPAWN_EVENT_CATEGORY:
+        switch( int(j["type"]) ) {
+            case int(SpawnEventType::PLAYER_RESPAWN):
+            {
+                auto spawn_event = std::make_shared<PlayerRespawnEvent>();
+                re::publish_event(spawn_event);
+                break;
+            }
+        }
     }
 }
 
