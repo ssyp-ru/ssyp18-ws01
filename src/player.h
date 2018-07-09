@@ -18,7 +18,7 @@ public:
     static const int16_t PLAYER_PHYSIC_TYPE = 0b10;
 
     Player(re::Point2f pos, std::vector<std::vector<int>> &new_map);
-    Player(re::Point2f pos);
+    // Player(re::Point2f pos);
     ~Player() = default;
     
     void update();

@@ -95,16 +95,19 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 {
                     auto join_event = std::dynamic_pointer_cast<GamePlayersJoinEvent,re::Event>( event );
                     
-                    auto player = std::make_shared<Player>( re::Point2f(330, (4690 + rand()%100)), obstacles );
+                    std::shared_ptr<Player> player;
+                    if (join_event->player.team == 0){
+                        player = std::make_shared<Player>( re::Point2f(330, (4690 + rand()%100)), obstacles );
+                    } else {
+                        player = std::make_shared<Player>( re::Point2f(4460, (520 + rand()%100)), obstacles );
+                        player->side = Side::DARK;
+                    }
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
-                        auto creepsSpawn = std::make_shared<CreepsSpawnEvent>();
                         player_spawned_once = true;
                         self_player_id = player->get_id();
-                        std::cout << "throwing creeps spawning event" << std::endl;
-                        creepsSpawn->set_shared(true);
-                        re::publish_event(creepsSpawn);
+                        spawn_creep();
                     }
                     break;
                 }
@@ -163,7 +166,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
             switch( event->get_type() ) {
                 case int( int(SpawnEventType::PLAYER_RESPAWN) ):
                 {
-                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    auto player = std::make_shared<Player>( re::Point2f(330, 4690), obstacles );
                     this->units.push_back(player);
                     world.addObject(player);
                     if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
@@ -208,6 +211,23 @@ void GameLogic::update() {
         respawn_event->set_shared( true );
         re::publish_event( respawn_event );
     }
+
+    if (player_spawned_once){
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_creep_spawn_time).count()
+            >= CREEP_RESPAWN_TIME_MS)
+        {
+            spawn_creep();
+        }
+    }
+}
+
+void GameLogic::spawn_creep()
+{
+    auto creepsSpawn = std::make_shared<CreepsSpawnEvent>();
+    last_creep_spawn_time = std::chrono::steady_clock::now();
+    creepsSpawn->set_shared(true);
+    re::publish_event(creepsSpawn);
 }
 
 void GameLogic::draw( re::Camera camera )

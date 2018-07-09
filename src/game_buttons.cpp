@@ -50,10 +50,9 @@ void GameMenu::display(int mouseX, int mouseY) {
     re::draw_image(0, 711, hud);
     guiManager_.display(mouseX, mouseY);
     int self_player_id = game_logic.get_self_id();
-    if (self_player_id == -1)
-        return; // no join yet
-    
     Unit* unit= (Unit*)GameObject::get_object_by_id(self_player_id);
+    if (unit == nullptr)
+        return; // player dead
     this->set_hp(unit->get_hp());
     re::draw_rectangle(294, 732, exp * 7 + 6, 40, re::Color(198, 182, 29));
     re::draw_rectangle(294, 786, hp * 7 + 6, 41, re::Color(177, 33, 7));

@@ -14,17 +14,17 @@ Player::Player(re::Point2f pos, std::vector<std::vector<int>> &new_map)
     physic_type = PLAYER_PHYSIC_TYPE;
 
 }
-Player::Player(re::Point2f pos) 
-    : Unit(pos) 
-{
-    level = 1;
-    exp = 0;
-    hp = 500;
-    maxhp = 500;
+// Player::Player(re::Point2f pos) 
+//     : Unit(pos) 
+// {
+//     level = 1;
+//     exp = 0;
+//     hp = 500;
+//     maxhp = 500;
 
-    physic_type = PLAYER_PHYSIC_TYPE;
+//     physic_type = PLAYER_PHYSIC_TYPE;
 
-}
+// }
 
 
 void Player::add_exp(int amount){

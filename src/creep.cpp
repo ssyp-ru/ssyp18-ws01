@@ -10,6 +10,7 @@ Creep::Creep(re::Point2f pos, Side side, Line line)
     maxhp = 500;
 
     physic_type = CREEP_PHYSIC_TYPE;
+    movespeed = 100; // slower than player
 
     this->side = side;
     switch (line)

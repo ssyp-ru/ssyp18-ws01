@@ -121,7 +121,7 @@ public:
         player_id = j["id"];
     }
 
-    std::string get_describe_string() { return "DeathEvent"; }
+    std::string get_describe_string() { return std::string("DeathEvent id=") + std::to_string(player_id); }
     re::Log::LEVEL get_log_level() { return re::Log::LEVEL::DEBUG; };
 
     int player_id = 0;

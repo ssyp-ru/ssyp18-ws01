@@ -48,10 +48,9 @@ protected:
     void attack_event();
 
 protected:
-    // std::vector<Ability*> abilities;
     std::vector<std::shared_ptr<Unit>> *units;
-    std::vector <re::Point2f> way;
-    int index;
+    std::vector <re::Point2f> way; // WTF?
+    int index; // index of what?
     int hp, maxhp;
     float attack_per_second = 1.0;
     int target_id = 0;

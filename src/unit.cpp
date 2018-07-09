@@ -69,7 +69,14 @@ void Unit::update(){
     }
     if(cur_action == Action::ATTACKING)
     {
-        re::Point2f enemyPos = dynamic_cast<PhysGameObject*>(GameObject::get_object_by_id(target_id))->getPosition();
+        auto enemy = dynamic_cast<PhysGameObject*>(GameObject::get_object_by_id(target_id));
+        if (enemy == nullptr){
+            target_id = -1;
+            cur_action = Action::IDLE;
+            return;
+        }
+        
+        re::Point2f enemyPos = enemy->getPosition();
         if ((enemyPos - getPosition()).length() > attack_range)
         {
             setVelocity((enemyPos - getPosition()).Normalized() * movespeed);
