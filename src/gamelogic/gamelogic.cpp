@@ -8,6 +8,7 @@
 using namespace std;
 
 #include "../events/move_event.h"
+#include "../events/spawn_event.h"
 #include "../events/game_event.h"
 #include "../events/attack_event.h"
 #include "../physgameobject.h"
@@ -81,6 +82,18 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     return;
                 }
             }
+            break;
+        case SPAWN_EVENT_CATEGORY:
+            switch( event->get_type() ) {
+                case int( int(SpawnEventType::PLAYER_RESPAWN) ):
+                {
+                    auto player = std::make_shared<Player>( re::Point2f(330, 4690));
+                    this->units.push_back(player);
+                    world.addObject(player);
+                    this->self_player_id = player->get_id();
+                    return;
+                }
+            }
         }
     }
 
@@ -108,6 +121,12 @@ void GameLogic::update() {
 
     for (auto& unit: units) {
         unit->update();
+    }
+
+    if( GameObject::get_object_by_id( self_player_id ) == nullptr ) {
+        auto respawn_event = std::make_shared<PlayerRespawnEvent>();
+        respawn_event->set_shared( true );
+        re::publish_event( respawn_event );            
     }
 }
 

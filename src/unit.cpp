@@ -113,8 +113,12 @@ void Unit::on_event(std::shared_ptr<re::Event> event) {
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEAL_DAMAGE))
     {
         std::shared_ptr<DealDamageEvent> attack_event = std::static_pointer_cast<DealDamageEvent>(event);
-        // std::cout << "attack event! " << this->get_id() << " : " << attack_event->player_id << " > " << attack_event->target_id << std::endl;
-        dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        //dynamic_cast<Unit*>(GameObject::get_object_by_id(attack_event->target_id))->dealDamage(attack_event->damage);
+        GameObject *object = GameObject::get_object_by_id(attack_event->target_id);
+        if( object != nullptr ) {
+            Unit *target = dynamic_cast<Unit*>( object );
+            target->dealDamage(attack_event->damage);
+        }
     }
     if (event->get_category() == ATTACK_EVENT_CATEGORY && event->get_type() == int(AttackEventType::PLAYER_DEATH))
     {
