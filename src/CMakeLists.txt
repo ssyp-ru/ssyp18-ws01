@@ -8,6 +8,7 @@ set(EXECUTABLE  main.cpp
                 player.cpp
                 main_menu.cpp
                 unit.cpp
+                creep.cpp
                 )
 
 add_compile_options(-std=c++17)

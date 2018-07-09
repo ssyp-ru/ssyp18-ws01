@@ -10,7 +10,9 @@ using namespace std;
 #include "../events/move_event.h"
 #include "../events/game_event.h"
 #include "../events/attack_event.h"
+#include "../events/creeps_spawn_event.h"
 #include "../physgameobject.h"
+#include "../creep.h"
 
 const int sync_time = 100'000;
 
@@ -23,6 +25,55 @@ GameLogic::GameLogic() {
 void GameLogic::on_event(std::shared_ptr<re::Event> event) {
     switch( event->get_category() )
     {
+        case CREEPS_SPAWN_EVENT_CATEGORY:
+        {
+            int midCreepsCount = 1;
+            int topCreepsCount = 1;
+            int botCreepsCount = 1;
+            for (int i = 0; i < topCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(500, 4500), Side::BRIGHT, Line::TOP);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            for (int i = 0; i < midCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(500, 4500), Side::BRIGHT, Line::MID);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            for (int i = 0; i < botCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(500, 4500), Side::BRIGHT, Line::BOT);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            for (int i = 0; i < topCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(4500, 500), Side::DARK, Line::TOP);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            for (int i = 0; i < midCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(4500, 500), Side::DARK, Line::MID);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            for (int i = 0; i < botCreepsCount; i++)
+            {
+                auto creep = std::make_shared<Creep>(re::Point2f(4500, 500), Side::DARK, Line::BOT);
+                creep->setUnitsArray(&units);
+                this->units.push_back(creep);
+                world.addObject(creep);
+            }
+            return;
+        }
         case GAME_EVENT_CATEGORY:
             switch( event->get_type() ) {
                 case int(GameEventType::PLAYERS_JOIN):
@@ -33,7 +84,11 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                     this->units.push_back(player);
                     world.addObject(player);
                     if( join_event->is_local ) {
+                    auto creepsSpawn = std::make_shared<CreepsSpawnEvent>();
                         self_player_id = player->get_id();
+                        std::cout << "throwing creeps spawning event" << std::endl;
+                        creepsSpawn->set_shared(true);
+                        re::publish_event(creepsSpawn);
                     }
                     break;
                 }
@@ -76,6 +131,7 @@ void GameLogic::on_event(std::shared_ptr<re::Event> event) {
                 case (int)AttackEventType::PLAYER_ATTACK :
                 {
                     auto attack_event = std::dynamic_pointer_cast<AttackEvent,re::Event>( event );
+                    std::cout << attack_event->player_id;
                     Unit* player = (Unit*)GameObject::get_object_by_id( attack_event->player_id );
                     player->attack( attack_event->target_id );
                     return;
