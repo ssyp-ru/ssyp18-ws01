@@ -43,11 +43,11 @@ public:
         case LOBBY_EVENT_CATEGORY:
             switch( event->get_type() ) {
                 case int(LobbyEventType::LOBBY_SYNC) :
-                    if( is_server ) {
-                        return;
-                    }
+                    // if( is_server ) {
+                    //     return;
+                    // }
                     members = std::dynamic_pointer_cast<LobbySyncEvent,re::Event>(event)->members;
-                    if( self_id == 0 ) {
+                    if( !is_server ) {
                         self_id = members.size() - 1;
                     }
                     break;
